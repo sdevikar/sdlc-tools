@@ -21,7 +21,7 @@ none (no spec in progress)
 ## Next Up
 
 ## Backlog Summary
-- MVP-critical: 0 / Parked: 0 / Untriaged: 0
+- MVP-critical: 0 / Parked: 0 / Untriaged: 1
 
 ---
 ## Agent Instructions

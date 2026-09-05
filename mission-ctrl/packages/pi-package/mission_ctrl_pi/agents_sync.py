@@ -122,10 +122,13 @@ def sync_after_write(
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         result = func(*args, **kwargs)
         store = kwargs.get("store")
-        if store is None:
+        if not isinstance(store, IntentStore):
             store = next((a for a in args if isinstance(a, IntentStore)), None)
-        if store is not None:
-            write_agents_md(store)
+        if store is None:
+            # CLI path: store was created inside the skill from the `root` kwarg.
+            # The skill already succeeded so .intent/ exists — resolve it now.
+            store = IntentStore(kwargs.get("root", "."))
+        write_agents_md(store)
         return result
 
     return wrapper
