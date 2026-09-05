@@ -148,3 +148,30 @@ class DesignApproveResult(BaseModel):
     spec_id: str
     decision: str
     new_status: Literal["design_approved", "draft"]
+
+
+# ---------------------------------------------------------------------------
+# log-feedback-06
+# ---------------------------------------------------------------------------
+
+
+class LogFeedbackInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    category: Literal[
+        "false_positive",
+        "planner_miss",
+        "recap_verbosity",
+        "hook_behavior",
+        "bug",
+        "ux",
+        "other",
+    ]
+    description: str = Field(min_length=1)
+    severity: Literal["blocker", "polish", "backlog"]
+    related_spec_id: str | None = None
+
+
+class LogFeedbackResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    event_id: str
+    status: Literal["logged"] = "logged"

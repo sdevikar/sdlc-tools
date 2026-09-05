@@ -4,39 +4,42 @@ description: Log a structured dogfood issue (false positive, planner miss, verbo
 
 # intent:log-feedback
 
-> Pending: this skill lands in `log-feedback-06` and is not implemented yet.
-> Until then the wrapper answers `NOT_IMPLEMENTED`; record dogfood issues as
-> plain notes. This file pins the planned contract so the plugin is ready the
-> moment the skill ships.
-
 Capture structured dogfood observations — false positives, planner misses,
 recap verbosity complaints, hook misfires — tagged by category and severity
-so M5 fixes are evidence-based rather than anecdotal.
+so future fixes are evidence-based rather than anecdotal.
 
-## Planned input
+Appends a `FEEDBACK_LOGGED` event to `.intent/meta.jsonl`. No other file is touched.
 
-The `log-feedback-06` proposal pins this contract:
+## Input (`LogFeedbackInput`)
 
-- `category`: one of `false_positive`, `planner_miss`, `recap_verbosity`,
-  `hook_behavior`, `bug`, `ux`, `other`
-- `description`: free-form text (what happened, what was expected)
-- `severity`: one of `blocker`, `polish`, `backlog`
-- `related_spec_id`: optional spec the issue is associated with
+| Field | Type | Required | Values |
+|---|---|---|---|
+| `category` | string | yes | `false_positive`, `planner_miss`, `recap_verbosity`, `hook_behavior`, `bug`, `ux`, `other` |
+| `description` | string | yes | free-form (what happened, what was expected) |
+| `severity` | string | yes | `blocker`, `polish`, `backlog` |
+| `related_spec_id` | string | no | spec id if issue relates to a specific spec |
 
-Example (illustrative — validate against `LogFeedbackInput` once it exists):
+## Output (`LogFeedbackResult`)
 
-```text
-category=bug, severity=polish, description="...", related_spec_id=spec_001
-```
+| Field | Type |
+|---|---|
+| `event_id` | string — e.g. `evt_000012` |
+| `status` | `"logged"` |
 
-## Planned invocation
+## Invocation
 
 ```bash
 mission-ctrl skill log-feedback --cwd "<project-dir>" <<'EOF'
-<LogFeedbackInput JSON>
+{"category": "recap_verbosity", "description": "Recap always prints full spec list even for brief mode", "severity": "polish"}
 EOF
+```
+
+## Canonical input example
+
+```json
+{"category": "recap_verbosity", "description": "Recap always prints full spec list even for brief mode", "severity": "polish"}
 ```
 
 ## Errors
 
-- `NOT_IMPLEMENTED` — expected until `log-feedback-06` ships.
+- `NOT_INITIALIZED` — `.intent/` does not exist; run `intent:init` first.

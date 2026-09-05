@@ -10,6 +10,7 @@ from .skills import (
     intent_design_approve,
     intent_design_propose,
     intent_init,
+    intent_log_feedback,
     intent_next,
     intent_recap,
     intent_spec_create,
@@ -38,6 +39,8 @@ MANIFEST: dict[str, Any] = {
         "intent:recap": intent_recap,
         "intent:design-propose": intent_design_propose,
         "intent:design-approve": intent_design_approve,
+        # log-feedback-06
+        "intent:log-feedback": intent_log_feedback,
     },
 }
 

@@ -10,6 +10,7 @@ from ..models import (
     DesignApprovedEvent,
     DesignProposedEvent,
     EntityRef,
+    FeedbackLoggedEvent,
     IntentBypassUsedEvent,
     IntentCreatedEvent,
     IntentInterceptedEvent,
@@ -33,6 +34,7 @@ _EVENT_CLASSES: dict[str, type] = {
     "SESSION_STARTED": SessionStartedEvent,
     "INTENT_INTERCEPTED": IntentInterceptedEvent,
     "INTENT_BYPASS_USED": IntentBypassUsedEvent,
+    "FEEDBACK_LOGGED": FeedbackLoggedEvent,
 }
 
 
@@ -259,6 +261,35 @@ class EventBuilder:
             IntentBypassUsedDecision(
                 bypass_phrase=bypass_phrase,
                 original_message_excerpt=original_message_excerpt,
+            ),
+            actor=actor,
+            reasoning=reasoning,
+            affected_entities=[],
+            session=session,
+            **common,
+        )
+
+    def feedback_logged(
+        self,
+        *,
+        category: str,
+        description: str,
+        severity: str,
+        related_spec_id: str | None = None,
+        actor: Actor,
+        reasoning: str,
+        session: SessionRef,
+        **common: Any,
+    ) -> MetaEvent:
+        from ..models import FeedbackLoggedDecision
+
+        return self.build(
+            "FEEDBACK_LOGGED",
+            FeedbackLoggedDecision(
+                category=category,
+                description=description,
+                severity=severity,
+                related_spec_id=related_spec_id,
             ),
             actor=actor,
             reasoning=reasoning,

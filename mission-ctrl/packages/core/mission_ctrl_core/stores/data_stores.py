@@ -250,6 +250,9 @@ class MetaStore:
     def read_since(self, event_id: str | None = None) -> list[MetaEvent]:
         return self._read(_event_num(event_id) if event_id else 0)
 
+    def read_feedback(self) -> list[MetaEvent]:
+        return [e for e in self.read_all() if e.event_type == "FEEDBACK_LOGGED"]
+
     def _read(self, after: int) -> list[MetaEvent]:
         from ..models import MetaEventAdapter
 

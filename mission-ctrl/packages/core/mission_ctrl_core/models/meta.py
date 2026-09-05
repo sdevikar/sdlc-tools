@@ -130,6 +130,23 @@ class IntentBypassUsedDecision(BaseModel):
     original_message_excerpt: str
 
 
+class FeedbackLoggedDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    category: Literal[
+        "false_positive",
+        "planner_miss",
+        "recap_verbosity",
+        "hook_behavior",
+        "bug",
+        "ux",
+        "other",
+    ]
+    description: str
+    severity: Literal["blocker", "polish", "backlog"]
+    related_spec_id: str | None = None
+
+
 class IntentCreatedEvent(EventBase):
     event_type: Literal["INTENT_CREATED"]
     decision: IntentCreatedDecision
@@ -180,6 +197,11 @@ class IntentBypassUsedEvent(EventBase):
     decision: IntentBypassUsedDecision
 
 
+class FeedbackLoggedEvent(EventBase):
+    event_type: Literal["FEEDBACK_LOGGED"]
+    decision: FeedbackLoggedDecision
+
+
 MetaEvent = Annotated[
     Union[
         IntentCreatedEvent,
@@ -192,6 +214,7 @@ MetaEvent = Annotated[
         IntentInterceptedEvent,
         IntentBypassUsedEvent,
         SessionStartedEvent,
+        FeedbackLoggedEvent,
     ],
     Field(discriminator="event_type"),
 ]

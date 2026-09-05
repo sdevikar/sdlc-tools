@@ -28,7 +28,7 @@ CONTRACTS: dict[str, object] = {
     "intent-recap": schemas.RecapInput,
     "intent-next": None,
     "intent-status": None,
-    "intent-log-feedback": "PENDING",
+    "intent-log-feedback": schemas.LogFeedbackInput,
 }
 
 FENCE = re.compile(r"```json\s*\n(.*?)```", re.DOTALL)
@@ -64,12 +64,6 @@ def test_no_input_skills_document_empty_object():
         blocks = FENCE.findall(_read_skill(name))
         assert len(blocks) == 1, f"{name}: expected 1 json block"
         assert json.loads(blocks[0]) == {}, f"{name}: input block must be {{}}"
-
-
-def test_pending_skills_carry_marker_and_no_contract():
-    text = _read_skill("intent-log-feedback")
-    assert FENCE.findall(text) == []
-    assert "Pending" in text and "log-feedback-06" in text
 
 
 def test_skill_frontmatter_has_description():
