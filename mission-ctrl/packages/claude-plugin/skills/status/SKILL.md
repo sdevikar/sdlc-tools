@@ -2,7 +2,7 @@
 description: Show mission statement, MVP completion, active specs, and the next suggestion. Use for status check-ins, before planning, or when orienting in a project.
 ---
 
-# intent:status
+# /mission-ctrl:status
 
 Read-only snapshot: mission text, MVP completion percentage, active specs,
 and the planner's next suggestion. Takes no input. Never edits state.

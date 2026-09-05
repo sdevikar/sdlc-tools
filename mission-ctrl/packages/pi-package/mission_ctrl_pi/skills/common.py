@@ -19,5 +19,5 @@ def require_initialized(store: IntentStore) -> None:
         or not (store.intent_dir / "mission.json").exists()
     ):
         raise SkillError(
-            "NOT_INITIALIZED", "Intent store is not initialized. Run intent:init first."
+            "NOT_INITIALIZED", "Intent store is not initialized. Run /mission-ctrl:init first."
         )

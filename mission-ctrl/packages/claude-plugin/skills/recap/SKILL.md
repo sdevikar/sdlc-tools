@@ -2,7 +2,7 @@
 description: Render a recap of intent state (mission, MVP progress, focus, changes, recommendations). Use when resuming work, after a break, or when context was compacted. Verbosity defaults to standard.
 ---
 
-# intent:recap
+# /mission-ctrl:recap
 
 On-demand recap of the current intent state. Same engine as the SessionStart
 hook: omit the input for the default `standard` recap, or request `brief`

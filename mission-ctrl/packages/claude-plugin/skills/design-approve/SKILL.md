@@ -2,7 +2,7 @@
 description: Approve or reject a proposed design (design_proposed to design_approved or back to draft). Use when reviewing a design digest. Rejections require notes.
 ---
 
-# intent:design-approve
+# /mission-ctrl:design-approve
 
 Decide on a `design_proposed` spec. `approved` moves it to `design_approved`
 (unlocks `in_progress`); `rejected` returns it to `draft` and requires

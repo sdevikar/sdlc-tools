@@ -95,6 +95,7 @@ _SKILLS: dict[str, tuple[type | None, object]] = {
     "recap": (schemas.RecapInput, skills.intent_recap),
     "next": (None, skills.intent_next),
     "status": (None, skills.intent_status),
+    "log-feedback": (schemas.LogFeedbackInput, skills.intent_log_feedback),
 }
 
 
@@ -117,12 +118,6 @@ def _read_stdin_json() -> dict:
 
 
 def cmd_skill(name: str, cwd: str) -> int:
-    if name == "log-feedback":
-        return _fail(
-            "NOT_IMPLEMENTED",
-            "intent:log-feedback lands in log-feedback-06 and is not "
-            "implemented yet; log dogfood issues as plain notes for now.",
-        )
     entry = _SKILLS.get(name)
     if entry is None:
         return _fail("INVALID_INPUT", f"Unknown skill: {name}")
@@ -133,7 +128,7 @@ def cmd_skill(name: str, cwd: str) -> int:
             if payload:
                 return _fail(
                     "INVALID_INPUT",
-                    f"intent:{name} takes no input; got keys {sorted(payload)}",
+                    f"{name} takes no input; got keys {sorted(payload)}",
                 )
             result = func(root=cwd)
         else:
@@ -148,7 +143,7 @@ def cmd_skill(name: str, cwd: str) -> int:
     except SkillError as exc:
         return _fail(exc.code, exc.message)
     except Exception as exc:  # never leak tracebacks across the plugin boundary
-        return _fail("INTERNAL", f"Unexpected error in intent:{name}: {exc}")
+        return _fail("INTERNAL", f"Unexpected error in {name}: {exc}")
     sys.stdout.write(result.model_dump_json() + "\n")
     return 0
 

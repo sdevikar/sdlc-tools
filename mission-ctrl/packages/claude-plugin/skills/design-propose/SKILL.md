@@ -2,7 +2,7 @@
 description: Propose a design for a draft spec (draft to design_proposed). Use after scoping a spec and before any implementation. The digest is the design itself, written out, not a pointer to it.
 ---
 
-# intent:design-propose
+# /mission-ctrl:design-propose
 
 Submit the design digest for a `draft` spec, moving it to `design_proposed`.
 Write the digest as concrete decisions (data shapes, boundaries, failure

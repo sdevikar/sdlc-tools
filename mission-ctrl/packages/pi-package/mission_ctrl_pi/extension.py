@@ -28,19 +28,19 @@ MANIFEST: dict[str, Any] = {
         "on_before_send": before_send_hook,
     },
     "skills": {
-        "intent:init": intent_init,
-        "intent:add-idea": intent_add_idea,
-        "intent:triage": intent_triage,
-        "intent:spec-create": intent_spec_create,
-        "intent:spec-status": intent_spec_status,
-        "intent:next": intent_next,
-        "intent:status": intent_status,
+        "init": intent_init,
+        "add-idea": intent_add_idea,
+        "triage": intent_triage,
+        "spec-create": intent_spec_create,
+        "spec-status": intent_spec_status,
+        "next": intent_next,
+        "status": intent_status,
         # M2b: design-gate skills
-        "intent:recap": intent_recap,
-        "intent:design-propose": intent_design_propose,
-        "intent:design-approve": intent_design_approve,
+        "recap": intent_recap,
+        "design-propose": intent_design_propose,
+        "design-approve": intent_design_approve,
         # log-feedback-06
-        "intent:log-feedback": intent_log_feedback,
+        "log-feedback": intent_log_feedback,
     },
 }
 

@@ -39,7 +39,7 @@ def test_render_contains_expected_sections(tmp_path):
     assert "Synced mission" in rendered
     assert "## Current Focus" in rendered
     assert "## Backlog Summary" in rendered
-    assert "intent:add-idea" in rendered
+    assert "/mission-ctrl:add-idea" in rendered
 
 
 def test_snapshot_mid_flight():

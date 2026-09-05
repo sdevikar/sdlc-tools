@@ -2,7 +2,7 @@
 description: Create a draft spec from a triaged idea. Use when an mvp or later idea is ready to be scoped, or when the user asks to spec something out.
 ---
 
-# intent:spec-create
+# /mission-ctrl:spec-create
 
 Create one `draft` spec linked to a triaged idea. The idea must already be
 out of `UNTRIAGED` (bucket `mvp` or `later`); triage first otherwise. Specs

@@ -375,7 +375,7 @@ def test_event_builder_intercept_and_bypass_events(intent_dir):
     builder = EventBuilder(MetaStore(intent_dir), _linked())
     intercepted = builder.intent_intercepted(
         pattern_matched="implement",
-        redirect_target="intent:add-idea",
+        redirect_target="/mission-ctrl:add-idea",
         original_message_excerpt="implement SSO login",
         actor=_actor(),
         reasoning="implementation intent detected",
@@ -384,7 +384,7 @@ def test_event_builder_intercept_and_bypass_events(intent_dir):
     assert intercepted.event_type == "INTENT_INTERCEPTED"
     assert intercepted.event_id == "evt_000001"
     assert intercepted.decision.pattern_matched == "implement"
-    assert intercepted.decision.redirect_target == "intent:add-idea"
+    assert intercepted.decision.redirect_target == "/mission-ctrl:add-idea"
     bypassed = builder.intent_bypass_used(
         bypass_phrase="override intent",
         original_message_excerpt="override intent: just do it",

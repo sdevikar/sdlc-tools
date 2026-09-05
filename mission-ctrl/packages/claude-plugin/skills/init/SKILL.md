@@ -2,7 +2,7 @@
 description: Initialize a project's intent store (.intent/ with mission, MVP, constraints). Use when starting Mission Ctrl in a fresh project, when the user asks to set up or initialize intent tracking, or when a skill fails with NOT_INITIALIZED.
 ---
 
-# intent:init
+# /mission-ctrl:init
 
 Create the `.intent/` store for a project: `mission.json`, `mvp.json`,
 `constraints.json`, plus empty backlog/specs and the meta event log. Run

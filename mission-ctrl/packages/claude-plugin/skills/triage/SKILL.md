@@ -2,7 +2,7 @@
 description: Triage one backlog idea into mvp, later, or rejected with an alignment verdict. Use when untriaged ideas exist, after add-idea, or when the user asks what is in scope.
 ---
 
-# intent:triage
+# /mission-ctrl:triage
 
 Move one idea out of `UNTRIAGED` into its bucket. The `alignment_verdict`
 is a short human judgment of fit with the mission — write it honestly, it
