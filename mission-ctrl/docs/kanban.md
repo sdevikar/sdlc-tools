@@ -1,6 +1,6 @@
 # Mission Ctrl — Build Kanban (Ship v0.1: Pure Python Core + Pi Extension)
 
-Goal: dogfoodable end-to-end loop in Pi, shortest path. One language, no bridge, no Claude plugin, no MCP, no LLM-in-core.
+Goal: dogfoodable end-to-end loop in Claude Code, shortest path. One language, no bridge, no MCP, no LLM-in-core. Pi route deferred until Pi supports Python extensions.
 
 ---
 
@@ -20,6 +20,9 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 | `log-feedback-06` | Feedback Logging Skill | M5-prep | 🔲 Planned |
 | `ts-bridge-07` | TS ↔ Python Bridge (Pi + OpenSpec) | M2x | 🔲 Planned |
 | `claude-plugin-08` | Claude Code Plugin (dogfood vehicle #1) | M2x | 🔄 In Progress (14/16; pending live dogfood + log-feedback-06) |
+| `direct-wire-09` | Direct-wire bin/mission-ctrl to Python (drop bridge dep) | M2x | 🔲 Planned |
+| `mutation-skills-10` | Mutation skills: update-mission, add-mvp-item, add-constraint | M3x | 🔲 Planned |
+| `launch-skill-11` | intent:launch conversational onboarding wrapper | M3x | 🔲 Planned |
 
 > **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded
 
