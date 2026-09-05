@@ -18,17 +18,17 @@ PLUGIN_DIR = Path(__file__).resolve().parents[2] / "claude-plugin"
 # skill dir -> Input model; None = skill takes no input (block must be {});
 # "PENDING" = skill not implemented yet (no json block, must carry marker).
 CONTRACTS: dict[str, object] = {
-    "intent-init": schemas.InitInput,
-    "intent-add-idea": schemas.AddIdeaInput,
-    "intent-triage": schemas.TriageInput,
-    "intent-spec-create": schemas.SpecCreateInput,
-    "intent-spec-status": schemas.SpecStatusInput,
-    "intent-design-propose": schemas.DesignProposeInput,
-    "intent-design-approve": schemas.DesignApproveInput,
-    "intent-recap": schemas.RecapInput,
-    "intent-next": None,
-    "intent-status": None,
-    "intent-log-feedback": schemas.LogFeedbackInput,
+    "init": schemas.InitInput,
+    "add-idea": schemas.AddIdeaInput,
+    "triage": schemas.TriageInput,
+    "spec-create": schemas.SpecCreateInput,
+    "spec-status": schemas.SpecStatusInput,
+    "design-propose": schemas.DesignProposeInput,
+    "design-approve": schemas.DesignApproveInput,
+    "recap": schemas.RecapInput,
+    "next": None,
+    "status": None,
+    "log-feedback": schemas.LogFeedbackInput,
 }
 
 FENCE = re.compile(r"```json\s*\n(.*?)```", re.DOTALL)
@@ -60,7 +60,7 @@ def test_skill_input_blocks_match_schemas():
 
 
 def test_no_input_skills_document_empty_object():
-    for name in ("intent-next", "intent-status"):
+    for name in ("next", "status"):
         blocks = FENCE.findall(_read_skill(name))
         assert len(blocks) == 1, f"{name}: expected 1 json block"
         assert json.loads(blocks[0]) == {}, f"{name}: input block must be {{}}"

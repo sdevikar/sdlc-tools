@@ -126,7 +126,7 @@ def test_implement_redirects_to_add_idea_on_empty_backlog(tmp_path):
     store = _init_store(tmp_path)
     result = on_before_send("Implement SSO login", store=store)
     assert result.action == "redirect"
-    assert result.target == "intent:add-idea"
+    assert result.target == "/mission-ctrl:add-idea"
     assert result.pattern == "implement"
     assert "override intent" in result.message  # bypass surfaced, never silent
 
@@ -134,7 +134,7 @@ def test_implement_redirects_to_add_idea_on_empty_backlog(tmp_path):
     assert _event_types(store)[-1] == "INTENT_INTERCEPTED"
     decision = events[-1].decision
     assert decision.pattern_matched == "implement"
-    assert decision.redirect_target == "intent:add-idea"
+    assert decision.redirect_target == "/mission-ctrl:add-idea"
     assert decision.original_message_excerpt == "Implement SSO login"
     assert events[-1].actor.type == "agent"
 
@@ -163,9 +163,9 @@ def test_untriaged_ideas_redirect_to_triage(tmp_path):
     store, idea_id = _store_with_untriaged_idea(tmp_path)
     result = on_before_send("implement SSO", store=store)
     assert result.action == "redirect"
-    assert result.target == "intent:triage"
+    assert result.target == "/mission-ctrl:triage"
     assert idea_id in result.message
-    assert store.meta.read_all()[-1].decision.redirect_target == "intent:triage"
+    assert store.meta.read_all()[-1].decision.redirect_target == "/mission-ctrl:triage"
 
 
 def test_approved_design_redirects_to_spec_status(tmp_path):
@@ -173,9 +173,9 @@ def test_approved_design_redirects_to_spec_status(tmp_path):
     assert store.specs.get(spec_id).status == SpecStatus.DESIGN_APPROVED
     result = on_before_send("let's build it now", store=store)
     assert result.action == "redirect"
-    assert result.target == "intent:spec-status"
+    assert result.target == "/mission-ctrl:spec-status"
     assert spec_id in result.message
-    assert store.meta.read_all()[-1].decision.redirect_target == "intent:spec-status"
+    assert store.meta.read_all()[-1].decision.redirect_target == "/mission-ctrl:spec-status"
 
 
 def _store_with_draft_spec(tmp_path) -> tuple[IntentStore, str]:
@@ -192,7 +192,7 @@ def test_draft_spec_redirects_to_design_propose(tmp_path):
     store, spec_id = _store_with_draft_spec(tmp_path)
     result = on_before_send("implement the gated feature", store=store)
     assert result.action == "redirect"
-    assert result.target == "intent:design-propose"
+    assert result.target == "/mission-ctrl:design-propose"
     assert spec_id in result.message
 
 
@@ -204,7 +204,7 @@ def test_triaged_idea_without_spec_redirects_to_spec_create(tmp_path):
     )
     result = on_before_send("implement the export flow", store=store)
     assert result.action == "redirect"
-    assert result.target == "intent:spec-create"
+    assert result.target == "/mission-ctrl:spec-create"
     assert idea_id in result.message
 
 
@@ -219,7 +219,7 @@ def test_approved_spec_beats_draft_spec(tmp_path):
     second = intent_spec_create(SpecCreateInput(idea_id=add.idea_id), store=store)
     assert second.spec_id != approved_id
     result = on_before_send("build everything now", store=store)
-    assert result.target == "intent:spec-status"
+    assert result.target == "/mission-ctrl:spec-status"
     assert approved_id in result.message
 
 
@@ -270,7 +270,7 @@ def test_manifest_before_send_hook_redirects(tmp_path):
     hook = Extension().hooks["on_before_send"]
     result = hook("implement SSO", {"cwd": str(tmp_path)})
     assert result.action == "redirect"
-    assert result.target == "intent:add-idea"
+    assert result.target == "/mission-ctrl:add-idea"
     assert "INTENT_INTERCEPTED" in _event_types(store)
 
 
@@ -301,7 +301,7 @@ def test_e2e_intercept_on_mid_flight_fixture(tmp_path):
     result = on_before_send("implement the export retry", store=store)
     assert result.action == "redirect"
     # Draft spec_002 with no approved design → design-propose.
-    assert result.target == "intent:design-propose"
+    assert result.target == "/mission-ctrl:design-propose"
     assert "spec_002" in result.message
     events = store.meta.read_all()
     assert len(events) == before + 1

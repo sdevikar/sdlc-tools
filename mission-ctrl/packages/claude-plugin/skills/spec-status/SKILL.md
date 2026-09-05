@@ -2,7 +2,7 @@
 description: Transition a spec between in_progress, done, and blocked. Use when starting work on a design-approved spec, finishing it, or when work stalls. Respects dependency order and the design gate.
 ---
 
-# intent:spec-status
+# /mission-ctrl:spec-status
 
 Move a spec to `in_progress`, `done`, or `blocked` (a note is required when
 blocking). Only `design_approved` specs may move to `in_progress`, only one

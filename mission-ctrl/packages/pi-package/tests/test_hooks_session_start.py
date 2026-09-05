@@ -199,7 +199,7 @@ def test_manifest_session_start_hook_injects_recap(tmp_path):
 
     store = _init_store(tmp_path)
     _seed_session(store, utcnow() - timedelta(hours=10))
-    hook = Extension().get_skill("intent:recap")
+    hook = Extension().get_skill("recap")
     assert hook is not None  # sanity: manifest skills intact
     session_hook = Extension().hooks["on_session_start"]
     result = session_hook({"cwd": str(tmp_path)})

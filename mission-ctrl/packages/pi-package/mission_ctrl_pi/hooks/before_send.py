@@ -65,7 +65,7 @@ def _redirect_target(store: IntentStore) -> tuple[str, str]:
     if approved:
         extra = f" (+{len(approved) - 1} more)" if len(approved) > 1 else ""
         return (
-            "intent:spec-status",
+            "/mission-ctrl:spec-status",
             f"design-approved {approved[0]}{extra} is ready for in_progress",
         )
     gated = sorted(
@@ -76,7 +76,7 @@ def _redirect_target(store: IntentStore) -> tuple[str, str]:
     if gated:
         extra = f" (+{len(gated) - 1} more)" if len(gated) > 1 else ""
         return (
-            "intent:design-propose",
+            "/mission-ctrl:design-propose",
             f"spec {gated[0]}{extra} still needs its design proposed/approved",
         )
     linked_ideas = {idea for n in nodes for idea in n.links.ideas}
@@ -88,7 +88,7 @@ def _redirect_target(store: IntentStore) -> tuple[str, str]:
     if specless:
         extra = f" (+{len(specless) - 1} more)" if len(specless) > 1 else ""
         return (
-            "intent:spec-create",
+            "/mission-ctrl:spec-create",
             f"triaged {specless[0].id}{extra} has no spec yet",
         )
     untriaged = store.backlog.search(bucket=Bucket.UNTRIAGED)
@@ -96,10 +96,10 @@ def _redirect_target(store: IntentStore) -> tuple[str, str]:
         extra = f" (+{len(untriaged) - 1} more)" if len(untriaged) > 1 else ""
         first = untriaged[0].id
         return (
-            "intent:triage",
+            "/mission-ctrl:triage",
             f"{len(untriaged)} untriaged idea(s), starting with {first}{extra}",
         )
-    return ("intent:add-idea", "backlog has no untriaged ideas yet")
+    return ("/mission-ctrl:add-idea", "backlog has no untriaged ideas yet")
 
 
 def on_before_send(

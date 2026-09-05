@@ -2,7 +2,7 @@
 description: Capture a raw idea into the untriaged backlog. Use when the user mentions something to build, a feature request, a TODO, or any notion worth tracking before it is scoped.
 ---
 
-# intent:add-idea
+# /mission-ctrl:add-idea
 
 Append one idea to the backlog (`UNTRIAGED` bucket) and emit its event. This
 is the entry point of the intent loop — ideas graduate via

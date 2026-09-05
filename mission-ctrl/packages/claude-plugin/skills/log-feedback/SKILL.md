@@ -2,7 +2,7 @@
 description: Log a structured dogfood issue (false positive, planner miss, verbosity, hook behavior, bug, UX). Use when anything in the intent loop behaves unexpectedly during real use.
 ---
 
-# intent:log-feedback
+# /mission-ctrl:log-feedback
 
 Capture structured dogfood observations — false positives, planner misses,
 recap verbosity complaints, hook misfires — tagged by category and severity
@@ -42,4 +42,4 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — `.intent/` does not exist; run `intent:init` first.
+- `NOT_INITIALIZED` — `.intent/` does not exist; run `/mission-ctrl:init` first.

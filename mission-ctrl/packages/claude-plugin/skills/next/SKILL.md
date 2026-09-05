@@ -2,7 +2,7 @@
 description: Suggest the single next actionable spec with its reason. Use when asking what to work on next, after finishing a spec, or at session start alongside the recap.
 ---
 
-# intent:next
+# /mission-ctrl:next
 
 Return the top suggestion from the planner (dependency order, design-gate
 state, MVP linkage). Takes no input. When the suggestion names a spec that
