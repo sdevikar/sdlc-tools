@@ -2,6 +2,7 @@ from .add_idea import intent_add_idea
 from .design_approve import intent_design_approve
 from .design_propose import intent_design_propose
 from .init_skill import intent_init
+from .log_feedback import intent_log_feedback
 from .next_skill import intent_next
 from .recap import intent_recap
 from .spec_create import intent_spec_create
@@ -14,6 +15,7 @@ __all__ = [
     "intent_design_approve",
     "intent_design_propose",
     "intent_init",
+    "intent_log_feedback",
     "intent_next",
     "intent_recap",
     "intent_spec_create",
