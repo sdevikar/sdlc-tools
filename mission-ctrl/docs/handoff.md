@@ -5,6 +5,22 @@
 
 ---
 
+## [2026-09-05] Session — Dogfood bootstrap: full lifecycle verified, store initialized
+
+**What happened:**
+- Discovered `bin/mission-ctrl` was already wired to Python directly inside `claude-plugin-08` — `direct-wire-09` proposal was moot. Archived it as superseded.
+- Smoke-tested the full plugin lifecycle on a temp project: init → add-idea → triage → spec-create → design-propose → design-approve → in_progress → done. All skills work.
+- Initialized `.intent/` for this repo (mission-ctrl itself) with mission, 3 MVP items, and 3 constraints. Seeded mvp.json and constraints.json directly (mutation skills not yet built).
+- Generated `AGENTS.md` from the intent store template — it now reflects real project state.
+
+**Bug found (dogfood finding #1):** `sync_after_write` decorator never fires via the CLI path. It looks for `store` in kwargs (gets `None`) and scans positional args for `IntentStore` (finds none). The locally created `st` inside each skill is invisible to the decorator. AGENTS.md does not auto-regenerate after writes when invoked via `bin/mission-ctrl`. Workaround: `mission-ctrl sync agents-md --cwd <project>`. Fix: pass the resolved store back through the decorator or restructure the sync trigger.
+
+**Kanban:** `direct-wire-09` → Superseded/Archived.
+
+**Next:** Fix the `sync_after_write` bug, then start real dogfood — add the pending backlog items (`mutation-skills-10`, `launch-skill-11`) through the plugin itself.
+
+---
+
 ## [2026-09-04] Session — Architecture review + dogfood unblock proposals
 
 **Context:** Independent review of the full repo. No code written this session.
