@@ -20,7 +20,7 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 | `log-feedback-06` | Feedback Logging Skill | M5-prep | 🔲 Planned |
 | `ts-bridge-07` | TS ↔ Python Bridge (Pi + OpenSpec) | M2x | 🔲 Planned |
 | `claude-plugin-08` | Claude Code Plugin (dogfood vehicle #1) | M2x | 🔄 In Progress (14/16; pending live dogfood + log-feedback-06) |
-| `direct-wire-09` | Direct-wire bin/mission-ctrl to Python (drop bridge dep) | M2x | 🔲 Planned |
+| `direct-wire-09` | Direct-wire bin/mission-ctrl to Python (drop bridge dep) | M2x | ⚠️ Superseded (already done in claude-plugin-08; archived) |
 | `mutation-skills-10` | Mutation skills: update-mission, add-mvp-item, add-constraint | M3x | 🔲 Planned |
 | `launch-skill-11` | intent:launch conversational onboarding wrapper | M3x | 🔲 Planned |
 

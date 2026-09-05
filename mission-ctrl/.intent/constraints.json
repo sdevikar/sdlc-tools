@@ -1,0 +1,28 @@
+{
+  "version": "v1.0",
+  "constraints": [
+    {
+      "id": "con_001",
+      "rule": "No LLM calls inside core",
+      "rationale": "All reasoning stays in Claude's context; core only validates and persists",
+      "severity": "critical",
+      "scope": ["mission_ctrl_core"]
+    },
+    {
+      "id": "con_002",
+      "rule": "No Node.js in the runtime path",
+      "rationale": "ts-bridge-07 deferred; Python is the only runtime",
+      "severity": "high",
+      "scope": ["packages/claude-plugin/bin"]
+    },
+    {
+      "id": "con_003",
+      "rule": "No new features before dogfood week completes",
+      "rationale": "Prevent scope creep before the product is validated through real use",
+      "severity": "high",
+      "scope": []
+    }
+  ],
+  "created_at": "2026-09-05T03:19:51Z",
+  "updated_at": "2026-09-05T03:19:51Z"
+}
