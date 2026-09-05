@@ -5,6 +5,31 @@
 
 ---
 
+## [2026-09-04] Session — Architecture review + dogfood unblock proposals
+
+**Context:** Independent review of the full repo. No code written this session.
+
+**Findings:**
+- Pi route is a dead end: Pi 0.84 is TS-only, Python extension cannot load. Pi changes deprioritized.
+- `bin/mission-ctrl` routes through `ts-bridge-07` (0/11). Plugin executes nothing today.
+- No onboarding path: `intent:init` is write-once with no guided intake. Users arrive at an empty store with no help populating mission/MVP/constraints.
+- No mutation skills: mission/MVP/constraints cannot be updated after init without hand-editing JSON.
+- `intent:launch` concept clarified: SKILL.md-only conversational wrapper that calls `intent:init` — no code, no new data model.
+- `intent.md` (Anthropic academy proto-spec format) discussed and decided: mission-ctrl owns authoring it via `intent:launch`, not consuming it as upstream input. intent.md = human-readable export of what's in the store.
+
+**New OpenSpec changes proposed (all written to `openspec/changes/`):**
+- `direct-wire-09`: rewire `bin/mission-ctrl` to call Python directly; drop bridge from critical path; ~50-line `cli.py` dispatch; PRIO #1 for dogfood
+- `mutation-skills-10`: `intent:update-mission`, `intent:add-mvp-item`, `intent:add-constraint` — read→validate→write→log, 3 new event types; depends on `direct-wire-09`
+- `launch-skill-11`: SKILL.md-only conversational onboarding, 3-question intake, calls `intent:init` on confirmation; depends on `mutation-skills-10`
+
+**Kanban updated:** goal line corrected (Claude Code primary, Pi deferred); 3 new changes registered.
+
+**`intent.md` written** for this project in `intent/mission-ctrl.md` (Anthropic academy format — proto-spec capturing what this tool is and why it exists, authored this session).
+
+**Next:** implement `direct-wire-09` — `cli.py` dispatch + rewire `bin/mission-ctrl`, then live dogfood pass.
+
+---
+
 ## [2026-09-04] Session Summary — claude-plugin-08 implemented (14/16)
 
 **OpenSpec change:** `claude-plugin-08` (PRIO #1) — proposal first aligned
