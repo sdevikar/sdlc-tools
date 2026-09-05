@@ -17,12 +17,13 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 | `pi-extension-shell-03b` | Pi Extension Shell — Design Gate | M2b | 📦 Archived |
 | `hooks-auto-onboarding-04` | Hooks & Auto-Onboarding | M3 | 📦 Archived |
 | `dogfood-ship-v0-1-05` | Dogfood & Ship v0.1 | M4 | 🔲 Planned |
-| `log-feedback-06` | Feedback Logging Skill | M5-prep | 🔲 Planned |
+| `log-feedback-06` | Feedback Logging Skill | M5-prep | ✅ Applied |
 | `ts-bridge-07` | TS ↔ Python Bridge (Pi + OpenSpec) | M2x | 🔲 Planned |
-| `claude-plugin-08` | Claude Code Plugin (dogfood vehicle #1) | M2x | 🔄 In Progress (14/16; pending live dogfood + log-feedback-06) |
+| `claude-plugin-08` | Claude Code Plugin (dogfood vehicle #1) | M2x | 🔄 In Progress (pending live dogfood) |
 | `direct-wire-09` | Direct-wire bin/mission-ctrl to Python (drop bridge dep) | M2x | ⚠️ Superseded (already done in claude-plugin-08; archived) |
 | `mutation-skills-10` | Mutation skills: update-mission, add-mvp-item, add-constraint | M3x | 🔲 Planned |
-| `launch-skill-11` | intent:launch conversational onboarding wrapper | M3x | 🔲 Planned |
+| `launch-skill-11` | launch conversational onboarding wrapper | M3x | 🔲 Planned |
+| `insights-12` | Behavioral signal synthesis from meta.jsonl (no discipline required) | M5 | 🔲 Planned |
 
 > **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded
 
