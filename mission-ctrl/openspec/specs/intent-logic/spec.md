@@ -2,7 +2,7 @@
 
 Deterministic decision support on top of intent state: a dependency-aware
 "what's next" recommender and a session recap generator. Pure functions of
-`.intent/` state plus read-only git history — no LLM, no network.
+`.mission/` state plus read-only git history — no LLM, no network.
 
 ## Requirements
 

@@ -28,9 +28,9 @@ def test_init_schemas():
     inp_mission = InitInput(project_name="demo", mission="Build something great")
     assert inp_mission.mission == "Build something great"
 
-    res = InitResult(status="created", intent_dir="/tmp/test/.intent")
+    res = InitResult(status="created", intent_dir="/tmp/test/.mission")
     assert res.status == "created"
-    assert res.intent_dir == "/tmp/test/.intent"
+    assert res.intent_dir == "/tmp/test/.mission"
 
     with pytest.raises(ValidationError):
         InitInput()

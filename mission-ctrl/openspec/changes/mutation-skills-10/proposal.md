@@ -38,7 +38,7 @@ Three new event types added to `EventBuilder` and the discriminated union.
 - No `intent:replace-mvp` or bulk-edit operations.
 - No impact on planner, recap, or triage logic — those already read from
   the live files and will pick up changes automatically.
-- No migration tooling for existing `.intent/` stores — field additions are
+- No migration tooling for existing `.mission/` stores — field additions are
   additive and backward-compatible.
 
 ## Impact
@@ -49,4 +49,4 @@ Three new event types added to `EventBuilder` and the discriminated union.
 
 **Done when:** each of the three skills writes the correct updated file, emits
 the correct event to meta.jsonl, and the change is visible in `intent:status`
-output — verified against a live `.intent/` store.
+output — verified against a live `.mission/` store.

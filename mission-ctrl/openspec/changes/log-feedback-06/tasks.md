@@ -23,5 +23,5 @@
 - [ ] Skill test: invalid category/severity raises SkillError(INVALID_INPUT)
 - [ ] Integration: read_feedback() returns only events matching the requested
       severity filter
-- [ ] Test: `intent:log-feedback` leaves all `.intent/` files untouched except
+- [ ] Test: `intent:log-feedback` leaves all `.mission/` files untouched except
       meta.jsonl

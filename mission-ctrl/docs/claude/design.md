@@ -35,7 +35,7 @@ Invoked as `/mission-ctrl:<name>`. Claude Code shows the description in the `/` 
 
 | Skill | Input | Output | Side Effects | Core call |
 |---|---|---|---|---|
-| `init` | project_name, mission? | Confirmation | Creates `.intent/`, templates, `INTENT_CREATED` | `IntentStore.init()` |
+| `init` | project_name, mission? | Confirmation | Creates `.mission/`, templates, `INTENT_CREATED` | `IntentStore.init()` |
 | `recap` | verbosity?, since_iso? | Formatted recap | None | `recap.generate_recap()` |
 | `add-idea` | title, description? | idea_id | Writes `backlog.json`, `BACKLOG_ADDED` | `BacklogStore.add()` |
 | `triage` | idea_id, bucket, **alignment_verdict (Claude-supplied)** | Classification | Updates `backlog.json`, `BACKLOG_TRIAGE` | `BacklogStore.update()` |
@@ -201,7 +201,7 @@ The CLAUDE.md regen takes < 10ms via the Jinja2 template. Claude Code will see t
 file in the next session (or immediately if `/context` is refreshed).
 
 Implementation note: the hook uses `async: true` to avoid adding latency to every tool call.
-If the write fails (e.g., no `.intent/` yet), it exits silently — the CLAUDE.md sync is
+If the write fails (e.g., no `.mission/` yet), it exits silently — the CLAUDE.md sync is
 best-effort, not blocking.
 
 ---
@@ -283,7 +283,7 @@ write both files from the same template — tracked as a future improvement.
 - Cycle detected in `depends_on` → reject, name the two spec IDs
 - Illegal status transition → reject with the blocking spec ID
 - `UserPromptSubmit` false positive → one-phrase override, logged as INTENT_BYPASS_USED
-- `.intent/` not found → `NOT_INITIALIZED` error — direct to `/mission-ctrl:init`
+- `.mission/` not found → `NOT_INITIALIZED` error — direct to `/mission-ctrl:init`
 - CLAUDE.md sync fails → silent (async hook, non-blocking) — state is correct, display may lag
 - No silent auto-repair, ever
 
@@ -298,7 +298,7 @@ write both files from the same template — tracked as a future improvement.
 3. **`PreToolUse` design gate**: enforce at Edit/Write tool level, not just prompt level.
    Strictly stronger but blocks legitimate exploratory edits. Opt-in via settings flag?
 4. **Session boundary**: wall-clock gap only, or explicit `/mission-ctrl:session-end` skill?
-5. **`.intent/` merge conflicts across branches**: undocumented. Recommend: always rebase intent
+5. **`.mission/` merge conflicts across branches**: undocumented. Recommend: always rebase intent
    files from trunk, treat them as trunk-only state.
 6. **MCP exposure**: expose intent store as MCP tools for richer Claude Code tool-call integration.
    Requires bundled MCP server in plugin — deferred until subprocess proves insufficient.

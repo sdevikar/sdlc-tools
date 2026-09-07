@@ -147,6 +147,6 @@ triggering it automatically.
 - `MetaStore.read_signals()` returns correct counts against the three
   core fixtures (empty-project, mid-flight, complex-graph).
 - SKILL.md guides Claude to produce a non-empty structured report against
-  a real `.intent/` store with > 20 events in meta.jsonl.
+  a real `.mission/` store with > 20 events in meta.jsonl.
 - Report correctly surfaces: top intercept pattern, any blocked specs, session
   gap trend, completion rate. Verified manually against a live dogfood store.

@@ -24,7 +24,7 @@ flowchart LR
     Plugin["mission-ctrl plugin\n(skills + hooks)"]
     Bin["bin/mission-ctrl\n(Python subprocess)"]
     Core["mission_ctrl_core\n(pure Python lib)"]
-    State[".intent/ files\n(repo, git-tracked)"]
+    State[".mission/ files\n(repo, git-tracked)"]
     Git["git log (read-only)"]
     MD["CLAUDE.md\n(auto-generated, project-level)"]
 
@@ -238,7 +238,7 @@ mechanism. Mission-ctrl's auto-generated context file should target `CLAUDE.md`,
 
 ```mermaid
 flowchart LR
-    Store[".intent/ store"]
+    Store[".mission/ store"]
     Sync["PostToolUse hook\n(async)"]
     ClaudeMD["CLAUDE.md\n(project root)"]
     Context["Claude's context window\n(every session start)"]

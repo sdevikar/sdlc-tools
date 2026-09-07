@@ -103,7 +103,7 @@ def test_core_lifecycle_e2e(tmp_path):
 def test_full_lifecycle_with_design_gate_e2e(tmp_path):
     """M2b full lifecycle: init → add-idea → triage → spec-create →
     design-propose → design-approve → spec-status(in_progress) →
-    spec-status(done) → status, asserting `.intent/` state at each step."""
+    spec-status(done) → status, asserting `.mission/` state at each step."""
     store = IntentStore(tmp_path)
 
     # 1. intent:init

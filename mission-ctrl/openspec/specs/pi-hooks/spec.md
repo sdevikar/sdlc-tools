@@ -10,17 +10,17 @@ of the agent's working context file (`AGENTS.md`).
 ## Requirements
 
 ### Requirement: Session-start recap injection
-On session start in a project containing `.intent/`, the extension MUST
+On session start in a project containing `.mission/`, the extension MUST
 inject a recap (sized to the session-gap verbosity tier) before the user's
 first message and MUST append a `SESSION_STARTED` event.
 
 #### Scenario: Return after a long gap
-- GIVEN a project with `.intent/` and a last session 10 days ago
+- GIVEN a project with `.mission/` and a last session 10 days ago
 - WHEN a new Pi session starts
 - THEN the recap appears before any user message, using the highest verbosity tier, and `SESSION_STARTED` is appended
 
 #### Scenario: No intent directory
-- GIVEN a project without `.intent/`
+- GIVEN a project without `.mission/`
 - WHEN a session starts
 - THEN no recap is injected and no meta event is written
 
@@ -50,7 +50,7 @@ override MUST be surfaced in the response so bypasses are never silent.
 - THEN the message proceeds unblocked and the response notes the bypass
 
 ### Requirement: AGENTS.md synchronization
-After any skill write to `.intent/`, the extension MUST regenerate `AGENTS.md`
+After any skill write to `.mission/`, the extension MUST regenerate `AGENTS.md`
 from the maintained template within 1 second, rendering current mission, MVP
 status, active specs, and constraints.
 
@@ -71,4 +71,4 @@ rules MUST live in skills/core so hook changes never alter intent semantics.
 #### Scenario: Delegation observed
 - GIVEN an intercepting hook
 - WHEN it handles a matched message
-- THEN it invokes the matching skill (no direct `.intent/` writes from hook code)
+- THEN it invokes the matching skill (no direct `.mission/` writes from hook code)

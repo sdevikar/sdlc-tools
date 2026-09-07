@@ -24,7 +24,7 @@ the only write happens through `intent:init` at the end.
 
 - One new SKILL.md: `packages/claude-plugin/skills/intent-launch/SKILL.md`.
 - The skill instructs Claude to:
-  1. Check whether `.intent/` already exists (via `intent:status`); if yes,
+  1. Check whether `.mission/` already exists (via `intent:status`); if yes,
      surface existing state and stop — do not re-initialize.
   2. Ask three questions in sequence, one at a time:
      - "What are you building and why does it matter?"  → `mission.statement`

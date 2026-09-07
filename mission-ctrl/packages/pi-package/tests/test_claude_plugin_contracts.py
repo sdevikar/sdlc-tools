@@ -82,7 +82,9 @@ def test_plugin_manifest():
 
 
 def test_hooks_json_shape():
-    hooks = json.loads((PLUGIN_DIR / "hooks" / "hooks.json").read_text())
+    raw = json.loads((PLUGIN_DIR / "hooks" / "hooks.json").read_text())
+    # hooks.json may be flat {event: [...]} or wrapped {"hooks": {event: [...]}}.
+    hooks = raw.get("hooks", raw)
     assert set(hooks) == {"SessionStart", "UserPromptSubmit"}
     for event, groups in hooks.items():
         assert groups, event

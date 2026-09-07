@@ -54,7 +54,7 @@ def find_implementation_intent(message: str) -> str | None:
 
 
 def _redirect_target(store: IntentStore) -> tuple[str, str]:
-    """Pick the redirect skill + human detail from current `.intent/` state.
+    """Pick the redirect skill + human detail from current `.mission/` state.
 
     Closest-to-code first: a ready design-approved spec beats a spec still in
     the design gate, which beats a triaged idea without a spec, which beats
@@ -110,7 +110,7 @@ def on_before_send(
 ) -> BeforeSendResult:
     """Inspect an outgoing user message before Pi reasons about it.
 
-    - No `.intent/` → `proceed` (no-op, no writes).
+    - No `.mission/` → `proceed` (no-op, no writes).
     - Bypass phrase present → `bypass` + `INTENT_BYPASS_USED` (surfaced, logged).
     - Implementation-intent pattern matched → `redirect` + `INTENT_INTERCEPTED`.
     - Otherwise → `proceed` (no event).

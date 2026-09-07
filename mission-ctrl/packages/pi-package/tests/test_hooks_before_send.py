@@ -77,11 +77,11 @@ def test_no_intent_dir_proceeds_and_writes_nothing(tmp_path):
     result = on_before_send("implement SSO", root=tmp_path)
     assert result.action == "proceed"
     assert result.target is None
-    assert not (tmp_path / ".intent").exists()
+    assert not (tmp_path / ".mission").exists()
 
 
 def test_partial_intent_dir_proceeds(tmp_path):
-    (tmp_path / ".intent").mkdir()
+    (tmp_path / ".mission").mkdir()
     result = on_before_send("implement SSO", root=tmp_path)
     assert result.action == "proceed"
 
@@ -280,7 +280,7 @@ def test_manifest_before_send_hook_no_ops_without_intent(tmp_path):
     hook = Extension().hooks["on_before_send"]
     result = hook("implement SSO", {"cwd": str(tmp_path)})
     assert result.action == "proceed"
-    assert not (tmp_path / ".intent").exists()
+    assert not (tmp_path / ".mission").exists()
 
 
 # ---------------------------------------------------------------------------
@@ -291,7 +291,7 @@ CORE_FIXTURES = Path(__file__).resolve().parents[2] / "core" / "tests" / "fixtur
 
 
 def _copied_mid_flight(tmp_path) -> IntentStore:
-    shutil.copytree(CORE_FIXTURES / "mid-flight" / ".intent", tmp_path / ".intent")
+    shutil.copytree(CORE_FIXTURES / "mid-flight" / ".mission", tmp_path / ".mission")
     return IntentStore(tmp_path)
 
 

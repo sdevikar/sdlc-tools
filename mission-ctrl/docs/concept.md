@@ -218,7 +218,7 @@ Without this data model, the system collapses into “prompt-and-pray” behavio
 
 ### 4.5 Storage Layout
 
-- `.intent/mission.json`, `mvp.json`, `constraints.json`, `backlog.json`, `specs.json`, `meta.jsonl`
+- `.mission/mission.json`, `mvp.json`, `constraints.json`, `backlog.json`, `specs.json`, `meta.jsonl`
 
 Full field-level schema reference: `docs/design.md` §3.
 

@@ -24,6 +24,8 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 | `mutation-skills-10` | Mutation skills: update-mission, add-mvp-item, add-constraint | M3x | 🔲 Planned |
 | `launch-skill-11` | launch conversational onboarding wrapper | M3x | 🔲 Planned |
 | `insights-12` | Behavioral signal synthesis from meta.jsonl (no discipline required) | M5 | 🔲 Planned |
+| `mvp-completion-fix-13` | MVP % shows 0% at mid-project init (MvpItem.done field + mark-mvp-done skill) | M3x | 🔲 Planned |
+| `mission-store-rename-14` | `.intent/` → `.mission/` rename + `intent/intent.md` generation | M2x | 📦 Archived |
 
 > **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded
 
@@ -39,6 +41,7 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 - [ ] Git commit auto-inference
 - [ ] Schema versioning / migration tooling
 - [ ] Configurable `on_before_send` pattern matching (v1 ships hardcoded)
+- [ ] **Pi / OpenCode extension**: when building the Pi or OpenCode plugin, establish `AGENTS.md → CLAUDE.md` linkage. `AGENTS.md` is the right project-level system prompt for non-Claude-Code agents; it needs to be wired to `CLAUDE.md` for Claude Code. Out of scope for the current Claude plugin (`AGENTS.md` kept for cross-agent compatibility but not the primary Claude Code surface).
 
 ---
 
@@ -85,7 +88,7 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 - [ ] Scaffold `packages/pi-package` (Python, pyproject.toml, depends on `mission_ctrl_core`)
 - [ ] `mission_ctrl_pi/schemas.py`: all skill input/output Pydantic models
 - [ ] `extension.py`: manifest registering hook stubs + 7 core-loop skills
-- [ ] `intent:init` — creates `.intent/`, copies schemas, templates, `INTENT_CREATED`
+- [ ] `intent:init` — creates `.mission/`, copies schemas, templates, `INTENT_CREATED`
 - [ ] `intent:add-idea`
 - [ ] `intent:triage` (takes Pi-supplied alignment verdict)
 - [ ] `intent:spec-create` (idea → spec node) — **fixes core-loop gap**
@@ -95,7 +98,7 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 - [ ] Local install test: `pi install ./packages/pi-package`
 - [ ] E2E lifecycle: init → add-idea → triage → spec-create → spec-status(done) → next → status
 
-**Done when:** core lifecycle runs manually via Pi skills, correct state in `.intent/`, zero hand-edits.
+**Done when:** core lifecycle runs manually via Pi skills, correct state in `.mission/`, zero hand-edits.
 
 ---
 
@@ -116,18 +119,18 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 ## M3 — Hooks & Auto-Onboarding
 > OpenSpec: `hooks-auto-onboarding-04` | Status: 📦 Archived (spec synced to openspec/specs/pi-hooks)
 
-- [x] `on_session_start` hook: detect `.intent/` presence; no-op if absent; session-gap → verbosity tier (4 tiers per design.md)
+- [x] `on_session_start` hook: detect `.mission/` presence; no-op if absent; session-gap → verbosity tier (4 tiers per design.md)
 - [x] Inject recap before user's first message; append `SESSION_STARTED` event
 - [x] `on_before_send` hook: hardcoded pattern list (full-word, case-insensitive)
 - [x] `on_before_send`: redirect to backlog-add / triage / design-propose depending on state
 - [x] `on_before_send`: one-phrase override to bypass (surfaced, never silent)
 - [x] Log interceptions: `INTENT_INTERCEPTED` event to meta.jsonl
 - [x] Log bypasses: `INTENT_BYPASS_USED` event to meta.jsonl
-- [x] Post-skill hook: regenerate `AGENTS.md` after any `.intent/` write (≤1s)
+- [x] Post-skill hook: regenerate `AGENTS.md` after any `.mission/` write (≤1s)
 - [x] Jinja2 AGENTS.md template + sanitization (escape user-supplied fields; reject injection patterns)
 - [x] Snapshot tests for AGENTS.md template output
 
-**Done when:** opening a project with `.intent/` auto-shows recap; "implement X" gets intercepted correctly with event logged; any skill write updates `AGENTS.md` within 1s.
+**Done when:** opening a project with `.mission/` auto-shows recap; "implement X" gets intercepted correctly with event logged; any skill write updates `AGENTS.md` within 1s.
 
 ---
 
@@ -158,7 +161,7 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 - [ ] Clean-install smoke test from TestPyPI
 - [ ] Tag `v0.1.0`, publish `mission_ctrl_core` + `mission_ctrl_pi` to PyPI
 
-**Done when:** personally used in Pi for a week without hand-editing `.intent/` files, and v0.1.0 is tagged and published.
+**Done when:** personally used in Pi for a week without hand-editing `.mission/` files, and v0.1.0 is tagged and published.
 
 ---
 

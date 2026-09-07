@@ -19,14 +19,14 @@ against its Pydantic schema 1:1, delegating execution to the bridge.
 #### Scenario: Full lifecycle through the plugin
 - GIVEN the plugin installed from local path
 - WHEN a feature runs init → … → design-approve → done via plugin skills
-- THEN `.intent/` state is correct with zero hand-edits
+- THEN `.mission/` state is correct with zero hand-edits
 
 ### Requirement: SessionStart recap hook
 `SessionStart` MUST inject a gap-tiered recap for the opened project and
-skip silently when no `.intent/` exists.
+skip silently when no `.mission/` exists.
 
 #### Scenario: Fresh project stays silent
-- GIVEN a project without `.intent/`
+- GIVEN a project without `.mission/`
 - WHEN a Claude Code session starts
 - THEN no recap is injected and no event is written
 

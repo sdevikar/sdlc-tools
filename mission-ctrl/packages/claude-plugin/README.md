@@ -27,7 +27,7 @@ wiring only — all logic lives in `mission_ctrl_core` / `mission_ctrl_pi`.
 claude --plugin-dir ./packages/claude-plugin
 ```
 
-Then `/mission-ctrl:intent-status` (needs a project with `.intent/` — run
+Then `/mission-ctrl:intent-status` (needs a project with `.mission/` — run
 `/mission-ctrl:intent-init` first). After edits, `/reload-plugins` picks them
 up without a restart. Hook activity is recorded in the debug log
 (`claude --debug`).
@@ -42,7 +42,7 @@ claude plugin validate ./packages/claude-plugin
 
 | Skill | Operation |
 |---|---|
-| `/mission-ctrl:intent-init` | create `.intent/` store |
+| `/mission-ctrl:intent-init` | create `.mission/` store |
 | `/mission-ctrl:intent-add-idea` | capture untriaged idea |
 | `/mission-ctrl:intent-triage` | bucket idea (mvp/later/rejected) |
 | `/mission-ctrl:intent-spec-create` | draft spec from triaged idea |
@@ -69,7 +69,7 @@ Errors: stderr `{"code","message"}` + non-zero exit
 ## Hooks
 
 - `SessionStart` → gap-tiered recap injected as context; silent when the
-  project has no `.intent/`.
+  project has no `.mission/`.
 - `UserPromptSubmit` → implementation intent (`implement`, `build`, …) is
   blocked with a redirect to the closest-to-code skill; re-send with the
   phrase `override intent` to proceed (the bypass is logged).

@@ -42,13 +42,13 @@ EOF
 
 `mission-ctrl` shells out to the bridge server (`ts-bridge-07`); exit
 non-zero + `{"code","message"}` on stderr for SkillErrors. Skills never embed
-Python and never touch `.intent/` directly.
+Python and never touch `.mission/` directly.
 
 ## Hooks
 
 | Claude hook | Behavior (parity with Pi hooks, M3) |
 |---|---|
-| `SessionStart` | Run session recap for `$CWD` (gap-tiered verbosity); inject output as context; skip silently when no `.intent/` |
+| `SessionStart` | Run session recap for `$CWD` (gap-tiered verbosity); inject output as context; skip silently when no `.mission/` |
 | `UserPromptSubmit` | Run before-send check on the stdin-JSON prompt; on `redirect`, prepend the redirect message + block the original prompt from seeding implementation; on `bypass`, annotate visibly |
 
 Hook commands are `{"type": "command"}` entries calling the same `bin/`
@@ -59,7 +59,7 @@ log, which records matched hooks and exit codes.
 
 ## State ownership (unchanged)
 
-`.intent/` files remain the only state; `AGENTS.md` sync runs post-skill via
+`.mission/` files remain the only state; `AGENTS.md` sync runs post-skill via
 the bridge's `sync/agents-md` op (same template + sanitization as M3 — the
 plugin reuses it, does not reimplement it).
 

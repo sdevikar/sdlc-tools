@@ -8,7 +8,7 @@ Capture structured dogfood observations — false positives, planner misses,
 recap verbosity complaints, hook misfires — tagged by category and severity
 so future fixes are evidence-based rather than anecdotal.
 
-Appends a `FEEDBACK_LOGGED` event to `.intent/meta.jsonl`. No other file is touched.
+Appends a `FEEDBACK_LOGGED` event to `.mission/meta.jsonl`. No other file is touched.
 
 ## Input (`LogFeedbackInput`)
 
@@ -42,4 +42,4 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — `.intent/` does not exist; run `/mission-ctrl:init` first.
+- `NOT_INITIALIZED` — `.mission/` does not exist; run `/mission-ctrl:init` first.
