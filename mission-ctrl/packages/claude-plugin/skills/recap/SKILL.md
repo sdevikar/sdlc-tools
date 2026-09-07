@@ -40,5 +40,5 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `INVALID_INPUT` — bad verbosity or timestamp; fix and retry.

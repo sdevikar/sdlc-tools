@@ -39,7 +39,7 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `NOT_FOUND` — unknown `spec_id`.
 - `ILLEGAL_TRANSITION` — spec has no proposed design to decide on.
 - `NOTES_REQUIRED` — rejection without notes; say what must change.

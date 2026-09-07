@@ -38,7 +38,7 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `NOT_FOUND` — unknown `idea_id`; list ideas via
-  `/mission-ctrl:intent-status` first.
+  `/mission-ctrl:status` first.
 - `INVALID_INPUT` — bad bucket or missing verdict; fix and retry.

@@ -30,16 +30,16 @@ Status: current source of truth. Supersedes the skill/data-model sections of
 
 | Skill | Input | Output | Side Effects | Core call |
 |---|---|---|---|---|
-| `intent:init` | — | Confirmation | Creates `.mission/`, templates, `INTENT_CREATED` | `IntentStore.init()` |
-| `intent:recap` | verbosity? | Formatted recap | None | `recap.generate_recap()` |
-| `intent:add-idea` | title, description | idea ID | Writes `backlog.json`, `BACKLOG_ADDED` | `BacklogStore.add()` |
-| `intent:triage` | idea_id, bucket, **alignment (Pi-supplied)** | Classification | Updates `backlog.json`, `BACKLOG_TRIAGE` | `BacklogStore.update()` |
-| `intent:spec-create` | idea_id | spec ID | Writes `specs.json`, `SPEC_CREATED` | `SpecStore.add()` |
-| `intent:spec-status` | spec_id, to-status | Confirmation | Updates `specs.json`, `SPEC_STATUS_UPDATED` | `SpecStore.update()` |
-| `intent:design-propose` | spec_id, **digest text (Pi-supplied)** | Stored digest | Status → `design_proposed`, `DESIGN_PROPOSED` | `SpecStore.update()` (validate/store only) |
-| `intent:design-approve` | spec_id, decision, notes? | Confirmation | Status transition, `DESIGN_APPROVED` | `SpecStore.update()` |
-| `intent:next` | count? | Ranked specs | None | `planner.suggest_next()` |
-| `intent:status` | — | Dashboard | None | reads all stores |
+| `/mission-ctrl:init` | — | Confirmation | Creates `.mission/`, templates, `INTENT_CREATED` | `IntentStore.init()` |
+| `/mission-ctrl:recap` | verbosity? | Formatted recap | None | `recap.generate_recap()` |
+| `/mission-ctrl:add-idea` | title, description | idea ID | Writes `backlog.json`, `BACKLOG_ADDED` | `BacklogStore.add()` |
+| `/mission-ctrl:triage` | idea_id, bucket, **alignment (Pi-supplied)** | Classification | Updates `backlog.json`, `BACKLOG_TRIAGE` | `BacklogStore.update()` |
+| `/mission-ctrl:spec-create` | idea_id | spec ID | Writes `specs.json`, `SPEC_CREATED` | `SpecStore.add()` |
+| `/mission-ctrl:spec-status` | spec_id, to-status | Confirmation | Updates `specs.json`, `SPEC_STATUS_UPDATED` | `SpecStore.update()` |
+| `/mission-ctrl:design-propose` | spec_id, **digest text (Pi-supplied)** | Stored digest | Status → `design_proposed`, `DESIGN_PROPOSED` | `SpecStore.update()` (validate/store only) |
+| `/mission-ctrl:design-approve` | spec_id, decision, notes? | Confirmation | Status transition, `DESIGN_APPROVED` | `SpecStore.update()` |
+| `/mission-ctrl:next` | count? | Ranked specs | None | `planner.suggest_next()` |
+| `/mission-ctrl:status` | — | Dashboard | None | reads all stores |
 
 `spec-create` and `spec-status` are required in v1 — without them ideas have nowhere to go and specs never reach `done`.
 
@@ -118,13 +118,13 @@ One JSON object per line, no wrapping array.
 
 | Event Type | Emitted by | Decision Payload |
 |---|---|---|
-| INTENT_CREATED | `intent:init` | mission_version, mvp_version, constraints_version |
-| BACKLOG_ADDED | `intent:add-idea` | title, bucket ("untriaged") |
-| BACKLOG_TRIAGE | `intent:triage` | bucket, alignment {mission, mvp, constraints} |
-| SPEC_CREATED | `intent:spec-create` | spec_title, status "draft", links |
-| SPEC_STATUS_UPDATED | `intent:spec-status` | from, to |
-| DESIGN_PROPOSED | `intent:design-propose` | digest_id, key_choices[], risks[], open_questions[] |
-| DESIGN_APPROVED | `intent:design-approve` | digest_id, approval, notes? |
+| INTENT_CREATED | `/mission-ctrl:init` | mission_version, mvp_version, constraints_version |
+| BACKLOG_ADDED | `/mission-ctrl:add-idea` | title, bucket ("untriaged") |
+| BACKLOG_TRIAGE | `/mission-ctrl:triage` | bucket, alignment {mission, mvp, constraints} |
+| SPEC_CREATED | `/mission-ctrl:spec-create` | spec_title, status "draft", links |
+| SPEC_STATUS_UPDATED | `/mission-ctrl:spec-status` | from, to |
+| DESIGN_PROPOSED | `/mission-ctrl:design-propose` | digest_id, key_choices[], risks[], open_questions[] |
+| DESIGN_APPROVED | `/mission-ctrl:design-approve` | digest_id, approval, notes? |
 | SESSION_STARTED | `on_session_start` hook | gap_hours, verbosity |
 
 Deferred to v2: BACKLOG_MERGED, BACKLOG_ARCHIVED, SPEC_DEPENDENCY_UPDATED, DESIGN_REVISED, INTENT_UPDATED, OVERRIDE_ACCEPTED, GIT_COMMIT_ASSOCIATED, BACKLOG_RESURFACED, CONSTRAINT_VIOLATION, MVP_ITEM_COMPLETED, DRIFT_DETECTED.
@@ -183,10 +183,10 @@ Fires after any skill writes to `.mission/`. Regenerates `AGENTS.md` from templa
 
 ---
 ## Agent Instructions
-1. All new ideas go to backlog first (intent:add-idea).
-2. No implementation before design is approved (intent:design-propose -> intent:design-approve).
+1. All new ideas go to backlog first (/mission-ctrl:add-idea).
+2. No implementation before design is approved (/mission-ctrl:design-propose -> /mission-ctrl:design-approve).
 3. Prefer MVP items over parked ideas unless explicitly overridden.
-4. Respect constraints; if one must be broken, explain why via intent:next.
+4. Respect constraints; if one must be broken, explain why via /mission-ctrl:next.
 ```
 
 ---
@@ -195,7 +195,7 @@ Fires after any skill writes to `.mission/`. Regenerates `AGENTS.md` from templa
 
 | File | Written by | Read by |
 |---|---|---|
-| mission/mvp/constraints.json | Human via `intent:init` / manual edit | All skills, AGENTS.md sync |
+| mission/mvp/constraints.json | Human via `/mission-ctrl:init` / manual edit | All skills, AGENTS.md sync |
 | backlog.json | `add-idea`, `triage` | `next`, `status`, AGENTS.md sync |
 | specs.json | `spec-create`, `spec-status`, `design-propose`, `design-approve` | `next`, `recap`, `status` |
 | meta.jsonl | `EventBuilder` (every skill) | `recap` only |

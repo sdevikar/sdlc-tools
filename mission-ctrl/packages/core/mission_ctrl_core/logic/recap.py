@@ -149,8 +149,8 @@ def _render(
 
     if verbosity == "brief":
         if last_focus:
-            lines.append(f"Focus: {last_focus.id} ({last_focus.title})")
-        if recommendations:
+            lines.append(f"Active: {last_focus.id} ({last_focus.title})")
+        elif recommendations:
             top = recommendations[0]
             lines.append(f"Next: {top.spec_id} {top.title}")
         return "\n".join(lines)

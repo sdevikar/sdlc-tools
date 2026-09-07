@@ -37,8 +37,8 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `NOT_FOUND` — unknown `spec_id`.
 - `INVALID_INPUT` — digest too short; write the actual design.
 - `ILLEGAL_TRANSITION` — spec is not in `draft` (already proposed or
-  further along); check status with `/mission-ctrl:intent-status`.
+  further along); check status with `/mission-ctrl:status`.

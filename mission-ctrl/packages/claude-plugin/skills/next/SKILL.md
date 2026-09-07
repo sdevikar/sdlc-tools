@@ -7,7 +7,7 @@ description: Suggest the single next actionable spec with its reason. Use when a
 Return the top suggestion from the planner (dependency order, design-gate
 state, MVP linkage). Takes no input. When the suggestion names a spec that
 is not `in_progress`, transition it first with
-`/mission-ctrl:intent-spec-status` — one spec in progress at a time.
+`/mission-ctrl:spec-status` — one spec in progress at a time.
 
 ## Input
 
@@ -35,5 +35,5 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `INVALID_INPUT` — non-empty input sent; this skill takes none.

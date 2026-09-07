@@ -31,5 +31,5 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `INVALID_INPUT` — non-empty input sent; this skill takes none.
