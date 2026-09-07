@@ -21,11 +21,11 @@ none (no spec in progress)
 ## Next Up
 
 ## Backlog Summary
-- MVP-critical: 0 / Parked: 0 / Untriaged: 1
+- MVP-critical: 0 / Parked: 0 / Untriaged: 2
 
 ---
 ## Agent Instructions
-1. All new ideas go to backlog first (intent:add-idea).
-2. No implementation before design is approved (intent:design-propose -> intent:design-approve).
+1. All new ideas go to backlog first (/mission-ctrl:add-idea).
+2. No implementation before design is approved (/mission-ctrl:design-propose -> /mission-ctrl:design-approve).
 3. Prefer MVP items over parked ideas unless explicitly overridden.
-4. Respect constraints; if one must be broken, explain why via intent:next.
+4. Respect constraints; if one must be broken, explain why via /mission-ctrl:next.
