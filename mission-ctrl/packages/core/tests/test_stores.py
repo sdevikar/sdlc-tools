@@ -103,7 +103,7 @@ def _intent_event(event_id: str) -> IntentCreatedEvent:
 
 @pytest.fixture
 def intent_dir(tmp_path: Path) -> Path:
-    d = tmp_path / ".intent"
+    d = tmp_path / ".mission"
     d.mkdir()
     return d
 

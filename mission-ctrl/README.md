@@ -1,7 +1,7 @@
 # Mission Ctrl
 
 Intent layer between a developer and an AI coding agent. It keeps a
-git-tracked local record (`.intent/`) of mission, MVP, constraints, backlog,
+git-tracked local record (`.mission/`) of mission, MVP, constraints, backlog,
 specs, and a session event log — so the agent works from explicit intent
 instead of scattered chat context.
 
@@ -39,7 +39,7 @@ claude --plugin-dir ./packages/claude-plugin
 ```
 
 Then invoke skills namespaced, e.g. `/mission-ctrl:intent-status` (run
-`/mission-ctrl:intent-init` first in projects without `.intent/`). After
+`/mission-ctrl:intent-init` first in projects without `.mission/`). After
 editing the plugin, `/reload-plugins` picks up changes without a restart.
 The plugin needs the repo's Python env: run `uv sync` once from the repo
 root (the bundled `bin/mission-ctrl` wrapper re-execs through `uv`
@@ -55,13 +55,13 @@ Remote distribution (PyPI + npm wrapper) lands with v0.1.0 — see
 
 ## Usage
 
-All state lives in `<project>/.intent/` (JSON + JSONL). Never hand-edit those
+All state lives in `<project>/.mission/` (JSON + JSONL). Never hand-edit those
 files — go through the skills.
 
 ### Core lifecycle (in Pi)
 
 ```
-intent:init            # create .intent/ for a project (mission, MVP, constraints)
+intent:init            # create .mission/ for a project (mission, MVP, constraints)
 intent:add-idea        # capture an idea → backlog (title, description)
 intent:triage          # classify it: mvp / later / rejected (+ alignment verdict)
 intent:spec-create     # turn a triaged idea into a spec node (status: draft)
@@ -90,9 +90,9 @@ design-approve → spec-status(in_progress) → spec-status(done) → status
 
 ### Hooks (automatic)
 
-- **Session start** — opening a project with `.intent/` injects a recap sized
+- **Session start** — opening a project with `.mission/` injects a recap sized
   to the gap since the last session (<1h: skip, 1–8h: brief, 8–48h:
-  standard, >48h: full) and logs `SESSION_STARTED`. No `.intent/` → silent
+  standard, >48h: full) and logs `SESSION_STARTED`. No `.mission/` → silent
   no-op.
 - **Before send** — messages like "implement X" are intercepted and redirected
   to the right skill (`add-idea` → `triage` → `spec-create` →

@@ -45,7 +45,7 @@ A Claude Code plugin that provides:
 2. **3 hooks** wired via `hooks.json` — session start, prompt interception, context sync
 3. **An auto-maintained `CLAUDE.md`** — Claude's persistent project context, kept current
 
-The intent store (`.intent/*.json` + `meta.jsonl`) is the single source of truth. It is:
+The intent store (`.mission/*.json` + `meta.jsonl`) is the single source of truth. It is:
 - Git-tracked (small, diffable JSON files)
 - Language-agnostic (readable by any tool)
 - Append-only for history (`meta.jsonl`), mutable for state (`*.json`)

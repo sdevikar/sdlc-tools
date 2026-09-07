@@ -1,6 +1,6 @@
-"""Post-skill hook: regenerate `AGENTS.md` from the versioned Jinja2 template.
+"""Post-skill hook: regenerate `AGENTS.md` and `intent/intent.md` from versioned Jinja2 templates.
 
-Runs after any `.intent/` write (via the `sync_after_write` decorator applied
+Runs after any `.mission/` write (via the `sync_after_write` decorator applied
 to the write skills). All user-supplied text is sanitized before rendering;
 prompt-injection patterns raise `SanitizationError`.
 """
@@ -19,7 +19,10 @@ from mission_ctrl_core.stores import IntentStore
 
 TEMPLATE_DIR = Path(__file__).resolve().parent.parent / "templates"
 TEMPLATE_NAME = "agents_md.jinja2"
+INTENT_MD_TEMPLATE_NAME = "intent_md.jinja2"
 AGENTS_MD_FILENAME = "AGENTS.md"
+INTENT_DIR = "intent"
+INTENT_MD_FILENAME = "intent.md"
 
 
 class SanitizationError(ValueError):
@@ -107,16 +110,60 @@ def render_agents_md(store: IntentStore) -> str:
 
 
 def write_agents_md(store: IntentStore, root: Path | str | None = None) -> Path:
-    """Render and write `AGENTS.md` next to `.intent/`; returns its path."""
+    """Render and write `AGENTS.md` next to `.mission/`; returns its path."""
     path = (Path(root) if root is not None else store.root) / AGENTS_MD_FILENAME
     path.write_text(render_agents_md(store), encoding="utf-8")
+    return path
+
+
+def render_intent_md(store: IntentStore) -> str:
+    """Render `intent/intent.md` body for the current store state (no writes)."""
+    nodes = store.specs.read().nodes
+    focus = next((n for n in nodes if n.status is SpecStatus.IN_PROGRESS), None)
+    current_focus = (
+        f"{focus.id} — {sanitize_field(focus.title)} [{focus.status.value}]"
+        if focus
+        else "none (no spec in progress)"
+    )
+    untriaged = store.backlog.search(bucket=Bucket.UNTRIAGED)
+    mvp_done, mvp_total, mvp_items = _mvp_progress(store)
+    env = Environment(
+        loader=FileSystemLoader(TEMPLATE_DIR),
+        undefined=StrictUndefined,
+        autoescape=False,
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+    return env.get_template(INTENT_MD_TEMPLATE_NAME).render(
+        project_name=sanitize_field(store.root.name),
+        mission_statement=sanitize_field(store.mission.read().statement),
+        mvp_version=store.mvp.read().version,
+        mvp_done=mvp_done,
+        mvp_total=mvp_total,
+        mvp_items=mvp_items,
+        constraints=[
+            {"severity": c.severity.value, "rule": sanitize_field(c.rule)}
+            for c in store.constraints.read().constraints
+        ],
+        open_questions=[sanitize_field(i.title) for i in untriaged],
+        current_focus=current_focus,
+    )
+
+
+def write_intent_md(store: IntentStore, root: Path | str | None = None) -> Path:
+    """Render and write `intent/intent.md` under project root; returns its path."""
+    project_root = Path(root) if root is not None else store.root
+    intent_dir = project_root / INTENT_DIR
+    intent_dir.mkdir(parents=True, exist_ok=True)
+    path = intent_dir / INTENT_MD_FILENAME
+    path.write_text(render_intent_md(store), encoding="utf-8")
     return path
 
 
 def sync_after_write(
     func: Callable[..., Any],
 ) -> Callable[..., Any]:
-    """Decorator for write skills: regenerate `AGENTS.md` after the write."""
+    """Decorator for write skills: regenerate `AGENTS.md` and `intent/intent.md` after the write."""
 
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -126,9 +173,10 @@ def sync_after_write(
             store = next((a for a in args if isinstance(a, IntentStore)), None)
         if store is None:
             # CLI path: store was created inside the skill from the `root` kwarg.
-            # The skill already succeeded so .intent/ exists — resolve it now.
+            # The skill already succeeded so .mission/ exists — resolve it now.
             store = IntentStore(kwargs.get("root", "."))
         write_agents_md(store)
+        write_intent_md(store)
         return result
 
     return wrapper

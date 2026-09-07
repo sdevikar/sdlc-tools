@@ -1,6 +1,6 @@
 """mission_ctrl_core: Pure Python intent-layer library.
 
-No network, no LLM. Validates and persists `.intent/` artifacts and provides
+No network, no LLM. Validates and persists `.mission/` artifacts and provides
 deterministic decision support (planner, recap). Git history is read via a
 read-only `git log` (`logic/gitutil.py`) — never a write, and absent when the
 path is not a repository.

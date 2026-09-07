@@ -16,7 +16,7 @@ edits or undocumented steps.
 #### Scenario: Fresh-repo quickstart
 - GIVEN a brand-new empty git repository
 - WHEN a developer follows the README quickstart exactly
-- THEN all 10 skills are invokable and the lifecycle above completes without hand-editing any `.intent/` file
+- THEN all 10 skills are invokable and the lifecycle above completes without hand-editing any `.mission/` file
 
 ### Requirement: Resolved distribution mechanism
 Before the release tag, the distribution mechanism MUST be decided and
@@ -46,4 +46,4 @@ maintained exclusively through skills and hooks.
 #### Scenario: Week of dogfooding
 - GIVEN the dogfood period starting at v0.1.0-rc
 - WHEN mission-ctrl is driven through its own workflow for one week
-- THEN git history shows no direct hand-edits of `.intent/` files outside of skill/hook-generated writes
+- THEN git history shows no direct hand-edits of `.mission/` files outside of skill/hook-generated writes

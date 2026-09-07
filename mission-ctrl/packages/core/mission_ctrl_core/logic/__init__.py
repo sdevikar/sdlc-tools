@@ -1,6 +1,6 @@
 """Logic layer: deterministic decision support on top of intent state.
 
-Pure functions of `.intent/` state plus read-only git history. No LLM, no
+Pure functions of `.mission/` state plus read-only git history. No LLM, no
 network. See `docs/decisions/no-llm-in-core.md`.
 """
 

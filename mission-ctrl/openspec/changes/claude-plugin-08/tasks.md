@@ -32,7 +32,7 @@
       (lands in log-feedback-06)
 
 ## Hooks
-- [x] `SessionStart` recap injection (skip silently without `.intent/`)
+- [x] `SessionStart` recap injection (skip silently without `.mission/`)
 - [x] `UserPromptSubmit` intercept/redirect/bypass (parity with M3 ladder)
 
 ## Contract tests + dogfood

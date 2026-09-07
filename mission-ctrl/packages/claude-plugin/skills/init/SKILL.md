@@ -1,10 +1,10 @@
 ---
-description: Initialize a project's intent store (.intent/ with mission, MVP, constraints). Use when starting Mission Ctrl in a fresh project, when the user asks to set up or initialize intent tracking, or when a skill fails with NOT_INITIALIZED.
+description: Initialize a project's intent store (.mission/ with mission, MVP, constraints). Use when starting Mission Ctrl in a fresh project, when the user asks to set up or initialize intent tracking, or when a skill fails with NOT_INITIALIZED.
 ---
 
 # /mission-ctrl:init
 
-Create the `.intent/` store for a project: `mission.json`, `mvp.json`,
+Create the `.mission/` store for a project: `mission.json`, `mvp.json`,
 `constraints.json`, plus empty backlog/specs and the meta event log. Run
 once per project; afterwards every other skill requires the store to exist.
 
@@ -25,7 +25,7 @@ statement the user should refine).
 Result JSON on stdout:
 
 ```text
-{"status": "created", "intent_dir": "<abs path>/.intent"}
+{"status": "created", "intent_dir": "<abs path>/.mission"}
 ```
 
 ## Invocation
@@ -37,13 +37,13 @@ EOF
 ```
 
 `mission-ctrl` is on PATH while the plugin is enabled. Never write to
-`.intent/` directly — always go through this skill.
+`.mission/` directly — always go through this skill.
 
 ## Errors
 
 Errors arrive on stderr as `{"code": "message"}` with a non-zero exit:
 
 - `ALREADY_INITIALIZED` — store exists; do not re-run, use
-  `/mission-ctrl:intent-status` to inspect.
+  `/mission-ctrl:status` to inspect.
 - `INVALID_INPUT` — input failed validation (e.g. missing `project_name`);
   fix the input and retry.

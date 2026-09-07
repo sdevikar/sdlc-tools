@@ -45,18 +45,18 @@ def _seed_session(store: IntentStore, at: datetime) -> None:
 
 def test_no_intent_dir_no_ops_and_writes_nothing(tmp_path):
     assert on_session_start(root=tmp_path) is None
-    # Graceful means no side effects: hook must not create `.intent/`.
-    assert not (tmp_path / ".intent").exists()
+    # Graceful means no side effects: hook must not create `.mission/`.
+    assert not (tmp_path / ".mission").exists()
 
 
 def test_empty_intent_dir_no_ops(tmp_path):
-    (tmp_path / ".intent").mkdir()
+    (tmp_path / ".mission").mkdir()
     assert has_intent_dir(tmp_path) is False
     assert on_session_start(root=tmp_path) is None
 
 
 def test_intent_dir_without_mission_json_no_ops(tmp_path):
-    intent_dir = tmp_path / ".intent"
+    intent_dir = tmp_path / ".mission"
     intent_dir.mkdir()
     (intent_dir / "notes.txt").write_text("partial state")
     assert on_session_start(root=tmp_path) is None
@@ -65,7 +65,7 @@ def test_intent_dir_without_mission_json_no_ops(tmp_path):
 def test_explicit_store_on_empty_root_no_ops(tmp_path):
     store = IntentStore(tmp_path)
     assert on_session_start(store=store) is None
-    assert not (tmp_path / ".intent").exists()
+    assert not (tmp_path / ".mission").exists()
 
 
 def test_immediate_reopen_skips_recap(tmp_path):
@@ -156,7 +156,7 @@ def test_session_started_takes_precedence_over_newer_init(tmp_path):
 
 def test_no_session_history_returns_full_recap(tmp_path):
     store = _init_store(tmp_path)
-    (tmp_path / ".intent" / "meta.jsonl").unlink()
+    (tmp_path / ".mission" / "meta.jsonl").unlink()
     assert last_session_time(store) is None
     result = on_session_start(store=store, now=T0)
     assert isinstance(result, RecapResult)
@@ -180,7 +180,7 @@ def test_session_start_appends_session_started(tmp_path):
 
 def test_session_start_no_history_logs_zero_gap_full(tmp_path):
     store = _init_store(tmp_path)
-    (tmp_path / ".intent" / "meta.jsonl").unlink()
+    (tmp_path / ".mission" / "meta.jsonl").unlink()
     result = on_session_start(store=store, now=T0)
     assert isinstance(result, RecapResult)
     assert result.verbosity == "full"
@@ -213,7 +213,7 @@ def test_manifest_session_start_hook_no_ops_without_intent(tmp_path):
 
     session_hook = Extension().hooks["on_session_start"]
     assert session_hook({"cwd": str(tmp_path)}) is None
-    assert not (tmp_path / ".intent").exists()
+    assert not (tmp_path / ".mission").exists()
 
 
 def test_session_start_hook_accepts_path_context(tmp_path):
@@ -229,11 +229,11 @@ def test_session_start_hook_accepts_path_context(tmp_path):
 def test_session_start_hook_bare_context_never_raises(tmp_path, monkeypatch):
     from mission_ctrl_pi.hooks import session_start_hook
 
-    monkeypatch.chdir(tmp_path)  # "." has no `.intent/` here
+    monkeypatch.chdir(tmp_path)  # "." has no `.mission/` here
     assert session_start_hook() is None
     assert session_start_hook({}) is None
     assert session_start_hook(object()) is None
-    assert not (tmp_path / ".intent").exists()
+    assert not (tmp_path / ".mission").exists()
 
 
 def test_e2e_session_open_on_mid_flight_fixture(tmp_path):
@@ -244,7 +244,7 @@ def test_e2e_session_open_on_mid_flight_fixture(tmp_path):
     from mission_ctrl_pi.hooks import session_start_hook
 
     fixtures = _Path(__file__).resolve().parents[2] / "core" / "tests" / "fixtures"
-    shutil.copytree(fixtures / "mid-flight" / ".intent", tmp_path / ".intent")
+    shutil.copytree(fixtures / "mid-flight" / ".mission", tmp_path / ".mission")
     store = IntentStore(tmp_path)
     before = len(store.meta.read_all())
 

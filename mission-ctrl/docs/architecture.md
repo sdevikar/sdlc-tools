@@ -15,7 +15,7 @@ flowchart LR
     Agent["Pi (coding agent)"]
     Ext["Pi Extension\n(Python: hooks + skills)"]
     Core["mission_ctrl_core\n(pure Python lib, no network)"]
-    State[".intent/ files\n(repo, git-tracked)"]
+    State[".mission/ files\n(repo, git-tracked)"]
     Git["git log / commits"]
     MD["AGENTS.md\n(auto-generated)"]
 
@@ -166,7 +166,7 @@ mission-ctrl/
 └── README.md
 ```
 
-Runtime layout inside a user's project is unchanged: `.intent/*.json`, `.intent/meta.jsonl`, `AGENTS.md` at repo root, committed to git.
+Runtime layout inside a user's project is unchanged: `.mission/*.json`, `.mission/meta.jsonl`, `AGENTS.md` at repo root, committed to git.
 
 ---
 

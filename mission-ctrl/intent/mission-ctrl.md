@@ -25,7 +25,7 @@ A lightweight Claude Code plugin that acts as a persistent intent layer inside e
 
 **Systems:**
 - Claude Code (plugin host — skills and hooks)
-- `.intent/` file store in the project repo (git-tracked, human-readable JSON)
+- `.mission/` file store in the project repo (git-tracked, human-readable JSON)
 - `AGENTS.md` (auto-regenerated context file read natively by Claude Code)
 - `mission_ctrl_core` Python library (pure, no network, no LLM)
 - `mission_ctrl_pi` Python package (skills and hooks — currently stubbed for Pi, active for Claude Code)
@@ -37,7 +37,7 @@ A lightweight Claude Code plugin that acts as a persistent intent layer inside e
 - No LLM calls inside core. All reasoning stays in Claude's context; core only validates and persists.
 - No new agent runtime. Works inside Claude Code as a plugin, not as a separate tool.
 - No heavyweight PM UI. The entire surface is skills (slash commands) and hooks. No dashboards, no drag-and-drop, no external services.
-- Store stays small and diffable. `.intent/` files are plain JSON committed to git. No binary formats, no databases.
+- Store stays small and diffable. `.mission/` files are plain JSON committed to git. No binary formats, no databases.
 - Minimal dependencies. Python stdlib + Pydantic. No Node.js in the runtime path.
 
 ---
@@ -46,4 +46,4 @@ A lightweight Claude Code plugin that acts as a persistent intent layer inside e
 
 - Should `intent:launch` also write an `intent.md` file (human-readable proto-spec) as a byproduct of onboarding, for team visibility? Or is `AGENTS.md` sufficient?
 - What's the right intercept threshold for `on_before_send`? Current hardcoded pattern list will generate false positives. Configurable patterns are deferred to v2 — how much friction will this cause during dogfood?
-- How should `.intent/` behave across git branches? Merge conflicts in `specs.json` are currently undocumented and unhandled.
+- How should `.mission/` behave across git branches? Merge conflicts in `specs.json` are currently undocumented and unhandled.

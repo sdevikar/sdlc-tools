@@ -1,24 +1,24 @@
 # Intent Store
 
 Deterministic persistence layer for mission intent state: reads, writes, and
-validates the `.intent/` JSON/JSONL artifacts (mission, mvp, constraints,
+validates the `.mission/` JSON/JSONL artifacts (mission, mvp, constraints,
 backlog, specs, meta) with canonical IDs, append-only event logging, and
 field-level error reporting — usable from any process with zero network access.
 
 ## Requirements
 
 ### Requirement: Intent initialization
-The core MUST provide `IntentStore.init()` that creates all six `.intent/`
+The core MUST provide `IntentStore.init()` that creates all six `.mission/`
 artifacts (mission.json, mvp.json, constraints.json, backlog.json, specs.json,
 meta.jsonl) with valid template content and records an `INTENT_CREATED` event.
 
 #### Scenario: Init on empty project
-- GIVEN a directory with no `.intent/` folder
+- GIVEN a directory with no `.mission/` folder
 - WHEN `init()` is called
 - THEN all six artifacts exist, pass validation, and meta.jsonl contains exactly one `INTENT_CREATED` event
 
 #### Scenario: Init is idempotent
-- GIVEN an existing valid `.intent/` directory
+- GIVEN an existing valid `.mission/` directory
 - WHEN `init()` is called again
 - THEN existing data is not modified and no duplicate `INTENT_CREATED` event is appended
 

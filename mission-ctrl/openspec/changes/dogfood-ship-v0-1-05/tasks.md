@@ -5,10 +5,10 @@
       installed — required for structured dogfood issue capture
 
 ## Dogfood (one real week)
-- [ ] Set up mission-ctrl's own `.intent/` via `intent:init` in this repo
+- [ ] Set up mission-ctrl's own `.mission/` via `intent:init` in this repo
 - [ ] Run daily work through the skills using `intent:log-feedback` to capture
       every issue (category, description, severity) as it happens
-- [ ] Verify zero hand-edits of `.intent/` during the week
+- [ ] Verify zero hand-edits of `.mission/` during the week
 
 ## Fixes (evidence-based)
 - [ ] Run `MetaStore.read_feedback(severity="blocker")` at end of dogfood week
@@ -25,6 +25,6 @@
 - [ ] CI: PyPI Trusted Publishing (OIDC) — no long-lived API tokens in secrets
 - [ ] CI: `pip-audit` step before publish (catch known dependency vulnerabilities)
 - [ ] Clean-install smoke test: install from TestPyPI on a fresh env, run
-      `intent:init`, verify `.intent/` created correctly
+      `intent:init`, verify `.mission/` created correctly
 - [ ] Tag `v0.1.0`
 - [ ] Publish `mission_ctrl_core` + `mission_ctrl_pi` to PyPI

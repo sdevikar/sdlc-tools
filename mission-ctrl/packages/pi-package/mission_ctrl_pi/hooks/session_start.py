@@ -24,7 +24,7 @@ STANDARD_UNDER_HOURS = 48.0
 
 
 def has_intent_dir(root: Path | str) -> bool:
-    """True when `<root>/.intent/` exists and holds `mission.json`.
+    """True when `<root>/.mission/` exists and holds `mission.json`.
 
     This is the hook-side presence check (mirrors the skill-side
     `require_initialized` without raising): anything less than a full init
@@ -86,7 +86,7 @@ def session_start_hook(context: Any = None) -> RecapResult | None:
 
     Resolves the workspace root from Pi's context and returns the recap for
     Pi to inject before the user's first message, or None when there is
-    nothing to inject (absent `.intent/` or `skip` tier).
+    nothing to inject (absent `.mission/` or `skip` tier).
     """
     return on_session_start(root=_root_from_context(context))
 
@@ -99,7 +99,7 @@ def on_session_start(
 ) -> RecapResult | None:
     """Fire when Pi opens a workspace.
 
-    Returns None (no-op, no writes) when `.intent/` is absent or the gap tier
+    Returns None (no-op, no writes) when `.mission/` is absent or the gap tier
     is `skip`; otherwise returns the recap at the tier-selected verbosity,
     windowed on the last session timestamp so standard/full tiers include
     "changes since", and appends a `SESSION_STARTED` event recording the gap

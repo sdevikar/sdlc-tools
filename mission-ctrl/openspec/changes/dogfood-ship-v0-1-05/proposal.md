@@ -10,7 +10,7 @@ and publishes v0.1.0.
 ## What Changes
 
 - One-week dogfood of this repository through its own workflow in Pi:
-  real usage, no hand-editing `.intent/`.
+  real usage, no hand-editing `.mission/`.
 - Fixes driven by real use — especially `on_before_send` false positives,
   planner ranking misses, and recap verbosity.
 - **Distribution decision (open, must resolve before packaging):** confirm
@@ -32,7 +32,7 @@ and publishes v0.1.0.
   is confirmed. Dogfood fixes feed back into specs via normal change flow.
 
 **Done when:** personally used in Pi for one week without hand-editing
-`.intent/` files, and v0.1.0 is tagged and published.
+`.mission/` files, and v0.1.0 is tagged and published.
 
 ## Prerequisites
 
