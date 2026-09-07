@@ -7,7 +7,7 @@ description: Create a draft spec from a triaged idea. Use when an mvp or later i
 Create one `draft` spec linked to a triaged idea. The idea must already be
 out of `UNTRIAGED` (bucket `mvp` or `later`); triage first otherwise. Specs
 start in `draft` and enter the design gate via
-`/mission-ctrl:intent-design-propose` — never straight to implementation.
+`/mission-ctrl:design-propose` — never straight to implementation.
 
 ## Input
 
@@ -37,7 +37,7 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `NOT_FOUND` — unknown `idea_id`.
 - `INVALID_INPUT` — idea still untriaged or in a rejected bucket; triage it
   into `mvp`/`later` first.

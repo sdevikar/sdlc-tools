@@ -38,7 +38,7 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `NOT_FOUND` — unknown `spec_id`.
 - `INVALID_INPUT` — e.g. blocking without a note; add the note and retry.
 - `ILLEGAL_TRANSITION` — gate or dependency rule refused the move (spec not

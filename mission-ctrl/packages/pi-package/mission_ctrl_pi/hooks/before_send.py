@@ -10,6 +10,11 @@ from typing import Any, Literal
 from mission_ctrl_core.models import Bucket, SpecStatus
 from mission_ctrl_core.stores import IntentStore
 
+# First word of a message that makes it a question, not implementation intent.
+_INTERROGATIVES = frozenset(
+    "how when what why should can could would is are does did will".split()
+)
+
 from .hook_common import HOOK_ACTOR, HOOK_SESSION
 from .session_start import _root_from_context, has_intent_dir
 
@@ -46,7 +51,17 @@ def _compile(pattern: str) -> re.Pattern[str]:
 
 def find_implementation_intent(message: str) -> str | None:
     """First hardcoded pattern matching `message` (case-insensitive, full-word),
-    or None. List order decides when several patterns match."""
+    or None. List order decides when several patterns match.
+
+    Returns None for question-form messages (ends with '?' or starts with an
+    interrogative word) — asking about implementation is not implementing.
+    """
+    stripped = message.strip()
+    if stripped.endswith("?"):
+        return None
+    first_word = stripped.split()[0].lower() if stripped else ""
+    if first_word in _INTERROGATIVES:
+        return None
     for pattern in IMPLEMENTATION_PATTERNS:
         if _compile(pattern).search(message):
             return pattern
@@ -140,6 +155,16 @@ def on_before_send(
 
     pattern = find_implementation_intent(message)
     if pattern is None:
+        return BeforeSendResult(action="proceed", target=None, message="", pattern=None)
+
+    nodes = st.specs.read().nodes
+
+    # F2: a spec already in progress means the design gate was passed — don't block.
+    if any(n.status is SpecStatus.IN_PROGRESS for n in nodes):
+        return BeforeSendResult(action="proceed", target=None, message="", pattern=None)
+
+    # F7: empty store (mid-project init, no context yet) — nothing to redirect to.
+    if not nodes and not st.backlog.read().items:
         return BeforeSendResult(action="proceed", target=None, message="", pattern=None)
 
     target, detail = _redirect_target(st)

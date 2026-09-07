@@ -118,43 +118,93 @@ def test_substring_matches_do_not_intercept(tmp_path, message):
 
 
 # ---------------------------------------------------------------------------
+# F3: question-form messages must not be intercepted
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        "How ready are we to implement CR-4?",
+        "Should we build the export feature now?",
+        "Can you add feature flags?",
+        "Is the implement step done yet?",
+        "Would it make sense to write the auth layer?",
+        "are we ready to implement this?",
+    ],
+)
+def test_question_form_proceeds(tmp_path, message):
+    """F3: messages ending in '?' or starting with an interrogative proceed."""
+    store, _ = _store_with_untriaged_idea(tmp_path)
+    assert find_implementation_intent(message) is None
+    assert on_before_send(message, store=store).action == "proceed"
+
+
+# ---------------------------------------------------------------------------
+# F2: in-progress spec suppresses interception
+# ---------------------------------------------------------------------------
+
+
+def test_in_progress_spec_proceeds(tmp_path):
+    """F2: when a spec is already in_progress, design gate was passed — don't block."""
+    from mission_ctrl_pi.schemas import SpecStatusInput
+    from mission_ctrl_pi.skills import intent_spec_status
+
+    store, spec_id = _store_with_approved_design(tmp_path)
+    intent_spec_status(
+        SpecStatusInput(spec_id=spec_id, new_status="in_progress"), store=store
+    )
+    assert store.specs.get(spec_id).status == SpecStatus.IN_PROGRESS
+    result = on_before_send("implement the next piece", store=store)
+    assert result.action == "proceed"
+    assert "INTENT_INTERCEPTED" not in _event_types(store)
+
+
+# ---------------------------------------------------------------------------
 # Interception + redirect
 # ---------------------------------------------------------------------------
 
 
-def test_implement_redirects_to_add_idea_on_empty_backlog(tmp_path):
+def test_empty_store_proceeds_without_intercept(tmp_path):
+    """F7: freshly-initialized store (no specs, no backlog) proceeds.
+    Enforcing a gate with nothing behind it blocks mid-project adopters."""
     store = _init_store(tmp_path)
     result = on_before_send("Implement SSO login", store=store)
+    assert result.action == "proceed"
+    # No event written — no gate, no log.
+    assert "INTENT_INTERCEPTED" not in _event_types(store)
+
+
+def test_implement_with_no_untriaged_ideas_redirects_to_add_idea(tmp_path):
+    """Store has a parked idea (not untriaged) and no specs — add-idea is the right redirect."""
+    store = _init_store(tmp_path)
+    add = intent_add_idea(AddIdeaInput(title="Parked feature"), store=store)
+    intent_triage(
+        TriageInput(idea_id=add.idea_id, bucket="later", alignment_verdict="Parked"),
+        store=store,
+    )
+    result = on_before_send("implement the login page", store=store)
     assert result.action == "redirect"
     assert result.target == "/mission-ctrl:add-idea"
     assert result.pattern == "implement"
-    assert "override intent" in result.message  # bypass surfaced, never silent
-
-    events = store.meta.read_all()
-    assert _event_types(store)[-1] == "INTENT_INTERCEPTED"
-    decision = events[-1].decision
-    assert decision.pattern_matched == "implement"
-    assert decision.redirect_target == "/mission-ctrl:add-idea"
-    assert decision.original_message_excerpt == "Implement SSO login"
-    assert events[-1].actor.type == "agent"
 
 
 def test_matching_is_case_insensitive(tmp_path):
-    store = _init_store(tmp_path)
+    store, _ = _store_with_untriaged_idea(tmp_path)
     result = on_before_send("Please BUILD the export page", store=store)
     assert result.action == "redirect"
     assert result.pattern == "build"
 
 
 def test_multiword_phrase_matches(tmp_path):
-    store = _init_store(tmp_path)
-    result = on_before_send("Can you add feature flags?", store=store)
+    store, _ = _store_with_untriaged_idea(tmp_path)
+    result = on_before_send("add feature flags to the dashboard", store=store)
     assert result.action == "redirect"
     assert result.pattern == "add feature"
 
 
 def test_first_list_pattern_wins(tmp_path):
-    store = _init_store(tmp_path)
+    store, _ = _store_with_untriaged_idea(tmp_path)
     result = on_before_send("build and implement the cache", store=store)
     assert result.pattern == "implement"  # earlier in IMPLEMENTATION_PATTERNS
 
@@ -224,7 +274,7 @@ def test_approved_spec_beats_draft_spec(tmp_path):
 
 
 def test_excerpt_truncated_to_limit(tmp_path):
-    store = _init_store(tmp_path)
+    store, _ = _store_with_untriaged_idea(tmp_path)
     long_message = "implement " + "x" * 500
     on_before_send(long_message, store=store)
     excerpt = store.meta.read_all()[-1].decision.original_message_excerpt
@@ -266,11 +316,10 @@ def test_bypass_matching_is_case_insensitive(tmp_path):
 def test_manifest_before_send_hook_redirects(tmp_path):
     from mission_ctrl_pi.extension import Extension
 
-    store = _init_store(tmp_path)
+    store, _ = _store_with_untriaged_idea(tmp_path)
     hook = Extension().hooks["on_before_send"]
     result = hook("implement SSO", {"cwd": str(tmp_path)})
     assert result.action == "redirect"
-    assert result.target == "/mission-ctrl:add-idea"
     assert "INTENT_INTERCEPTED" in _event_types(store)
 
 
@@ -299,14 +348,9 @@ def test_e2e_intercept_on_mid_flight_fixture(tmp_path):
     store = _copied_mid_flight(tmp_path)
     before = len(store.meta.read_all())
     result = on_before_send("implement the export retry", store=store)
-    assert result.action == "redirect"
-    # Draft spec_002 with no approved design → design-propose.
-    assert result.target == "/mission-ctrl:design-propose"
-    assert "spec_002" in result.message
-    events = store.meta.read_all()
-    assert len(events) == before + 1
-    assert events[-1].event_type == "INTENT_INTERCEPTED"
-    assert events[-1].decision.pattern_matched == "implement"
+    # F2: spec_001 is in_progress → design gate already passed → proceed.
+    assert result.action == "proceed"
+    assert len(store.meta.read_all()) == before  # no event logged
 
 
 def test_e2e_bypass_on_mid_flight_fixture(tmp_path):

@@ -241,6 +241,9 @@ def test_recap_verbosity_brief_is_shorter():
     assert len(brief.rendered) <= len(standard.rendered)
     assert "## Next up" in standard.rendered
     assert "## Next up" not in brief.rendered
+    # F5: in-progress spec shows as "Active:" not "Next:", no recommendations line.
+    assert "Active: spec_001" in brief.rendered
+    assert "Next:" not in brief.rendered
 
 
 # --------------------------------------------------------------------------

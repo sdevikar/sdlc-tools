@@ -7,8 +7,8 @@ wiring only — all logic lives in `mission_ctrl_core` / `mission_ctrl_pi`.
 ## Layout
 
 - `.claude-plugin/plugin.json` — manifest (namespace `mission-ctrl`, so skills
-  invoke as `/mission-ctrl:intent-next`)
-- `skills/intent-*/SKILL.md` — one per intent skill, JSON I/O contracts
+  invoke as `/mission-ctrl:next`)
+- `skills/*/SKILL.md` — one per intent skill, JSON I/O contracts
   mirroring the Pydantic schemas 1:1
 - `hooks/hooks.json` — `SessionStart` recap injection, `UserPromptSubmit`
   implementation-intent interception
@@ -27,8 +27,8 @@ wiring only — all logic lives in `mission_ctrl_core` / `mission_ctrl_pi`.
 claude --plugin-dir ./packages/claude-plugin
 ```
 
-Then `/mission-ctrl:intent-status` (needs a project with `.mission/` — run
-`/mission-ctrl:intent-init` first). After edits, `/reload-plugins` picks them
+Then `/mission-ctrl:status` (needs a project with `.mission/` — run
+`/mission-ctrl:init` first). After edits, `/reload-plugins` picks them
 up without a restart. Hook activity is recorded in the debug log
 (`claude --debug`).
 
@@ -42,17 +42,17 @@ claude plugin validate ./packages/claude-plugin
 
 | Skill | Operation |
 |---|---|
-| `/mission-ctrl:intent-init` | create `.mission/` store |
-| `/mission-ctrl:intent-add-idea` | capture untriaged idea |
-| `/mission-ctrl:intent-triage` | bucket idea (mvp/later/rejected) |
-| `/mission-ctrl:intent-spec-create` | draft spec from triaged idea |
-| `/mission-ctrl:intent-spec-status` | move spec (in_progress/done/blocked) |
-| `/mission-ctrl:intent-design-propose` | submit design digest |
-| `/mission-ctrl:intent-design-approve` | approve/reject design |
-| `/mission-ctrl:intent-next` | planner's next suggestion |
-| `/mission-ctrl:intent-status` | read-only snapshot |
-| `/mission-ctrl:intent-recap` | on-demand recap |
-| `/mission-ctrl:intent-log-feedback` | pending `log-feedback-06` |
+| `/mission-ctrl:init` | create `.mission/` store |
+| `/mission-ctrl:add-idea` | capture untriaged idea |
+| `/mission-ctrl:triage` | bucket idea (mvp/later/rejected) |
+| `/mission-ctrl:spec-create` | draft spec from triaged idea |
+| `/mission-ctrl:spec-status` | move spec (in_progress/done/blocked) |
+| `/mission-ctrl:design-propose` | submit design digest |
+| `/mission-ctrl:design-approve` | approve/reject design |
+| `/mission-ctrl:next` | planner's next suggestion |
+| `/mission-ctrl:status` | read-only snapshot |
+| `/mission-ctrl:recap` | on-demand recap |
+| `/mission-ctrl:log-feedback` | log dogfood observations |
 
 Invocation pattern (also what each SKILL.md instructs):
 

@@ -6,7 +6,7 @@ description: Capture a raw idea into the untriaged backlog. Use when the user me
 
 Append one idea to the backlog (`UNTRIAGED` bucket) and emit its event. This
 is the entry point of the intent loop — ideas graduate via
-`/mission-ctrl:intent-triage`, never straight to code.
+`/mission-ctrl:triage`, never straight to code.
 
 ## Input
 
@@ -37,5 +37,5 @@ EOF
 
 ## Errors
 
-- `NOT_INITIALIZED` — run `/mission-ctrl:intent-init` first.
+- `NOT_INITIALIZED` — run `/mission-ctrl:init` first.
 - `INVALID_INPUT` — e.g. empty title; fix and retry.
