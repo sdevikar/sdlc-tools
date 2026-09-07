@@ -51,9 +51,9 @@ class CurrentIntent:
 
 
 class IntentStore:
-    """Orchestrator over the per-file stores rooted at `<root>/.intent/`."""
+    """Orchestrator over the per-file stores rooted at `<root>/.mission/`."""
 
-    INTENT_DIRNAME = ".intent"
+    INTENT_DIRNAME = ".mission"
 
     def __init__(self, root: Path | str) -> None:
         self.root = Path(root)
