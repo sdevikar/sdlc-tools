@@ -15,6 +15,7 @@ Source sessions tracked here:
 | F4 | evt_000041 | blocker | MVP % always shows 0% — `links.mvp_items` never populated; counter sees no done work | **Design + impl**: add `done: bool = False` to `MvpItem`; update `_mvp_progress()` / `_mvp_percent()` to count `item.done`; add `mark-mvp-done` skill. Tracked in openspec `mvp-completion-fix-13`. |
 | F7-long | ses_conv_2026-09-06 | enhancement | `intent:init` has no path to import existing proposals — mid-project adopters start with an empty store | **Design decision needed**: scope of `--import-openspec <dir>` flag. Questions: which proposal states map to which `SpecStatus`? (archived/merged → DONE? open approved → DESIGN_APPROVED? open draft → DRAFT?) Auto-detect openspec dir or require explicit path? What happens to ideas (no spec)? |
 | F9 | ses_conv_2026-09-08 | polish | design-propose / design-approve feel like empty ceremony — clicking through a state machine, not a real quality gate | See detailed analysis below. |
+| F10 | ses_conv_2026-09-08 | ux | `/next` and the planner are spec-only — untriaged and unspecced backlog ideas are completely invisible until promoted via triage + spec-create | See detailed analysis below. |
 
 ---
 
@@ -46,6 +47,32 @@ The gate *is* enforced (can't reach `in_progress` without `design_approved`), so
    - Leave digest as free-text, parse structured sections from it at read time (fragile).
 
 3. **Long-term payoff** (deferred): `DRIFT_DETECTED` event — compare committed code diff against the stored digest (or structured fields) and surface divergences at session start. This is what makes the gate worthwhile retroactively. No decision needed now, but the medium-term fix (structured fields) is a prerequisite for this to work.
+
+---
+
+### F10 — Planner Blind Spot: Backlog Ideas Never Surface in `/next`
+
+**What happens today:**
+`suggest_next` reads only `store.specs.read().nodes`. `store.backlog` is never touched anywhere in the logic layer. The planner's eligible set is hardcoded to `{draft, design_proposed, design_approved}` — all spec statuses. Ideas in `backlog.json` are invisible regardless of bucket: `untriaged`, `mvp_critical`, or `parked`.
+
+The only places backlog ideas appear at all:
+- `on_before_send._redirect_target` — checks for untriaged/specless ideas to decide *which* skill to redirect to, but only fires when the user is already trying to implement something
+- AGENTS.md `## Backlog Summary` counts (mvp-critical / parked / untriaged) — visible in context but not actionable, just numbers
+- The fallback string in `recap._render` when no specs are ready: `"none available; triage the backlog or finish a spec"` — this is hardcoded text, not an actual backlog read
+
+**Consequence:** If your entire action queue is untriaged ideas (common right after init or after finishing a spec), `/next` returns `spec_id: null` and the recap says "none available." You're supposed to act but the tool has nothing to say. The AGENTS.md counts give a hint ("Untriaged: 3") but not the ids, titles, or any priority signal.
+
+**Gap vs. intent:** The planner was designed to answer "what should I work on next?" Untriaged ideas *are* work to do — the work is triaging them. Specless MVP-critical ideas are also work — the work is creating a spec. Neither of these surfaces.
+
+**Design options — decision needed:**
+
+1. **Add backlog nudges to planner output** (cleanest): extend `suggest_next` to also return `BacklogNudge` items (separate dataclass) for untriaged ideas and specless MVP-critical ideas. Return type becomes `list[Suggestion | BacklogNudge]`. Callers render them differently ("triage idea_003 — OAuth redesign" vs. "start spec for spec_002"). Pros: single source of truth. Cons: changes return type, touches tests, callers need to branch.
+
+2. **Surface backlog in recap/next separately** (minimal): keep `suggest_next` pure-spec, but have `recap.generate_recap` and the `/next` skill call `store.backlog.search(bucket=Bucket.UNTRIAGED)` directly and append a "Backlog actions" section to the output. No change to planner API. Pros: non-breaking. Cons: the backlog-surfacing logic lives in two places.
+
+3. **Enrich planner result with a backlog pressure field** (lightest): `suggest_next` adds a `backlog_nudge: str | None` field to `RecapResult` — a short pre-formatted string like "3 untriaged ideas need triage first (idea_001, idea_003, idea_007)" computed from backlog counts. No new types, single call site. Pros: very low cost. Cons: pre-formatted string is harder to test and less composable than structured data.
+
+**Recommendation:** Option 2 (separate surface in recap + `/next` skill) has the lowest blast radius and can be shipped without touching the planner or its tests. Option 1 is the right long-term model if the planner is ever expected to rank backlog actions against specs. Start with 2, migrate to 1 when there's a concrete need.
 
 ---
 
