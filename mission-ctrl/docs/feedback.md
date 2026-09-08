@@ -1,78 +1,93 @@
 # Mission Ctrl — Dogfood Feedback Log
 
-Feedback captured during live dogfood sessions. Each row maps to one or more `FEEDBACK_LOGGED` events in `.mission/meta.jsonl` of a consumer project.
+Feedback captured during live dogfood sessions and design conversations.
 
-Source sessions tracked here:
-- `ses_0001` — e2eeval project (`/local/mnt/workspace/sdevikar/qcom/e2e/e2eeval`)
-- `ses_conv_2026-09-06` — verbal feedback from this project's dogfood conversation
+Sources:
+- `ses_0001` — e2eeval project (`/local/mnt/workspace/sdevikar/qcom/e2e/e2eeval`), events evt_000038 through evt_000066
+- `ses_conv_2026-09-06` through `ses_conv_2026-09-08` — verbal feedback from this project's dogfood conversations
 
 ---
 
-## Pending Decisions
+## Strategic Observations: Intelligence Gaps
+
+The following four categories of gaps were identified as a coherent theme — each represents a place where the system makes a rule-based binary decision that actually requires reasoning:
+
+| # | Category | Root Cause | Related items |
+|---|----------|------------|---------------|
+| I1 | **Dependency ordering** | `depends_on` must be set manually; the planner enforces declared deps but never infers them. Two specs can both be unblocked but have an obvious logical ordering that the system ignores. | F10 (planner blind spot) |
+| I2 | **Mission-criticality judgment** | Triage requires an `alignment_verdict` string that Pi supplies freely. No reasoning step checks whether the verdict is consistent with the mission statement or MVP definition — a "Core" verdict is taken at face value. | F4 (MVP % bug masks this further) |
+| I3 | **Implementation intent vs. reference** | `on_before_send` uses keyword + interrogative matching. Semantically adjacent messages ("let's think about how we'd build this") pass through; semantically clear messages with edge-case syntax get intercepted. The classifier is a heuristic, not a reasoner. | F3 (partially addressed), F10 |
+| I4 | **Automatic workflow advancement** | No mechanism exists to advance spec status based on observed outcomes (commits, passing tests, conversation context). Every transition requires an explicit skill call. | F11 (auto-done), F9 (design gate ceremony) |
+
+**Common root:** All four gaps have the same shape — a deterministic rule is being asked to do a job that benefits from context-awareness. The fix in each case is not a better rule; it's an LLM reasoning step or a signal from the environment (git, CI).
+
+**What this means for the plugin design:** mission-ctrl v1 was deliberately stateless and network-free (core is deterministic, Pi does the reasoning). The I-series gaps are the natural ceiling of that design. v2 likely needs a "judgment layer" — a structured prompt that Pi runs at key decision points (triage, before-send, session-start) that has access to mission + constraints + recent history and returns a structured verdict instead of the current heuristic.
+
+---
+
+## Pending Tactical Items
 
 | ID | Event(s) | Severity | Summary | What's Pending |
 |----|----------|----------|---------|----------------|
 | F4 | evt_000041 | blocker | MVP % always shows 0% — `links.mvp_items` never populated; counter sees no done work | **Design + impl**: add `done: bool = False` to `MvpItem`; update `_mvp_progress()` / `_mvp_percent()` to count `item.done`; add `mark-mvp-done` skill. Tracked in openspec `mvp-completion-fix-13`. |
-| F7-long | ses_conv_2026-09-06 | enhancement | `intent:init` has no path to import existing proposals — mid-project adopters start with an empty store | **Design decision needed**: scope of `--import-openspec <dir>` flag. Questions: which proposal states map to which `SpecStatus`? (archived/merged → DONE? open approved → DESIGN_APPROVED? open draft → DRAFT?) Auto-detect openspec dir or require explicit path? What happens to ideas (no spec)? |
-| F9 | ses_conv_2026-09-08 | polish | design-propose / design-approve feel like empty ceremony — clicking through a state machine, not a real quality gate | See detailed analysis below. |
-| F10 | ses_conv_2026-09-08 | ux | `/next` and the planner are spec-only — untriaged and unspecced backlog ideas are completely invisible until promoted via triage + spec-create | See detailed analysis below. |
+| F7-long | ses_conv_2026-09-06 | enhancement | `intent:init` has no path to import existing proposals — mid-project adopters start with an empty store | **Design decision needed**: scope of `--import-openspec <dir>` flag. Which proposal states map to which `SpecStatus`? (archived/merged → DONE? open approved → DESIGN_APPROVED? open draft → DRAFT?) Auto-detect openspec dir or require explicit path? |
+| F9 | ses_conv_2026-09-08 | polish | design-propose / design-approve are status bookkeeping, not artifact capture — `key_choices`, `risks`, `open_questions` are always empty; digest truncated to 64 chars; `DRIFT_DETECTED` deferred | **Decision**: expand `DesignProposeInput` to pass structured fields, or leave as free-text and defer until `DRIFT_DETECTED` is implemented? See detail below. |
+| F10 | ses_conv_2026-09-08 | ux | `/next` and planner are spec-only — untriaged backlog ideas invisible until triage + spec-create; `/next` returns null when the only work is backlog triage | **Decision**: Option 1 (extend planner return type) vs. Option 2 (surface backlog separately in recap + `/next` skill)? See detail below. |
+| F11 | evt_000066 | polish | Spec status not auto-transitioned to `done` after implementation — spec_004 and spec_005 both left in `in_progress`/`blocked` after code was committed and tests passed | **Design decision**: what is the trigger? Git commit message referencing spec_id? Explicit `--closes` flag on spec-status? CI green signal? See detail below. |
 
 ---
 
-### F9 — Design Gate: Original Intent vs. What Shipped
+### F9 — Design Gate: What Shipped vs. Original Intent
 
-**Original intent** (`concept.md §2.6`): design-propose was meant to capture a structured "one-pager" covering architecture changes, impacted modules, risks, and open questions — a real artifact the user could review and reject, not just acknowledge. `design-approve` was the human sign-off on that artifact, with an explicit *modify* path (approve / modify / reject). The payback was supposed to come later via `DRIFT_DETECTED` events when implementation diverged from the digest.
+**Original intent** (`concept.md §2.6`): a structured one-pager capturing architecture changes, impacted modules, risks, and open questions — a real artifact the user reviews and can reject or modify. Payback: `DRIFT_DETECTED` events at session start when implementation diverges from the recorded design.
 
 **What shipped:**
-- `design-propose` accepts a single free-text `digest` string (min 10 chars). Only the first 64 chars are stored in the event as `digest_id`. The `key_choices`, `risks`, and `open_questions` fields exist on `DesignProposedDecision` but are always written as empty lists — Pi never populates them.
-- `design-approve` transitions status and records a boolean. No structured notes or structured comparison against the digest.
-- The digest content is never surfaced in `recap` or `status` — invisible after logging.
-- No `modify` path — only approve or reject+restart.
-- `DRIFT_DETECTED` is deferred to v2 (listed in event catalog under "Deferred").
+- `design-propose` accepts a free-text `digest` string (min 10 chars). Only the first 64 chars are stored as `digest_id`. `key_choices`, `risks`, `open_questions` exist on `DesignProposedDecision` but are always written as `[]` — the skill never populates them.
+- `design-approve` records a boolean transition. No comparison against the digest.
+- Digest content is never surfaced in `recap` or `status`.
+- No modify path — only approve or reject+restart.
+- `DRIFT_DETECTED` listed as "Deferred to v2" in event catalog.
 
-**Net effect**: In practice, the flow is:
-1. Claude reasons about the design naturally in the conversation
-2. User calls `design-propose` with a summary string to advance the status
-3. User calls `design-approve` to advance status again
-4. Both steps are status bookkeeping, not design capture
+**Net effect:** calling both skills advances a status machine. There is no artifact produced.
 
-The gate *is* enforced (can't reach `in_progress` without `design_approved`), so it does block premature implementation. But there is no artifact being reviewed — the ceremony produces nothing reusable or diff-able.
-
-**What's pending / decision points:**
-
-1. **Short-term** (no decision needed): document this gap explicitly. The gate is a placeholder for future drift detection; it is not broken, just incomplete. Add a note to AGENTS.md / design.md that digest content is not yet used downstream — so users don't feel they need to write elaborate prose.
-
-2. **Medium-term** (design decision): should Pi be prompted to fill in structured fields when calling `design-propose`? The `DesignProposedDecision` model already has `key_choices`, `risks`, `open_questions`. The gap is that the skill's `DesignProposeInput` only accepts a flat `digest: str` — no structured fields pass through. Two options:
-   - Expand `DesignProposeInput` to accept `key_choices: list[str]`, `risks: list[str]`, `open_questions: list[str]` as optional fields, pass them into the event builder. Pi's SKILL.md guides it to populate them from its own reasoning.
-   - Leave digest as free-text, parse structured sections from it at read time (fragile).
-
-3. **Long-term payoff** (deferred): `DRIFT_DETECTED` event — compare committed code diff against the stored digest (or structured fields) and surface divergences at session start. This is what makes the gate worthwhile retroactively. No decision needed now, but the medium-term fix (structured fields) is a prerequisite for this to work.
+**Decision options:**
+1. **Document the gap, change nothing now**: add a note to the SKILL.md and design.md that the gate is a placeholder for drift detection; it is not broken, just incomplete. Reduces the sense of ceremony without any code change.
+2. **Expand `DesignProposeInput`**: add optional `key_choices: list[str]`, `risks: list[str]`, `open_questions: list[str]`; pass them into the event builder; update SKILL.md to prompt Pi to populate them from its own reasoning. Prerequisite for eventual `DRIFT_DETECTED`.
+3. **Defer everything to v2**: accept ceremony for now; implement when `DRIFT_DETECTED` is scoped.
 
 ---
 
-### F10 — Planner Blind Spot: Backlog Ideas Never Surface in `/next`
+### F10 — Planner Blind Spot: Backlog Ideas Invisible to `/next`
 
 **What happens today:**
-`suggest_next` reads only `store.specs.read().nodes`. `store.backlog` is never touched anywhere in the logic layer. The planner's eligible set is hardcoded to `{draft, design_proposed, design_approved}` — all spec statuses. Ideas in `backlog.json` are invisible regardless of bucket: `untriaged`, `mvp_critical`, or `parked`.
+`suggest_next` reads only `store.specs.read().nodes`. `store.backlog` is never read anywhere in the logic layer. The fallback string "none available; triage the backlog or finish a spec" in `recap._render` is hardcoded text, not an actual backlog read.
 
-The only places backlog ideas appear at all:
-- `on_before_send._redirect_target` — checks for untriaged/specless ideas to decide *which* skill to redirect to, but only fires when the user is already trying to implement something
-- AGENTS.md `## Backlog Summary` counts (mvp-critical / parked / untriaged) — visible in context but not actionable, just numbers
-- The fallback string in `recap._render` when no specs are ready: `"none available; triage the backlog or finish a spec"` — this is hardcoded text, not an actual backlog read
+**Consequence:** after finishing a spec (or right after init), if the only work is untriaged ideas, `/next` returns `spec_id: null` and the recap says nothing actionable. AGENTS.md shows counts but not ids or titles.
 
-**Consequence:** If your entire action queue is untriaged ideas (common right after init or after finishing a spec), `/next` returns `spec_id: null` and the recap says "none available." You're supposed to act but the tool has nothing to say. The AGENTS.md counts give a hint ("Untriaged: 3") but not the ids, titles, or any priority signal.
+**Decision options:**
+1. **Extend planner return type** — `suggest_next` also returns `BacklogNudge` items for untriaged ideas and specless MVP-critical ideas. `list[Suggestion | BacklogNudge]`. Callers render them differently. Cleanest long-term; breaks planner API and tests.
+2. **Surface backlog separately in recap + `/next`** — keep `suggest_next` pure-spec; have `recap.generate_recap` and the `/next` skill call `store.backlog.search()` directly and append a "Backlog actions" section. Non-breaking; backlog logic in two places.
+3. **Lightweight nudge field** — add `backlog_pressure: str | None` to `RecapResult` with a pre-formatted string. Very low cost; least composable.
 
-**Gap vs. intent:** The planner was designed to answer "what should I work on next?" Untriaged ideas *are* work to do — the work is triaging them. Specless MVP-critical ideas are also work — the work is creating a spec. Neither of these surfaces.
+**Recommendation:** Option 2 first, migrate to Option 1 if the planner ever needs to rank backlog actions against specs.
 
-**Design options — decision needed:**
+---
 
-1. **Add backlog nudges to planner output** (cleanest): extend `suggest_next` to also return `BacklogNudge` items (separate dataclass) for untriaged ideas and specless MVP-critical ideas. Return type becomes `list[Suggestion | BacklogNudge]`. Callers render them differently ("triage idea_003 — OAuth redesign" vs. "start spec for spec_002"). Pros: single source of truth. Cons: changes return type, touches tests, callers need to branch.
+### F11 — No Automatic Spec Completion Signal
 
-2. **Surface backlog in recap/next separately** (minimal): keep `suggest_next` pure-spec, but have `recap.generate_recap` and the `/next` skill call `store.backlog.search(bucket=Bucket.UNTRIAGED)` directly and append a "Backlog actions" section to the output. No change to planner API. Pros: non-breaking. Cons: the backlog-surfacing logic lives in two places.
+**What happened (evt_000066):** spec_004 (batch orchestrator) and spec_005 (Docker image) were both fully implemented — code committed, tests passing — but remained in `in_progress`/`blocked` until manually closed with `/mission-ctrl:spec-status`. No mechanism exists to trigger a status transition from an observed outcome.
 
-3. **Enrich planner result with a backlog pressure field** (lightest): `suggest_next` adds a `backlog_nudge: str | None` field to `RecapResult` — a short pre-formatted string like "3 untriaged ideas need triage first (idea_001, idea_003, idea_007)" computed from backlog counts. No new types, single call site. Pros: very low cost. Cons: pre-formatted string is harder to test and less composable than structured data.
+**Root cause:** The plugin has no `on_after_commit` or CI hook. The only post-write hook is `sync_after_write` (AGENTS.md regen). Spec status transitions are 100% user-initiated.
 
-**Recommendation:** Option 2 (separate surface in recap + `/next` skill) has the lowest blast radius and can be shipped without touching the planner or its tests. Option 1 is the right long-term model if the planner is ever expected to rank backlog actions against specs. Start with 2, migrate to 1 when there's a concrete need.
+**Related to I4** (automatic workflow advancement) — the broader version of this problem is that any workflow stage could benefit from environment signals: design approved → start implementation; implementation done → mark done; spec blocked → surface at session start.
+
+**Decision options:**
+1. **Git commit message convention**: if commit message contains `closes spec_001` or `[spec_001]`, `on_session_start` reads recent commits, finds the pattern, and prompts user to close the spec. No automation — surfaces a nudge.
+2. **`spec-status` flag `--closes-on-commit <spec_id>`**: user declares intent once; next session start checks git log and auto-transitions if a matching commit exists.
+3. **Explicit user step, better prompted**: no automation; update AGENTS.md / session-start recap to include "Specs in in_progress with recent commits — consider marking done" as a prompt action.
+4. **CI webhook (v2)**: out of scope for CLI plugin; requires infrastructure.
+
+**Recommendation:** Option 3 (better prompting) costs nothing and covers the case. Option 1 (commit message convention) adds value proportional to how often users forget. Decide based on whether the problem recurs.
 
 ---
 
@@ -80,18 +95,18 @@ The only places backlog ideas appear at all:
 
 | ID | Event(s) | Summary | Resolution |
 |----|----------|---------|------------|
-| F1 | evt_000038 | `.intent/` → `.mission/` rename broke uninitiated sessions | ✅ Fixed in `mission-store-rename-14` |
-| F2 | evt_000044 | `_redirect_target` falls through to "add-idea" when a spec is already in progress | ✅ Fixed — `on_before_send` checks for any `in_progress` spec and short-circuits to `proceed` (commit `e84fdfd`) |
-| F3 | evt_000045 | Before-send intercepts question-form messages ("How ready are we to implement CR-4?") | ✅ Fixed — `find_implementation_intent` returns `None` when message ends with `?` or first word is an interrogative (`commit e84fdfd`) |
-| F5 | evt_000039 | Brief recap labels in-progress spec as "Next:" — collides with `:next` semantics | ✅ Fixed — brief mode now shows "Active: `<id>`" for in-progress, suppresses recommendations line (`commit e84fdfd`) |
-| F6 | evt_000047 | e2eeval design doc used `--models` (list) but Argo contract requires `--model` (singular) | ✅ Not applicable — consumer-side doc issue, not a mission-ctrl defect |
-| F7-short | ses_conv_2026-09-06 | Mid-project init: empty store causes every "implement" message to redirect to add-idea | ✅ Fixed — `on_before_send` returns `proceed` when store has no specs and no backlog items (`commit e84fdfd`) |
-| F8 | ses_conv_2026-09-06 | Claude suggests stale `intent:triage` name instead of `/mission-ctrl:triage` | ✅ Fixed — updated `docs/design.md`, all `SKILL.md` files, and added complete Available Skills table to `agents_md.jinja2` (`commit e84fdfd`) |
+| F1 | evt_000038 | `.intent/` → `.mission/` rename broke uninitiated sessions against existing stores | ✅ Fixed in `mission-store-rename-14` |
+| F2 | evt_000044 | `_redirect_target` falls through to "add-idea" when a spec is already in progress | ✅ Fixed — `on_before_send` short-circuits to `proceed` when any spec is `in_progress` (commit `e84fdfd`) |
+| F3 | evt_000045 | Before-send intercepts question-form messages ("How ready are we to implement CR-4?") | ✅ Fixed — `find_implementation_intent` returns `None` for `?`-ending or interrogative-starting messages (commit `e84fdfd`) |
+| F5 | evt_000039 | Brief recap labels in-progress spec as "Next:" — collides with `:next` semantics | ✅ Fixed — brief mode shows "Active: `<id>`" for in-progress, suppresses recommendations line (commit `e84fdfd`) |
+| F6 | evt_000047 | e2eeval design doc used `--models` (list) but Argo contract requires `--model` (singular) | ✅ Not applicable — consumer-side doc issue |
+| F7-short | ses_conv_2026-09-06 | Mid-project init: empty store redirects every "implement" message to add-idea | ✅ Fixed — `on_before_send` returns `proceed` when store has no specs and no backlog items (commit `e84fdfd`) |
+| F8 | ses_conv_2026-09-06, evt_000055 | Stale `intent:*` skill names in docs, SKILL.md files, README — Claude suggested non-existent skill names | ✅ Fixed — updated `docs/design.md`, all `SKILL.md` files, `claude-plugin/README.md`, added Available Skills table to `agents_md.jinja2` (commit `e84fdfd`) |
 
 ---
 
 ## Status Key
 
-- 🔲 Pending — needs design decision or significant impl before work can start
+- 🔲 Pending — needs design decision or impl
 - ✅ Fixed — implemented and tested
 - ✅ Not applicable — not a mission-ctrl defect
