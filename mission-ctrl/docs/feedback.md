@@ -14,6 +14,38 @@ Source sessions tracked here:
 |----|----------|----------|---------|----------------|
 | F4 | evt_000041 | blocker | MVP % always shows 0% — `links.mvp_items` never populated; counter sees no done work | **Design + impl**: add `done: bool = False` to `MvpItem`; update `_mvp_progress()` / `_mvp_percent()` to count `item.done`; add `mark-mvp-done` skill. Tracked in openspec `mvp-completion-fix-13`. |
 | F7-long | ses_conv_2026-09-06 | enhancement | `intent:init` has no path to import existing proposals — mid-project adopters start with an empty store | **Design decision needed**: scope of `--import-openspec <dir>` flag. Questions: which proposal states map to which `SpecStatus`? (archived/merged → DONE? open approved → DESIGN_APPROVED? open draft → DRAFT?) Auto-detect openspec dir or require explicit path? What happens to ideas (no spec)? |
+| F9 | ses_conv_2026-09-08 | polish | design-propose / design-approve feel like empty ceremony — clicking through a state machine, not a real quality gate | See detailed analysis below. |
+
+---
+
+### F9 — Design Gate: Original Intent vs. What Shipped
+
+**Original intent** (`concept.md §2.6`): design-propose was meant to capture a structured "one-pager" covering architecture changes, impacted modules, risks, and open questions — a real artifact the user could review and reject, not just acknowledge. `design-approve` was the human sign-off on that artifact, with an explicit *modify* path (approve / modify / reject). The payback was supposed to come later via `DRIFT_DETECTED` events when implementation diverged from the digest.
+
+**What shipped:**
+- `design-propose` accepts a single free-text `digest` string (min 10 chars). Only the first 64 chars are stored in the event as `digest_id`. The `key_choices`, `risks`, and `open_questions` fields exist on `DesignProposedDecision` but are always written as empty lists — Pi never populates them.
+- `design-approve` transitions status and records a boolean. No structured notes or structured comparison against the digest.
+- The digest content is never surfaced in `recap` or `status` — invisible after logging.
+- No `modify` path — only approve or reject+restart.
+- `DRIFT_DETECTED` is deferred to v2 (listed in event catalog under "Deferred").
+
+**Net effect**: In practice, the flow is:
+1. Claude reasons about the design naturally in the conversation
+2. User calls `design-propose` with a summary string to advance the status
+3. User calls `design-approve` to advance status again
+4. Both steps are status bookkeeping, not design capture
+
+The gate *is* enforced (can't reach `in_progress` without `design_approved`), so it does block premature implementation. But there is no artifact being reviewed — the ceremony produces nothing reusable or diff-able.
+
+**What's pending / decision points:**
+
+1. **Short-term** (no decision needed): document this gap explicitly. The gate is a placeholder for future drift detection; it is not broken, just incomplete. Add a note to AGENTS.md / design.md that digest content is not yet used downstream — so users don't feel they need to write elaborate prose.
+
+2. **Medium-term** (design decision): should Pi be prompted to fill in structured fields when calling `design-propose`? The `DesignProposedDecision` model already has `key_choices`, `risks`, `open_questions`. The gap is that the skill's `DesignProposeInput` only accepts a flat `digest: str` — no structured fields pass through. Two options:
+   - Expand `DesignProposeInput` to accept `key_choices: list[str]`, `risks: list[str]`, `open_questions: list[str]` as optional fields, pass them into the event builder. Pi's SKILL.md guides it to populate them from its own reasoning.
+   - Leave digest as free-text, parse structured sections from it at read time (fragile).
+
+3. **Long-term payoff** (deferred): `DRIFT_DETECTED` event — compare committed code diff against the stored digest (or structured fields) and surface divergences at session start. This is what makes the gate worthwhile retroactively. No decision needed now, but the medium-term fix (structured fields) is a prerequisite for this to work.
 
 ---
 
