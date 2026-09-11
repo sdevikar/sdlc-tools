@@ -153,12 +153,19 @@ def cmd_hook_session_start() -> int:
         event = _read_stdin_json()
     except SkillError as exc:
         return _fail(exc.code, exc.message)
-    cwd = event.get("cwd") or "."
+    # Try all common field names Claude Code may use for the working directory.
+    cwd = (
+        event.get("cwd")
+        or event.get("workingDirectory")
+        or event.get("project_dir")
+        or "."
+    )
     try:
         result = on_session_start(root=cwd)
     except Exception as exc:
         return _fail("INTERNAL", f"SessionStart hook failed: {exc}")
     if result is None:
+        sys.stderr.write(f"mission-ctrl: session-start no-op (cwd={cwd})\n")
         return 0
     text = result.rendered or result.model_dump_json()
     sys.stdout.write(text + ("\n" if not text.endswith("\n") else ""))
