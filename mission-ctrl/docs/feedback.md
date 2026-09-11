@@ -34,6 +34,7 @@ The following four categories of gaps were identified as a coherent theme — ea
 | F9 | ses_conv_2026-09-08 | polish | design-propose / design-approve are status bookkeeping, not artifact capture — `key_choices`, `risks`, `open_questions` are always empty; digest truncated to 64 chars; `DRIFT_DETECTED` deferred | **Decision**: expand `DesignProposeInput` to pass structured fields, or leave as free-text and defer until `DRIFT_DETECTED` is implemented? See detail below. |
 | F10 | ses_conv_2026-09-08 | ux | `/next` and planner are spec-only — untriaged backlog ideas invisible until triage + spec-create; `/next` returns null when the only work is backlog triage | **Decision**: Option 1 (extend planner return type) vs. Option 2 (surface backlog separately in recap + `/next` skill)? See detail below. |
 | F11 | evt_000066 | polish | Spec status not auto-transitioned to `done` after implementation — spec_004 and spec_005 both left in `in_progress`/`blocked` after code was committed and tests passed | **Design decision**: what is the trigger? Git commit message referencing spec_id? Explicit `--closes` flag on spec-status? CI green signal? See detail below. |
+| F12 | ses_conv_2026-09-08 | blocker | `on_session_start` hook did not fire when returning to a long-idle tmux session or on exit-then-resume | ✅ Fixed — see detail below. |
 
 ---
 
@@ -88,6 +89,26 @@ The following four categories of gaps were identified as a coherent theme — ea
 4. **CI webhook (v2)**: out of scope for CLI plugin; requires infrastructure.
 
 **Recommendation:** Option 3 (better prompting) costs nothing and covers the case. Option 1 (commit message convention) adds value proportional to how often users forget. Decide based on whether the problem recurs.
+
+---
+
+### F12 — SessionStart Hook Silent No-Op on Resume and Compact
+
+**Two reported failure scenarios:**
+
+1. **Idle tmux session, returned after days**: Claude Code fires `SessionStart` with event type `compact` when it auto-compacts a long-running session. Our `hooks.json` had `matcher: "startup|resume"` — `compact` events were silently filtered out. If the session never auto-compacted, `SessionStart` never fires at all (Claude Code has no mechanism to detect "user returned to idle terminal"). This is a permanent limitation for the never-compacted case.
+
+2. **Exit + resume**: Should have matched `"resume"` in our matcher. Most likely failure: the `matcher` field on `SessionStart` is a regex applied to the session type string — if Claude Code sends a variant string (or `matcher` semantics differ from `UserPromptSubmit`), the hook was silently swallowed.
+
+**Root cause:** The `matcher` field was adding an undocumented second gate on top of the gap-tier logic that already handles suppression (`< 1h gap → skip`). The official `remember` plugin (reference implementation) uses no `matcher` on `SessionStart` at all — the gap-tier is sufficient.
+
+**Secondary issue:** `cwd` fallback only checked one field name (`event.get("cwd")`). If Claude Code sends the working directory under a different key on resume, `has_intent_dir` returns False and the hook silently returns None with no diagnostic output.
+
+**Fixes applied (commit below):**
+1. `hooks/hooks.json` — removed `matcher` from `SessionStart` hook. Fires on all session events (startup, resume, compact, clear). Gap-tier handles skip logic.
+2. `bin/mission-ctrl` — `cmd_hook_session_start` now tries `cwd`, `workingDirectory`, `project_dir` before defaulting to `"."`. Emits a stderr line when returning None so `--debug` mode shows why.
+
+**Residual limitation:** Returning to a never-compacted idle tmux session still can't be auto-detected. User should run `/mission-ctrl:recap` manually when returning after a long absence without triggering a session event.
 
 ---
 
