@@ -1,7 +1,21 @@
 # Handoff Log — Mission Ctrl
 
 > Newest entry first. Append a new entry at the top after every session.
-> Never delete old entries. See `AGENTS.md` for the entry format.
+> Never delete old entries.
+
+---
+
+## [2026-09-11] Current State
+
+**Plugin status:** Claude Code plugin fully operational. `claude-plugin-08` shipped — skills, hooks, `bin/mission-ctrl` direct-wired to Python. No bridge. 208 tests pass.
+
+**Dogfood findings (F1–F12 + I1–I4):** All tactical hook bugs fixed (F2, F3, F5, F7-short, F8, F12). Store integrity gaps (F4, F7-long, F10, F11) and the intelligence/automation gaps (I1–I4) are filed as proposals 15–22 in `docs/proposals/`. See `docs/feedback.md` for full bucketed analysis.
+
+**Key architectural insight:** The rule-based store is the ceiling. Every remaining gap (dependency ordering, criticality judgment, intent classification, auto-advancement) requires a reasoning step, not a better rule. Proposals 18–22 address this as a "judgment layer" built on top of the existing store + event model.
+
+**Pi/openspec:** `pi-package` is a working secondary harness adapter sharing the same core and store format. `extension.py` wires the Pi hooks. Not a primary delivery path — Claude Code plugin is.
+
+**Next work:** Proposals 15+16 (store integrity fixes) are independent and can start immediately. Proposal 18 (judgment layer) is the strategic bet — requires proposals 15+16 done first.
 
 ---
 

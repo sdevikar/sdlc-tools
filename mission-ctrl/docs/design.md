@@ -17,12 +17,12 @@ Status: current source of truth. Supersedes the skill/data-model sections of
 | `EventBuilder` | Build valid MetaEvent objects | MetaStore | Decide *what* to log (caller decides) |
 | `planner.py` | Rank unblocked specs | SpecStore, MvpStore | Talk to an LLM |
 | `recap.py` | Assemble recap payload | All stores, git log (read-only) | Talk to an LLM |
-| Pi Skills | Parse Pi input, call core directly, format output | `mission_ctrl_core` | Persist without going through core |
+| Agent Skills | Parse agent input, call core directly, format output | `mission_ctrl_core` | Persist without going through core |
 | `on_session_start` hook | Fire recap on session open | Skills | Contain business rules |
 | `on_before_send` hook | Intercept implementation-intent messages | Skills, backlog state | Silently allow bypass of backlog-first |
 | AGENTS.md Sync | Regenerate context file | Store reads | Get edited manually |
 
-**Rule:** Core is deterministic and network-free. All reasoning (alignment judgment, design digest content) happens in Pi's own context before calling a skill. Core validates and stores; it does not generate.
+**Rule:** Core is deterministic and network-free. All reasoning (alignment judgment, design digest content) happens in the agent's context before calling a skill. Core validates and stores; it does not generate.
 
 ---
 
@@ -33,10 +33,10 @@ Status: current source of truth. Supersedes the skill/data-model sections of
 | `/mission-ctrl:init` | — | Confirmation | Creates `.mission/`, templates, `INTENT_CREATED` | `IntentStore.init()` |
 | `/mission-ctrl:recap` | verbosity? | Formatted recap | None | `recap.generate_recap()` |
 | `/mission-ctrl:add-idea` | title, description | idea ID | Writes `backlog.json`, `BACKLOG_ADDED` | `BacklogStore.add()` |
-| `/mission-ctrl:triage` | idea_id, bucket, **alignment (Pi-supplied)** | Classification | Updates `backlog.json`, `BACKLOG_TRIAGE` | `BacklogStore.update()` |
+| `/mission-ctrl:triage` | idea_id, bucket, **alignment (agent-supplied)** | Classification | Updates `backlog.json`, `BACKLOG_TRIAGE` | `BacklogStore.update()` |
 | `/mission-ctrl:spec-create` | idea_id | spec ID | Writes `specs.json`, `SPEC_CREATED` | `SpecStore.add()` |
 | `/mission-ctrl:spec-status` | spec_id, to-status | Confirmation | Updates `specs.json`, `SPEC_STATUS_UPDATED` | `SpecStore.update()` |
-| `/mission-ctrl:design-propose` | spec_id, **digest text (Pi-supplied)** | Stored digest | Status → `design_proposed`, `DESIGN_PROPOSED` | `SpecStore.update()` (validate/store only) |
+| `/mission-ctrl:design-propose` | spec_id, **digest text (agent-supplied)** | Stored digest | Status → `design_proposed`, `DESIGN_PROPOSED` | `SpecStore.update()` (validate/store only) |
 | `/mission-ctrl:design-approve` | spec_id, decision, notes? | Confirmation | Status transition, `DESIGN_APPROVED` | `SpecStore.update()` |
 | `/mission-ctrl:next` | count? | Ranked specs | None | `planner.suggest_next()` |
 | `/mission-ctrl:status` | — | Dashboard | None | reads all stores |
@@ -144,7 +144,7 @@ Fires every time Pi opens a workspace with `.mission/`.
 
 Also appends `SESSION_STARTED`.
 
-### on_before_send (Pi-only, no Claude equivalent)
+### on_before_send
 Fires before every outgoing message.
 
 1. Scan for implementation-intent patterns ("implement X", "build X", "add X feature") — **hardcoded list in v1**.
@@ -199,7 +199,7 @@ Fires after any skill writes to `.mission/`. Regenerates `AGENTS.md` from templa
 | backlog.json | `add-idea`, `triage` | `next`, `status`, AGENTS.md sync |
 | specs.json | `spec-create`, `spec-status`, `design-propose`, `design-approve` | `next`, `recap`, `status` |
 | meta.jsonl | `EventBuilder` (every skill) | `recap` only |
-| AGENTS.md | Sync hook (derived) | Pi's native context loader |
+| AGENTS.md | Sync hook (derived) | Agent context loader |
 
 ---
 
