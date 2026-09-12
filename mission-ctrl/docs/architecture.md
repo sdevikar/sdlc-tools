@@ -1,9 +1,6 @@
 # Mission Ctrl — Architecture
-## v1 scope: Pi extension, pure Python core. No Claude plugin, no MCP, no bridge.
-Status: current source of truth. Supersedes the architecture sections of
-`mission-ctrl-technical-roadmap.md`, `mission-ctrl-common.md`,
-`mission-ctrl-claude-plugin.md`, `mission-ctrl-pi-package.md` (all deleted — see docs/kanban.md
-for what's deferred and why).
+
+Status: current source of truth.
 
 ---
 
@@ -12,23 +9,25 @@ for what's deferred and why).
 ```mermaid
 flowchart LR
     Dev["Developer"]
-    Agent["Pi (coding agent)"]
-    Ext["Pi Extension\n(Python: hooks + skills)"]
+    CC["Claude Code\n(coding agent)"]
+    Plugin["Claude Code Plugin\n(hooks + skills)"]
     Core["mission_ctrl_core\n(pure Python lib, no network)"]
     State[".mission/ files\n(repo, git-tracked)"]
     Git["git log / commits"]
     MD["AGENTS.md\n(auto-generated)"]
 
-    Dev -->|types in chat| Agent
-    Agent -->|calls skill| Ext
-    Ext -->|direct import, in-process| Core
+    Dev -->|types in chat| CC
+    CC -->|calls skill via bin/mission-ctrl| Plugin
+    Plugin -->|direct import, in-process| Core
     Core -->|validate + persist| State
     Core -->|read only| Git
-    Ext -->|regenerate| MD
-    MD -->|loaded natively by Pi| Agent
+    Plugin -->|regenerate| MD
+    MD -->|loaded natively by Claude Code| CC
 ```
 
-No subprocess boundary, no external network call anywhere. Pi is the only LLM in the system — it reasons in its own context; core only validates and persists what Pi tells it.
+No subprocess boundary in the critical path, no external network call anywhere. Claude Code is the agent — it reasons in its own context; core only validates and persists what the agent tells it.
+
+The `pi-package` provides an equivalent adapter for Pi/openspec environments using the same core library and the same `.mission/` store format.
 
 ---
 
@@ -36,28 +35,36 @@ No subprocess boundary, no external network call anywhere. Pi is the only LLM in
 
 ```mermaid
 flowchart TB
-    subgraph PiPackage["pi-package (Python)"]
-        Hooks["Hooks: on_session_start, on_before_send"]
-        Skills["10 skills — see design.md §2"]
-        Sync["AGENTS.md sync"]
+    subgraph ClaudePlugin["claude-plugin"]
+        SKILL_MD["SKILL.md files (11 skills)"]
+        HooksJSON["hooks/hooks.json"]
+        Bin["bin/mission-ctrl\n(dispatch wrapper)"]
     end
 
-    subgraph Core["mission_ctrl_core (Python)"]
+    subgraph PiPackage["pi-package (secondary harness)"]
+        Hooks["hooks/: session_start, before_send"]
+        Skills["skills/ (11 skills)"]
+        Sync["AGENTS.md sync"]
+        Ext["extension.py (Pi adapter)"]
+    end
+
+    subgraph Core["mission_ctrl_core"]
         Store["Store layer\nMission/Mvp/Backlog/Spec/Constraints/Meta"]
         Logic["Logic layer\nplanner.py, recap.py (no LLM calls)"]
-        Schema["pydantic models (validation + typing)"]
+        Schema["pydantic models"]
         EventB["EventBuilder"]
     end
 
+    Bin -->|subprocess → on_session_start / before_send / skill| Hooks
+    Hooks --> Skills
     Skills --> Store
     Skills --> Logic
     Store --> Schema
     Store --> EventB
-    Hooks --> Skills
     Skills --> Sync
 ```
 
-Two packages, one language, one process. `mission_ctrl_core` stays a separate pip package so it's reusable later — see §6 for the cost of reusing it from a non-Python surface.
+`claude-plugin` delegates all logic to `pi-package` via `bin/mission-ctrl`. `mission_ctrl_core` is a standalone pip package — no agent-runtime dependency.
 
 ---
 
@@ -66,46 +73,44 @@ Two packages, one language, one process. `mission_ctrl_core` stays a separate pi
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
-    participant Pi as Pi (reasoning)
-    participant Skill as Pi Skill
+    participant CC as Claude Code
+    participant Skill as /mission-ctrl skill
     participant Core as mission_ctrl_core
     participant Meta as meta.jsonl
 
-    Dev->>Pi: "exports should be async"
-    Pi->>Skill: add_idea(title, description)
+    Dev->>CC: "exports should be async"
+    CC->>Skill: /mission-ctrl:add-idea
     Skill->>Core: BacklogStore.add()
     Core->>Meta: BACKLOG_ADDED
 
-    Pi->>Pi: reason about alignment (in-context)
-    Pi->>Skill: triage(idea_id, bucket, alignment)
+    CC->>CC: reason about alignment (in-context)
+    CC->>Skill: /mission-ctrl:triage
     Skill->>Core: BacklogStore.update()
     Core->>Meta: BACKLOG_TRIAGE
 
-    Pi->>Skill: spec_create(idea_id)
+    CC->>Skill: /mission-ctrl:spec-create
     Skill->>Core: SpecStore.add()
     Core->>Meta: SPEC_CREATED
 
-    Pi->>Pi: draft digest (in-context)
-    Pi->>Skill: design_propose(spec_id, digest)
-    Skill->>Core: SpecStore.update() (validate + store only)
+    CC->>CC: draft design digest (in-context)
+    CC->>Skill: /mission-ctrl:design-propose
+    Skill->>Core: SpecStore.update()
     Core->>Meta: DESIGN_PROPOSED
 
-    Dev->>Pi: approve
-    Pi->>Skill: design_approve(spec_id, "approved")
+    Dev->>CC: approve
+    CC->>Skill: /mission-ctrl:design-approve
     Core->>Meta: DESIGN_APPROVED
 
-    Dev->>Pi: "implement it" (raw request, no backlog ref)
-    Pi->>Pi: on_before_send hook intercepts
-    Pi-->>Dev: "spec_001 needs design approval first" (or proceeds if already approved)
+    Dev->>CC: "implement it"
+    CC->>CC: UserPromptSubmit hook fires
+    CC-->>Dev: "spec_001 is design-approved — run /mission-ctrl:spec-status first"
 
-    Dev->>Pi: writes code directly
-    Pi->>Skill: spec_status(spec_id, in_progress -> done)
+    CC->>Skill: /mission-ctrl:spec-status (in_progress → done)
     Core->>Meta: SPEC_STATUS_UPDATED
 
-    Dev->>Pi: (next day) opens project
-    Pi->>Skill: recap()
-    Skill->>Core: generate_recap()
-    Core-->>Pi: RecapResult
+    Dev->>CC: (next day) opens project
+    CC->>CC: SessionStart hook fires → /mission-ctrl:recap
+    CC-->>Dev: RecapResult (mission, MVP %, focus, next)
 ```
 
 ---
@@ -125,7 +130,7 @@ flowchart TB
     Meta --> MD["AGENTS.md (derived, regenerated)"]
 ```
 
-File format (JSON/JSONL) is language-agnostic by design — see `docs/examples/domain/` for live samples. This is unchanged regardless of core implementation language.
+File format (JSON/JSONL) is language-agnostic. Live samples in `docs/examples/domain/`.
 
 ---
 
@@ -134,46 +139,63 @@ File format (JSON/JSONL) is language-agnostic by design — see `docs/examples/d
 ```
 mission-ctrl/
 ├── packages/
-│   ├── core/                     # mission_ctrl_core (Python, pip)
+│   ├── core/                        # mission_ctrl_core (Python, pip)
 │   │   ├── mission_ctrl_core/
-│   │   │   ├── models/           # pydantic models (replaces old *.schema.json + AJV)
-│   │   │   ├── store/            # IntentStore + sub-stores
-│   │   │   ├── logic/            # planner.py, recap.py
-│   │   │   └── events/           # EventBuilder
+│   │   │   ├── models/              # pydantic models
+│   │   │   ├── stores/              # IntentStore + sub-stores
+│   │   │   ├── logic/               # planner.py, recap.py
+│   │   │   └── stores/events.py     # EventBuilder
 │   │   ├── tests/
-│   │   │   └── fixtures/         # empty-project, mid-flight, complex-graph
+│   │   │   └── fixtures/            # empty-project, mid-flight, complex-graph
 │   │   └── pyproject.toml
 │   │
-│   └── pi-package/               # mission_ctrl_pi (Python, depends on core)
-│       ├── mission_ctrl_pi/
-│       │   ├── extension.py
-│       │   ├── hooks/
-│       │   │   ├── on_session_start.py
-│       │   │   └── on_before_send.py
-│       │   ├── skills/
-│       │   └── sync/agents_md_sync.py
-│       ├── templates/AGENTS.md
-│       └── pyproject.toml
+│   ├── pi-package/                  # mission_ctrl_pi (secondary harness)
+│   │   ├── mission_ctrl_pi/
+│   │   │   ├── extension.py         # Pi adapter
+│   │   │   ├── hooks/               # session_start.py, before_send.py
+│   │   │   ├── skills/              # 11 skill functions
+│   │   │   └── agents_sync.py       # AGENTS.md regeneration
+│   │   ├── templates/               # agents_md.jinja2
+│   │   └── pyproject.toml
+│   │
+│   └── claude-plugin/               # Claude Code plugin (primary surface)
+│       ├── .claude-plugin/
+│       │   └── plugin.json          # manifest (namespace: mission-ctrl)
+│       ├── skills/                  # one SKILL.md per skill
+│       ├── hooks/
+│       │   └── hooks.json           # SessionStart + UserPromptSubmit wiring
+│       ├── bin/
+│       │   └── mission-ctrl         # dispatch wrapper (Python, stdlib-only)
+│       └── README.md
 │
 ├── docs/
-│   ├── concept.md
-│   ├── architecture.md           # this file
-│   ├── design.md
-│   ├── kanban.md
-│   ├── scratchpad.md
+│   ├── concept.md                   # why this tool exists
+│   ├── architecture.md              # this file
+│   ├── design.md                    # skill contracts, hooks, data model
+│   ├── kanban.md                    # work items and proposals
+│   ├── feedback.md                  # dogfood findings, bucketed
+│   ├── proposals/                   # individual openspec proposal files
 │   └── examples/
 │
 └── README.md
 ```
 
-Runtime layout inside a user's project is unchanged: `.mission/*.json`, `.mission/meta.jsonl`, `AGENTS.md` at repo root, committed to git.
+Runtime layout inside a user's project (unchanged): `.mission/*.json`, `.mission/meta.jsonl`, `AGENTS.md` at repo root, committed to git.
 
 ---
 
-## 6. Deferred Cost (accepted, not resolved)
+## 6. Design Decisions + Deferred Work
 
-Building a Claude Code plugin later means either:
-- (a) a Node → Python subprocess bridge (mirror image of the bridge we removed), or
-- (b) porting `mission_ctrl_core` to TypeScript, duplicating it.
+**What's deferred and why:**
 
-Not a v1 decision. Revisit only when the Claude plugin is actually scheduled — see `docs/kanban.md` Backlog.
+| Item | Status | Why deferred |
+|---|---|---|
+| Distributing the plugin via Claude marketplace | Deferred | Requires publishing pipeline + versioning; local `--plugin-dir` sufficient for dogfood |
+| `mutation-skills-10`: update-mission, add-mvp-item, add-constraint | Deferred | Store can be hand-edited for now; mutation skills are low-priority until judgment layer (proposal 18) shapes what mutations are needed |
+| Semantic before-send classification | Deferred (proposal 20) | Requires judgment layer foundation first |
+| Auto spec-completion detection | Deferred (proposal 21) | Requires environment signal wiring (git hook or CI) |
+| Backlog merge / archive | Deferred | Not needed until backlog grows to 50+ items |
+| Schema versioning / migration tooling | Deferred | No consumers on old schema yet |
+| MCP visual spec graph server | Deferred | CLI surface sufficient; no pressing need for visual graph |
+
+The `ts-bridge-07` proposal (Node → Python bridge for Pi) is superseded — `bin/mission-ctrl` calls Python directly, so no bridge is needed for Claude Code. If a true Node-side Pi adapter is ever needed, it would use the same bridge architecture, but that is not on the roadmap.

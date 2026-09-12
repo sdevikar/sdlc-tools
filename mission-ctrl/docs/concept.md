@@ -1,13 +1,4 @@
-> **Status note (added):** This document is the original vision/rationale doc. Sections 0–4
-> (problem statement, feature list, non-goals, data-model rationale) are still accurate and
-> authoritative. Sections 5–9 describe an early "VS Code first, agent-agnostic" implementation
-> plan that has since been superseded by concrete decisions: **Pi extension first, pure Python
-> core, no MCP in v1.** For current technical architecture, component design, and roadmap, see
-> `docs/architecture.md`, `docs/design.md`, and `docs/kanban.md`. One correction worth flagging:
-> §9.1 below correctly lists `spec.create_from_idea` and `spec.update_status` as required v1
-> skills — a later draft mistakenly deferred them to v2; `docs/design.md` restores them.
-
-# Intent-Driven, Spec-Aware Development Assistant (VS Code First)
+# Intent-Driven, Spec-Aware Development Assistant
 Version: 0.2 (Implementation Draft)
 Owner: (you)
 Last updated: 2026-03-20
@@ -15,11 +6,7 @@ Last updated: 2026-03-20
 ---
 
 ## 0) Purpose of This Document
-This document consolidates all decisions and details into a single implementation-oriented spec. It is intended to be the working reference for building:
-- VS Code integration
-- MCP servers / skills
-- Data model and persistence
-- Agent interaction patterns
+This document defines the problem, features, and design philosophy for mission-ctrl — the authoritative rationale for product-level decisions. For technical architecture, skill contracts, and roadmap, see `docs/architecture.md`, `docs/design.md`, and `docs/kanban.md`.
 
 ---
 
@@ -232,14 +219,11 @@ Superseded by `docs/design.md` §3–4 (data model reference + event catalog). K
 
 ---
 
-## 5–9) Implementation, Architecture, Decision Log, Lifecycle, Skill Surface
+## 5–9) Technical Reference
 
-Superseded by:
-- `docs/architecture.md` — system diagrams, component design, repo layout
-- `docs/design.md` — skill contracts, hooks, data model, event catalog
-- `docs/kanban.md` — phases, milestones, testing, distribution
+See `docs/architecture.md` (system diagrams, component design, repo layout), `docs/design.md` (skill contracts, hooks, data model, event catalog), and `docs/kanban.md` (phases, proposals, status).
 
-The original decision log (§7) is still binding for product-level calls: Mission → MVP → Constraints hierarchy, backlog-first, minimalist-enforcer posture, hybrid override model, quick-recap onboarding, skills-first (not MCP-dependent) correctness. Only the *implementation* specifics (VS Code, agent-agnostic multi-surface framing) have changed.
+The product-level decisions in §1–4 are binding: Mission → MVP → Constraints hierarchy, backlog-first, minimalist-enforcer posture, hybrid override model, quick-recap onboarding, skills-first correctness.
 
 ---
 

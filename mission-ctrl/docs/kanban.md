@@ -1,31 +1,37 @@
-# Mission Ctrl — Build Kanban (Ship v0.1: Pure Python Core + Pi Extension)
+# Mission Ctrl — Build Kanban
 
-Goal: dogfoodable end-to-end loop in Claude Code, shortest path. One language, no bridge, no MCP, no LLM-in-core. Pi route deferred until Pi supports Python extensions.
+Goal: dogfoodable Claude Code plugin with intent-aware project management. Pi/openspec: secondary harness, same core, same store format.
 
 ---
 
 ## OpenSpec Change Index
 
-Lightweight status tracking. Update `Status` as each change is applied and archived.
-
 | Change | Title | Milestone | Status |
 |---|---|---|---|
 | `core-foundation-01` | Core Foundation | M0 | 📦 Archived |
-| `logic-layer-02` | Logic Layer | M1 | 🔲 Planned |
+| `logic-layer-02` | Logic Layer | M1 | 📦 Archived |
 | ~~`pi-extension-shell-03`~~ | ~~Pi Extension Shell~~ | ~~M2~~ | ⚠️ Superseded (split → 03a/03b) |
-| `pi-extension-shell-03a` | Pi Extension Shell — Core Loop | M2a | 📦 Archived |
-| `pi-extension-shell-03b` | Pi Extension Shell — Design Gate | M2b | 📦 Archived |
+| `pi-extension-shell-03a` | Extension Shell — Core Loop (7 skills) | M2a | 📦 Archived |
+| `pi-extension-shell-03b` | Extension Shell — Design Gate (3 skills) | M2b | 📦 Archived |
 | `hooks-auto-onboarding-04` | Hooks & Auto-Onboarding | M3 | 📦 Archived |
 | `dogfood-ship-v0-1-05` | Dogfood & Ship v0.1 | M4 | 🔲 Planned |
 | `log-feedback-06` | Feedback Logging Skill | M5-prep | ✅ Applied |
-| `ts-bridge-07` | TS ↔ Python Bridge (Pi + OpenSpec) | M2x | 🔲 Planned |
-| `claude-plugin-08` | Claude Code Plugin (dogfood vehicle #1) | M2x | 🔄 In Progress (pending live dogfood) |
-| `direct-wire-09` | Direct-wire bin/mission-ctrl to Python (drop bridge dep) | M2x | ⚠️ Superseded (already done in claude-plugin-08; archived) |
-| `mutation-skills-10` | Mutation skills: update-mission, add-mvp-item, add-constraint | M3x | 🔲 Planned |
-| `launch-skill-11` | launch conversational onboarding wrapper | M3x | 🔲 Planned |
-| `insights-12` | Behavioral signal synthesis from meta.jsonl (no discipline required) | M5 | 🔲 Planned |
-| `mvp-completion-fix-13` | MVP % shows 0% at mid-project init (MvpItem.done field + mark-mvp-done skill) | M3x | 🔲 Planned |
-| `mission-store-rename-14` | `.intent/` → `.mission/` rename + `intent/intent.md` generation | M2x | 📦 Archived |
+| ~~`ts-bridge-07`~~ | ~~TS ↔ Python Bridge~~ | ~~M2x~~ | ⚠️ Superseded (`bin/mission-ctrl` direct-wires Python; bridge not needed) |
+| `claude-plugin-08` | Claude Code Plugin | M2x | ✅ Applied |
+| ~~`direct-wire-09`~~ | ~~Direct-wire bin/mission-ctrl~~ | ~~M2x~~ | ⚠️ Superseded (already done in `claude-plugin-08`) |
+| `mutation-skills-10` | Mutation skills: update-mission, add-constraint | M3x | 🔲 Planned |
+| `launch-skill-11` | Conversational onboarding wrapper | M3x | 🔲 Planned |
+| `insights-12` | Behavioral signal synthesis from meta.jsonl | M5 | 🔲 Planned |
+| `mvp-completion-fix-13` | MVP % fix (MvpItem.done + mark-mvp-done) | M3x | ⚠️ Superseded by `store-mvp-tracking-15` |
+| `mission-store-rename-14` | `.intent/` → `.mission/` rename + `intent/intent.md` | M2x | 📦 Archived |
+| `store-mvp-tracking-15` | MVP tracking: MvpItem.done, mvp-add, mvp-link skills | M3x | 🔲 Planned |
+| `backlog-planner-integration-16` | Surface backlog items in /next and recap | M3x | 🔲 Planned |
+| `mid-project-init-17` | Mid-project store repair and import | M4x | 🔲 Planned |
+| `judgment-layer-18` | Judgment layer: structured reasoning at decision points | M5 | 🔲 Planned |
+| `auto-triage-19` | Automated triage via mission-alignment scoring | M5 | 🔲 Planned |
+| `semantic-intent-20` | Semantic before-send classification | M5 | 🔲 Planned |
+| `auto-advancement-21` | Auto spec-completion detection from git/tests | M5 | 🔲 Planned |
+| `design-gate-enrichment-22` | Structured design artifacts and drift detection | M5 | 🔲 Planned |
 
 > **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded
 
@@ -33,152 +39,95 @@ Lightweight status tracking. Update `Status` as each change is applied and archi
 
 ## Backlog (not this milestone)
 
-- [ ] Claude Code plugin → now `claude-plugin-08` (TS plugin shell over the
-  Python bridge via `ts-bridge-07` — no port; prio #1 for dogfooding)
 - [ ] MCP visual spec graph server
 - [ ] MCP dashboard server
-- [ ] `backlog.merge`, `backlog.archive`, `intent.update` skills
-- [ ] Git commit auto-inference
+- [ ] `backlog.merge`, `backlog.archive` skills
 - [ ] Schema versioning / migration tooling
 - [ ] Configurable `on_before_send` pattern matching (v1 ships hardcoded)
-- [ ] **Pi / OpenCode extension**: when building the Pi or OpenCode plugin, establish `AGENTS.md → CLAUDE.md` linkage. `AGENTS.md` is the right project-level system prompt for non-Claude-Code agents; it needs to be wired to `CLAUDE.md` for Claude Code. Out of scope for the current Claude plugin (`AGENTS.md` kept for cross-agent compatibility but not the primary Claude Code surface).
+- [ ] Plugin distribution via Claude marketplace
 
 ---
 
-## M0 — Core Foundation (Python, agent-agnostic)
-> OpenSpec: `core-foundation-01` | Status: 📦 Archived (spec synced to openspec/specs/intent-store)
+## M0 — Core Foundation
+> `core-foundation-01` | 📦 Archived
 
-- [x] Scaffold `packages/core` as `mission_ctrl_core` (Python, pyproject.toml, pytest)
-- [x] Root pyproject.toml: uv workspace config (explicit members:
-  `packages/core`, `packages/pi-package` — non-Python distributables must not
-  match the members glob), single uv.lock
-- [x] pydantic models: mission, mvp, constraints, backlog, specs, meta (with discriminated unions for meta.jsonl)
-- [x] Validation layer with clear field-level error formatting
-- [x] `MissionStore`, `MvpStore`, `ConstraintsStore` (read/write/next_id)
-- [x] `BacklogStore` (add/update/get/next_id/search)
-- [x] `SpecStore` (add/update/get/next_id/**validate_no_cycles** via `graphlib.TopologicalSorter`)
-- [x] `MetaStore` (append/read_since/read_all/next_id) — append-only; discriminated-union deserialization
-- [x] `IntentStore` orchestrator: `init()`, `get_current_intent()`, `validate_all()`
-- [x] `EventBuilder`: all v1 event types incl. `SPEC_CREATED`, `SPEC_STATUS_UPDATED`
-- [x] Unit tests: 100% model field coverage
+- [x] `mission_ctrl_core` (Python, pyproject.toml, pytest, uv workspace)
+- [x] pydantic models: mission, mvp, constraints, backlog, specs, meta
+- [x] All stores: MissionStore, MvpStore, ConstraintsStore, BacklogStore, SpecStore, MetaStore
+- [x] EventBuilder: all v1 event types
 - [x] 3 fixture repos: empty-project, mid-flight, complex-graph
 
-**Done when:** can init, read, write, validate all 5 files + meta.jsonl from a script, no agent involved.
+---
+
+## M1 — Logic Layer
+> `logic-layer-02` | 📦 Archived
+
+- [x] `planner.py`: `suggest_next()` — MVP-critical first, unblocked, continuity
+- [x] `recap.py`: `generate_recap()` → `RecapResult`
+- [x] Git read utility: read-only `git log` since timestamp
 
 ---
 
-## M1 — Logic Layer (No LLM calls)
-> OpenSpec: `logic-layer-02` | Status: 📦 Archived (spec synced to openspec/specs/intent-logic)
+## M2a — Extension Shell: Core Loop (7 skills)
+> `pi-extension-shell-03a` | 📦 Archived
 
-- [x] `planner.py`: `suggest_next()` — MVP-critical first, unblocked, fewest deps, continuity (priority order in design.md)
-- [x] `RecapResult` Pydantic model (typed output contract consumed by M2b)
-- [x] `recap.py`: `generate_recap()` → `RecapResult` — mission, MVP %, last focus, changes since, next suggestion
-- [x] Git read utility: `git log` since timestamp (read-only, no writes; fallback to empty list if no history)
-- [x] Skip alignment/design as LLM modules — Pi supplies structured input instead
-- [x] Unit tests: planner never suggests blocked specs; recap correct on all 3 fixtures
-
-**Done when:** `suggest_next()` and `generate_recap()` produce correct output against fixtures with zero network calls.
+- [x] `packages/pi-package` scaffold (`mission_ctrl_pi`, depends on `mission_ctrl_core`)
+- [x] `schemas.py`: all skill input/output Pydantic models
+- [x] 7 skills: `/mission-ctrl:init`, `add-idea`, `triage`, `spec-create`, `spec-status`, `next`, `status`
+- [x] E2E lifecycle: init → add-idea → triage → spec-create → spec-status(done)
 
 ---
 
-## M2a — Pi Extension Shell: Core Loop (7 skills)
-> OpenSpec: `pi-extension-shell-03a` | Status: 📦 Archived (change archived 2026-09-04; core-loop skills shipped)
-> **Prerequisite:** Resolve Pi distribution mechanism (npm wrapper vs PyPI/pip) before starting
+## M2b — Extension Shell: Design Gate (3 skills)
+> `pi-extension-shell-03b` | 📦 Archived
 
-- [ ] Scaffold `packages/pi-package` (Python, pyproject.toml, depends on `mission_ctrl_core`)
-- [ ] `mission_ctrl_pi/schemas.py`: all skill input/output Pydantic models
-- [ ] `extension.py`: manifest registering hook stubs + 7 core-loop skills
-- [ ] `intent:init` — creates `.mission/`, copies schemas, templates, `INTENT_CREATED`
-- [ ] `intent:add-idea`
-- [ ] `intent:triage` (takes Pi-supplied alignment verdict)
-- [ ] `intent:spec-create` (idea → spec node) — **fixes core-loop gap**
-- [ ] `intent:spec-status` (M2a state machine: draft/in_progress/done/blocked) — **fixes core-loop gap**
-- [ ] `intent:next`
-- [ ] `intent:status`
-- [ ] Local install test: `pi install ./packages/pi-package`
-- [ ] E2E lifecycle: init → add-idea → triage → spec-create → spec-status(done) → next → status
-
-**Done when:** core lifecycle runs manually via Pi skills, correct state in `.mission/`, zero hand-edits.
-
----
-
-## M2b — Pi Extension Shell: Design Gate (3 skills)
-> OpenSpec: `pi-extension-shell-03b` | Status: 📦 Archived (no delta specs — design-only change; single-event `DESIGN_APPROVED` semantics per `docs/design.md` §4)
-
-- [x] Add design-gate schemas to `schemas.py` (RecapInput, DesignProposeInput, DesignApproveInput, etc.)
-- [x] `intent:recap` — on-demand recap; optional verbosity override; returns `RecapResult`
-- [x] `intent:design-propose` (takes Pi-supplied digest text)
-- [x] `intent:design-approve` (approve / reject-with-required-notes)
-- [x] Extend `intent:spec-status` to allow `design_approved → in_progress`
-- [x] E2E full lifecycle: init → add-idea → triage → spec-create → design-propose → design-approve → spec-status(done) → status
-
-**Done when:** full lifecycle including design gate runs manually via Pi skills with correct state.
+- [x] `/mission-ctrl:recap`, `design-propose`, `design-approve`
+- [x] `spec-status` extended for `design_approved → in_progress`
+- [x] Full E2E with design gate
 
 ---
 
 ## M3 — Hooks & Auto-Onboarding
-> OpenSpec: `hooks-auto-onboarding-04` | Status: 📦 Archived (spec synced to openspec/specs/pi-hooks)
+> `hooks-auto-onboarding-04` | 📦 Archived
 
-- [x] `on_session_start` hook: detect `.mission/` presence; no-op if absent; session-gap → verbosity tier (4 tiers per design.md)
-- [x] Inject recap before user's first message; append `SESSION_STARTED` event
-- [x] `on_before_send` hook: hardcoded pattern list (full-word, case-insensitive)
-- [x] `on_before_send`: redirect to backlog-add / triage / design-propose depending on state
-- [x] `on_before_send`: one-phrase override to bypass (surfaced, never silent)
-- [x] Log interceptions: `INTENT_INTERCEPTED` event to meta.jsonl
-- [x] Log bypasses: `INTENT_BYPASS_USED` event to meta.jsonl
-- [x] Post-skill hook: regenerate `AGENTS.md` after any `.mission/` write (≤1s)
-- [x] Jinja2 AGENTS.md template + sanitization (escape user-supplied fields; reject injection patterns)
-- [x] Snapshot tests for AGENTS.md template output
-
-**Done when:** opening a project with `.mission/` auto-shows recap; "implement X" gets intercepted correctly with event logged; any skill write updates `AGENTS.md` within 1s.
+- [x] `on_session_start`: gap-tiered recap injection, `SESSION_STARTED` event
+- [x] `on_before_send`: hardcoded pattern matching, redirect, bypass, event logging
+- [x] AGENTS.md sync: `sync_after_write` decorator, Jinja2 template, sanitization
+- [x] `/mission-ctrl:log-feedback` skill
 
 ---
 
-## M5-prep — Feedback Logging Skill
-> OpenSpec: `log-feedback-06` | Status: 🔲 Planned
-> *(Implemented before M4 dogfood week begins)*
+## M2x — Claude Code Plugin
+> `claude-plugin-08` | ✅ Applied
 
-- [ ] `FEEDBACK_LOGGED` event type in `EventBuilder`
-- [ ] `MetaStore.read_feedback(severity=None)` query helper
-- [ ] `intent:log-feedback` skill (category, description, severity, related_spec_id)
-- [ ] Unit + integration tests
+- [x] `packages/claude-plugin/`: manifest, 11 SKILL.md files, `hooks/hooks.json`, `bin/mission-ctrl`, README
+- [x] `bin/mission-ctrl` direct-wires Python (no bridge); uv fallback for system Python
+- [x] `hooks.json`: SessionStart (gap-tiered recap) + UserPromptSubmit (before-send)
+- [x] Contract test: `test_claude_plugin_contracts.py`
+- [x] Dogfood bootstrap: `.mission/` initialized for this repo; AGENTS.md live
 
-**Done when:** `intent:log-feedback` writes a correctly structured event; `read_feedback()` filters by severity.
+---
+
+## M3x — Store Repair + Backlog Visibility
+> `store-mvp-tracking-15`, `backlog-planner-integration-16`, `mid-project-init-17` | 🔲 Planned
+
+See individual proposals in `docs/proposals/`.
 
 ---
 
 ## M4 — Dogfood & Ship v0.1
-> OpenSpec: `dogfood-ship-v0-1-05` | Status: 🔲 Planned
+> `dogfood-ship-v0-1-05` | 🔲 Planned
 
-- [ ] Run this exact project (mission-ctrl) through its own workflow in Pi for one real week
-- [ ] Use `intent:log-feedback` to capture every issue during dogfood (not just memory)
-- [ ] Triage feedback: fix [blocker] in M4; open new OpenSpec changes for [polish]
-- [ ] Fix `on_before_send` false positives using `INTENT_INTERCEPTED` event data
-- [ ] Fix planner/recap issues surfaced by [blocker]-tagged feedback
+- [ ] Run this project through its own workflow for one week
+- [ ] Triage feedback; fix [blocker] items in M4
 - [ ] README with install + quickstart
 - [ ] CHANGELOG.md (v0.1.0 entry)
-- [ ] CI: lint → test → build → publish; PyPI Trusted Publishing (OIDC); pip-audit
-- [ ] Clean-install smoke test from TestPyPI
+- [ ] CI: lint → test → build → publish; PyPI Trusted Publishing; pip-audit
 - [ ] Tag `v0.1.0`, publish `mission_ctrl_core` + `mission_ctrl_pi` to PyPI
 
-**Done when:** personally used in Pi for a week without hand-editing `.mission/` files, and v0.1.0 is tagged and published.
-
 ---
 
-## Explicit Non-Goals This Milestone
+## M5 — Judgment Layer
+> `judgment-layer-18` through `design-gate-enrichment-22` | 🔲 Planned
 
-- No Claude Code plugin
-- No MCP servers
-- No LLM calls inside core
-- No auto git-commit association
-- No backlog merge/archive
-- No configurable `on_before_send` matching (hardcoded list only)
-- No Node.js anywhere in the v1 dependency graph
-
----
-
-## Note: Distribution Mechanism Needs a Decision (Before M2a)
-
-Original Pi docs assumed npm distribution (`pi install npm:@mission-ctrl/pi-package`) even for what's now a pure-Python package. Confirm whether Pi's install mechanism requires an npm wrapper regardless of implementation language, or whether PyPI/pip distribution is natively supported. **This must be resolved before M2a starts** — `pi install ./packages/pi-package` is M2a's done-when criterion.
-
-
+See individual proposals in `docs/proposals/`. Depends on M3x store completeness.

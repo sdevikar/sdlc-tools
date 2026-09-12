@@ -1,4 +1,8 @@
-"""Mission Ctrl Pi Extension Manifest and Hooks."""
+"""Secondary harness adapter — wires mission-ctrl hooks and skills for Pi/openspec environments.
+
+Primary surface is the Claude Code plugin (`packages/claude-plugin/`). This module provides
+an equivalent adapter for Pi using the same `mission_ctrl_core` library and `.mission/` store.
+"""
 
 from __future__ import annotations
 
@@ -22,7 +26,7 @@ from .skills import (
 MANIFEST: dict[str, Any] = {
     "name": "mission-ctrl",
     "version": "0.1.0",
-    "description": "Intent layer extension for Pi coding agent",
+    "description": "Intent layer for coding sessions — Pi/openspec harness adapter",
     "hooks": {
         "on_session_start": session_start_hook,
         "on_before_send": before_send_hook,
