@@ -32,6 +32,7 @@ Goal: dogfoodable Claude Code plugin with intent-aware project management. Pi/op
 | `semantic-intent-20` | Semantic before-send classification | M5 | 🔲 Planned |
 | `auto-advancement-21` | Auto spec-completion detection from git/tests | M5 | 🔲 Planned |
 | `design-gate-enrichment-22` | Structured design artifacts and drift detection | M5 | 🔲 Planned |
+| `session-handoff-23` | Session Handoff Docs | M4x | 🔲 Planned |
 
 > **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded
 
@@ -124,6 +125,22 @@ See individual proposals in `docs/proposals/`.
 - [ ] CHANGELOG.md (v0.1.0 entry)
 - [ ] CI: lint → test → build → publish; PyPI Trusted Publishing; pip-audit
 - [ ] Tag `v0.1.0`, publish `mission_ctrl_core` + `mission_ctrl_pi` to PyPI
+
+---
+
+## M4x — Session Handoff
+> `session-handoff-23` | 🔲 Planned
+
+A `/mission-ctrl:handoff` skill (and optional session-end hook) that writes a structured handoff document to `.mission/handoffs/YYYY-MM-DD-HHMMSS.md`.
+
+**Document shape:**
+- **What was done** — concise summary of work completed in the session (drawn from `meta.jsonl` events + git log since session start)
+- **Project status** — current MVP %, active spec states, any spec that just moved to `done`/`blocked`
+- **Open points & next items** — unresolved questions, blocked specs, top backlog items, and the `/next` suggestion
+
+**Trigger:** manual skill (`/mission-ctrl:handoff`). Output written to `.mission/handoffs/YYYY-MM-DD-HHMMSS.md`.
+
+**Future:** `Stop` hook (fires at end of each turn) could detect natural stopping points and prompt the user to run the skill. Not in scope here.
 
 ---
 
