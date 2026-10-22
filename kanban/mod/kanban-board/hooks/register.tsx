@@ -102,12 +102,15 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'kanban-view' }, async ($, e) => {
-    const { isPlaced } = await $.ui.open({ id: PANE, title: 'Kanban', closeOnEscape: true })
-    if (!isPlaced) {
+    const opened = await $.ui.open({ id: PANE, title: 'Kanban', closeOnEscape: true, focus: true })
+    if (!opened.isPlaced) {
       const text = await $.fs.read(await kanbanPath($))
-      return { text: '> Widen your terminal to ≥110 columns to open the kanban side pane.\n\n' + renderInline(parseKanban(text)) }
+      return { text: `> ${opened.reason}\n\n` + renderInline(parseKanban(text)) }
     }
-    return { text: 'Kanban board pane opened.' }
+    const hint = e.presentation.isFullscreen
+      ? ''
+      : '\n> Side pane needs fullscreen. Run `/tui fullscreen` or start Claude with `CLAUDE_CODE_NO_FLICKER=1`.'
+    return { text: 'Kanban board pane opened.' + hint }
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
@@ -130,8 +133,10 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column" paddingX={1}>
+        <Text dimColor>x close · c collapse · ctrl+x tab focus</Text>
         <Box flexDirection="row" justifyContent="space-between" marginBottom={1}>
           <Button
+            hotkey="c"
             onPress={async () => {
               const held = await $.state.get(collapsed)
               await $.state.set(collapsed, !(held.value ?? false), { ifVersion: held.version })
@@ -140,6 +145,7 @@ export const register: Register = on => {
             {isCollapsed ? 'Expand' : 'Collapse'}
           </Button>
           <Button
+            hotkey="x"
             onPress={() => { $.ui.close({ id: PANE }) }}
           >
             Close

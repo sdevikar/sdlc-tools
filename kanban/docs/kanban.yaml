@@ -117,6 +117,24 @@ entries:
     status: tasks ready
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
+  - id: kanban-22-pane-close-keyboard
+    title: kanban-22-pane-close-keyboard
+    lane: Not Started
+    priority: 22
+    specPath: openspec/changes/kanban-22-pane-close-keyboard/
+    summary: Hotkeys x/c for Close/Collapse and focus:true so they work without a mouse
+    status: tasks ready
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-23-pane-renderer-hint
+    title: kanban-23-pane-renderer-hint
+    lane: Not Started
+    priority: 23
+    specPath: openspec/changes/kanban-23-pane-renderer-hint/
+    summary: Hint the user to run /tui fullscreen when in classic renderer; fix isPlaced fallback text
+    status: tasks ready
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
   - id: kanban-06-github-issues
     title: kanban-06-github-issues
     lane: Not Started
