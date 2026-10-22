@@ -10,4 +10,4 @@ metadata:
 
 # kanban-view
 
-Read `docs/kanban.yaml`, sort entries by `priority` ascending. Render a Markdown table with one row per spec and one column per lane (Not Started, In Progress, Archived). Place each spec in its lane column as the spec id with the summary on the next line. Leave other lane columns blank. Print to chat. No HTML files are generated.
+Read `docs/kanban.yaml`, group entries by `lane`, sort each group by `priority` ascending. Render a Markdown table with one column per lane (Not Started, In Progress, Archived). Each column is sorted independently; rows are aligned by position (pad shorter columns with blank cells). Each cell shows the spec id with the summary on the next line. Print to chat. No HTML files are generated.
