@@ -31,14 +31,15 @@ OpenSpec spec-driven development project for an OpenCode/Claude kanban bridge pl
 
 This project builds the kanban bridge plugin and uses the same kanban/OpenSpec workflow to develop itself.
 
-- **Source of truth for work items**: `docs/kanban.md` (human-editable). Lanes: Not Started, In Progress, Ready, Done, Archived.
+- **Source of truth for work items**: `docs/kanban.yaml` (human-editable). Lanes: Not Started, In Progress, Ready, Done, Archived.
 - **Specs**: OpenSpec changes under `openspec/changes/kanban-NN-<slug>/`. Use `/opsx-propose`, `/opsx-apply`, `/opsx-archive` (or `openspec` CLI) for lifecycle.
-- **Sync rule**: after proposing/archiving a change, update `docs/kanban.md` (add/move entry; auto-sync only touches status). Manual edits to priority, notes, and lane moves are preserved.
+- **Sync rule**: after proposing/archiving a change, update `docs/kanban.yaml` (add/move entry; auto-sync only touches status). Manual edits to priority, notes, and lane moves are preserved.
 - **Priority**: lower number = higher priority. Default 5. Answer "what's next" by filtering active lanes (Not Started, In Progress, Ready), sorting by priority ascending, and picking the first item that has a proposal.
 - **Build order**: implement changes in sequence 01 → 08; each depends on prior ones. Start with `kanban-01-core-format`.
-- **Kanban format**: see `docs/plans/opencode-openspec-kanban-plugin-research.md` Appendix B. Entries are `### <id>` followed by `- **key**: value` lines under a `## <Lane>` header.
+- **Kanban format**: see `docs/plans/opencode-openspec-kanban-plugin-research.md` Appendix B. Source file is `docs/kanban.yaml` (structured YAML).
 - **No application code yet**: keep changes additive and follow existing OpenSpec conventions.
 - **Implementation rule**: no spec is implemented without an approved proposal; follow its tasks.md.
 - **Testing rule**: every implementation must pass its tests before commit.
 - **Commit/push rule**: after tests pass, commit and push to `https://github.com/sdevikar/kanban.git`.
-- **Archive rule**: after push, archive the change (`openspec archive`) and update `docs/kanban.md`.
+- **Archive rule**: after push, archive the change (`openspec archive`) and update `docs/kanban.yaml`.
+- **Constitution rule**: documentation states facts only; history and recordkeeping are handled by git commits.

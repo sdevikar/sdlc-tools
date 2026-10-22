@@ -1,0 +1,86 @@
+entries:
+  - id: kanban-03-opencode-plugin-mvp
+    title: kanban-03-opencode-plugin-mvp
+    lane: Not Started
+    priority: 3
+    specPath: openspec/changes/kanban-03-opencode-plugin-mvp/
+    summary: OpenCode V2 plugin with tools, commands, and skills
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-04-html-render
+    title: kanban-04-html-render
+    lane: Not Started
+    priority: 4
+    specPath: openspec/changes/kanban-04-html-render/
+    summary: Visual kanban.html board generation from structured entries
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-05-automation-hooks
+    title: kanban-05-automation-hooks
+    lane: Not Started
+    priority: 5
+    specPath: openspec/changes/kanban-05-automation-hooks/
+    summary: Auto-sync kanban on OpenSpec lifecycle events
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-06-github-issues
+    title: kanban-06-github-issues
+    lane: Not Started
+    priority: 6
+    specPath: openspec/changes/kanban-06-github-issues/
+    summary: Optional GitHub Issues integration for kanban entries
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-07-multi-harness-adapters
+    title: kanban-07-multi-harness-adapters
+    lane: Not Started
+    priority: 7
+    specPath: openspec/changes/kanban-07-multi-harness-adapters/
+    summary: Cross-harness support via thin adapters (Ponytail model)
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-08-claude-mcp-server
+    title: kanban-08-claude-mcp-server
+    lane: Not Started
+    priority: 8
+    specPath: openspec/changes/kanban-08-claude-mcp-server/
+    summary: MCP server packaging kanban tools for Claude Desktop
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-01-core-format
+    title: kanban-01-core-format
+    lane: Archived
+    priority: 1
+    specPath: openspec/changes/archive/2026-10-22-kanban-01-core-format/
+    summary: Define structured KanbanEntry format and kanban.md parsing/serialization
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+  - id: kanban-02-core-sync
+    title: kanban-02-core-sync
+    lane: Archived
+    priority: 2
+    specPath: openspec/changes/archive/2026-10-22-kanban-02-core-sync/
+    summary: OpenSpec to kanban.md synchronization logic
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+  - id: kanban-09-yaml-format
+    title: kanban-09-yaml-format
+    lane: Ready
+    priority: 99
+    specPath: openspec/changes/kanban-09-yaml-format/
+    summary: ""
+    status: tasks ready
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
