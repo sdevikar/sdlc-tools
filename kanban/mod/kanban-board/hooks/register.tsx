@@ -47,9 +47,9 @@ const LANE_COLORS: Record<string, string> = {
 }
 
 const LANE_ENTRY_BG: Record<string, string> = {
-  'Not Started': '#1f1e1b',
-  'In Progress': '#2e1508',
-  'Archived':    '#242424',
+  'Not Started': '#87867f',
+  'In Progress': '#d97757',
+  'Archived':    '#gray',
 }
 
 function groupAndSort(entries: Entry[]): Record<string, Entry[]> {
