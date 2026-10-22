@@ -1,13 +1,15 @@
 entries:
   - id: kanban-13-claude-mod-pane
     title: kanban-13-claude-mod-pane
-    lane: In Progress
+    lane: Archived
     priority: 13
-    specPath: openspec/changes/kanban-13-claude-mod-pane/
+    specPath: openspec/changes/archive/2026-10-22-kanban-13-claude-mod-pane/
     summary: Claude Code native pane for kanban board with collapse/expand
-    status: implemented
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
   - id: kanban-14-claude-mod-autosync
     title: kanban-14-claude-mod-autosync
     lane: Not Started
