@@ -77,10 +77,21 @@ entries:
     completedAt: 2026-10-22
   - id: kanban-09-yaml-format
     title: kanban-09-yaml-format
-    lane: Ready
+    lane: Archived
     priority: 99
-    specPath: openspec/changes/kanban-09-yaml-format/
+    specPath: openspec/changes/archive/2026-10-22-kanban-09-yaml-format/
     summary: ""
-    status: tasks ready
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+  - id: kanban-10-kanban-view
+    title: kanban-10-kanban-view
+    lane: Not Started
+    priority: 99
+    specPath: openspec/changes/kanban-10-kanban-view/
+    summary: ""
+    status: proposal written
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
