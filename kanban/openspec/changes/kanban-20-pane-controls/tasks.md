@@ -12,7 +12,7 @@
 
 ## 3. Deploy and verify
 
-- [ ] 3.1 Copy updated `register.tsx` to the deployed mod path: `~/.claude/dev-mods/<uuid>/kanban-board/hooks/register.tsx`.
+- [x] 3.1 Copy updated `register.tsx` to the deployed mod path: `~/.claude/dev-mods/<uuid>/kanban-board/hooks/register.tsx`.
 - [ ] 3.2 Reload the mod (`/reload` or restart Claude Code). Run `/kanban-view` and confirm the header row shows Collapse and Close buttons.
 - [ ] 3.3 Press Close — confirm the pane closes. Press Escape while the pane holds focus — confirm the pane closes.
 - [ ] 3.4 Narrow the terminal below 110 columns, run `/kanban-view`, and confirm the inline fallback message includes the column hint.
