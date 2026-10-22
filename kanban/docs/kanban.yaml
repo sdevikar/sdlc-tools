@@ -16,7 +16,7 @@ entries:
     priority: 14
     specPath: openspec/changes/kanban-14-claude-mod-autosync/
     summary: Live pane sync on kanban.yaml writes and kanban command runs
-    status: proposal written
+    status: tasks complete
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
   - id: kanban-15-claude-mod-init
@@ -61,6 +61,33 @@ entries:
     updatedAt: 2026-10-22
     archivedAt: 2026-10-22
     completedAt: 2026-10-22
+  - id: kanban-16-kanban-core-cli
+    title: kanban-16-kanban-core-cli
+    lane: Not Started
+    priority: 16
+    specPath: openspec/changes/kanban-16-kanban-core-cli/
+    summary: Build and ship kanban-core CLI so /kanban-sync works in a fresh checkout
+    status: tasks ready
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-17-kanban-view-programmatic
+    title: kanban-17-kanban-view-programmatic
+    lane: In Progress
+    priority: 17
+    specPath: openspec/changes/kanban-17-kanban-view-programmatic/
+    summary: Programmatic /kanban-view using compiled kanban-core instead of LLM
+    status: implementing
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-18-kanban-view-pane-fix
+    title: kanban-18-kanban-view-pane-fix
+    lane: Not Started
+    priority: 18
+    specPath: openspec/changes/kanban-18-kanban-view-pane-fix/
+    summary: Fix /kanban-view pane not opening in fullscreen terminals
+    status: tasks ready
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
   - id: kanban-06-github-issues
     title: kanban-06-github-issues
     lane: Not Started

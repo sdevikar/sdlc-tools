@@ -2,6 +2,27 @@ import { writeFile } from "node:fs/promises";
 import type { KanbanEntry } from "./types.js";
 import { LANES } from "./types.js";
 
+export function renderKanbanMarkdown(entries: KanbanEntry[]): string {
+  const grouped = new Map(LANES.map(l => [
+    l,
+    entries.filter(e => e.lane === l).sort((a, b) => a.priority - b.priority),
+  ]));
+  const maxRows = Math.max(0, ...LANES.map(l => (grouped.get(l) ?? []).length));
+
+  const header = `| ${LANES.join(" | ")} |`;
+  const sep = `| ${LANES.map(() => "---").join(" | ")} |`;
+
+  const rows = Array.from({ length: maxRows }, (_, i) => {
+    const cells = LANES.map(l => {
+      const e = (grouped.get(l) ?? [])[i];
+      return e ? `**${e.id}**<br>${e.summary}` : "";
+    });
+    return `| ${cells.join(" | ")} |`;
+  });
+
+  return [header, sep, ...rows].join("\n");
+}
+
 function esc(s: unknown): string {
   return String(s ?? "")
     .replace(/&/g, "&amp;")

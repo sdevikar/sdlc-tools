@@ -2,12 +2,14 @@
 name: kanban-view
 description: Render kanban.yaml as vertical swim lanes in the chat window. Use when user asks to view the kanban board.
 license: MIT
-compatibility: Requires reading docs/kanban.yaml.
+compatibility: Requires libs/kanban-core built with Node.js.
 metadata:
   author: kanban
-  version: "1.0"
+  version: "2.0"
 ---
 
 # kanban-view
 
-Read `docs/kanban.yaml`, group entries by `lane`, sort each group by `priority` ascending. Render a Markdown table with one column per lane (Not Started, In Progress, Archived). Each column is sorted independently; rows are aligned by position (pad shorter columns with blank cells). Each cell shows the spec id with the summary on the next line. Print to chat. No HTML files are generated.
+1. If `libs/kanban-core/dist/src/cli-view.js` does not exist, run `npm install && npm run build` inside `libs/kanban-core/`.
+2. Run `node libs/kanban-core/dist/src/cli-view.js` from the project root.
+3. Print the stdout output verbatim. Do not summarize or reformat it.
