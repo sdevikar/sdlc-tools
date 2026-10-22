@@ -12,13 +12,15 @@ entries:
     completedAt: 2026-10-22
   - id: kanban-04-html-render
     title: kanban-04-html-render
-    lane: Not Started
+    lane: Archived
     priority: 4
-    specPath: openspec/changes/kanban-04-html-render/
+    specPath: openspec/changes/archive/2026-10-22-kanban-04-html-render/
     summary: Visual kanban.html board generation from structured entries
-    status: proposal written
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
   - id: kanban-05-automation-hooks
     title: kanban-05-automation-hooks
     lane: Not Started
