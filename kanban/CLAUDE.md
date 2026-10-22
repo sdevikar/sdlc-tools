@@ -29,7 +29,7 @@ The mod registers these slash commands:
 ### Pane behavior
 
 - Fullscreen terminal: opens as a right-side pane with vertical swim lane cards.
-- Non-fullscreen: prints inline to the transcript (no pane).
+- Classic renderer: opens the pane above the prompt. Run `/tui fullscreen` (or set `CLAUDE_CODE_NO_FLICKER=1`) to get the side pane.
 - Each swim lane is a card. Entries sort by priority ascending within each lane.
 - A Collapse button inside the pane minimizes it to lane headers only.
 - An Expand button restores the full view.

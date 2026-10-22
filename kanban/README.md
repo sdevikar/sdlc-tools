@@ -73,7 +73,15 @@ for skill in skills/*/; do
 done
 ```
 
-After setup, `/kanban-view` opens the board pane without an LLM call. Skills `/kanban-sync`, `/kanban-render`, and the OpenSpec skills are also available.
+After setup, `/kanban-view` opens the board pane without an LLM call.
+
+> **Renderer note:** The side pane docks beside the transcript only in the fullscreen layout. In the classic terminal, the pane opens above the prompt. Run `/tui fullscreen` or start Claude with `CLAUDE_CODE_NO_FLICKER=1` to get the docked side pane. Skills `/kanban-sync`, `/kanban-render`, and the OpenSpec skills are also available.
+
+### 3. Run Claude Code in fullscreen mode
+
+The board pane needs fullscreen mode. Run `/tui fullscreen` inside Claude Code, or start Claude Code with `CLAUDE_CODE_NO_FLICKER=1`.
+
+Fullscreen mode turns on mouse support. Use the mouse to click the Collapse and Expand buttons. To turn mouse support off, set `CLAUDE_CODE_DISABLE_MOUSE=1`. The buttons then do not respond to clicks.
 
 > `.claude/` is gitignored. Each contributor runs these steps once after cloning.
 
