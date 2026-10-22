@@ -46,6 +46,12 @@ const LANE_COLORS: Record<string, string> = {
   'Archived': 'gray',
 }
 
+const LANE_ENTRY_BG: Record<string, string> = {
+  'Not Started': '#003d52',
+  'In Progress': '#3d2800',
+  'Archived': '#242424',
+}
+
 function groupAndSort(entries: Entry[]): Record<string, Entry[]> {
   const groups: Record<string, Entry[]> = Object.fromEntries(LANES.map(l => [l, []]))
   for (const e of entries) {
@@ -158,16 +164,21 @@ export const register: Register = on => {
           </Button>
         </Box>
         {LANES.map(lane => (
-          <Box key={lane} flexDirection="column" marginBottom={1}>
-            <Text bold color={LANE_COLORS[lane] ?? 'white'} dimColor={lane === 'Archived'}>{lane}</Text>
-            <Text dimColor>{'─'.repeat(24)}</Text>
+          <Box key={lane} flexDirection="column" marginBottom={1}
+               borderStyle="round" borderColor={LANE_COLORS[lane] ?? 'white'}
+               paddingX={1}>
+            <Text bold color={LANE_COLORS[lane] ?? 'white'} inverse>
+              {` ${lane.toUpperCase()} `}
+            </Text>
             {!isCollapsed && groups[lane].map(entry => (
-              <Box key={entry.id} marginLeft={1} flexDirection="column">
+              <Box key={entry.id} flexDirection="column"
+                   backgroundColor={LANE_ENTRY_BG[lane]}
+                   paddingX={1} marginTop={1}>
                 <Box flexDirection="row" gap={1}>
-                  <Text bold>{entry.id}</Text>
+                  <Text bold color="white">{entry.id}</Text>
                   <Text dimColor>[{entry.priority}]</Text>
                 </Box>
-                {entry.summary ? <Text dimColor>{entry.summary}</Text> : null}
+                {entry.summary ? <Text color="white" dimColor>{entry.summary}</Text> : null}
               </Box>
             ))}
           </Box>
