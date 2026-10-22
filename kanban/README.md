@@ -36,6 +36,20 @@ shared core (skills, commands, libs/kanban-core)
 
 The mod lives in `mod/kanban-board/`. It registers `/kanban-view` as a programmatic command (no LLM call) and auto-syncs the pane when `kanban.yaml` changes.
 
+### Prerequisites: install openspec
+
+This plugin requires [`@fission-ai/openspec`](https://www.npmjs.com/package/@fission-ai/openspec). Install it at project scope:
+
+```bash
+npm install @fission-ai/openspec
+```
+
+If you have not initialized openspec in this project yet:
+
+```bash
+npx openspec init
+```
+
 ### 1. Auto-load the mod
 
 Create `.claude/settings.json` in the project root. Use the absolute path to this project's `mod/` directory.
