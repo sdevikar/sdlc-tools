@@ -41,15 +41,15 @@ function parseKanban(text: string): Entry[] {
 }
 
 const LANE_COLORS: Record<string, string> = {
-  'Not Started': 'cyan',
-  'In Progress': 'yellow',
-  'Archived': 'gray',
+  'Not Started': '#5B8DB5',
+  'In Progress': '#E8602C',
+  'Archived':    '#8B7B6B',
 }
 
 const LANE_ENTRY_BG: Record<string, string> = {
-  'Not Started': '#003d52',
-  'In Progress': '#3d2800',
-  'Archived': '#242424',
+  'Not Started': '#0f2030',
+  'In Progress': '#2d1005',
+  'Archived':    '#1a1510',
 }
 
 function groupAndSort(entries: Entry[]): Record<string, Entry[]> {
