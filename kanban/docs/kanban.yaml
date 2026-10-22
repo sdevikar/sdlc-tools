@@ -1,4 +1,22 @@
 entries:
+  - id: kanban-13-claude-mod-pane
+    title: kanban-13-claude-mod-pane
+    lane: Not Started
+    priority: 13
+    specPath: openspec/changes/kanban-13-claude-mod-pane/
+    summary: Claude Code native pane for kanban board with collapse/expand
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-14-claude-mod-autosync
+    title: kanban-14-claude-mod-autosync
+    lane: Not Started
+    priority: 14
+    specPath: openspec/changes/kanban-14-claude-mod-autosync/
+    summary: Live pane sync on kanban.yaml writes and kanban command runs
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
   - id: kanban-03-opencode-plugin-mvp
     title: kanban-03-opencode-plugin-mvp
     lane: Archived
