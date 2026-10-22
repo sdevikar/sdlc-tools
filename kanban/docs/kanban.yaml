@@ -83,11 +83,11 @@ entries:
     completedAt: 2026-10-22
   - id: kanban-18-kanban-view-pane-fix
     title: kanban-18-kanban-view-pane-fix
-    lane: Not Started
+    lane: In Progress
     priority: 18
     specPath: openspec/changes/kanban-18-kanban-view-pane-fix/
     summary: Fix /kanban-view pane not opening in fullscreen terminals
-    status: tasks ready
+    status: partially done — isPlaced gate fixed in code; skill removed; pending archive
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
   - id: kanban-19-multi-board
@@ -96,6 +96,24 @@ entries:
     priority: 19
     specPath: openspec/changes/kanban-19-multi-board/
     summary: Multi-level kanban boards with sub-board discovery and grouped view
+    status: tasks ready
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-20-pane-controls
+    title: kanban-20-pane-controls
+    lane: In Progress
+    priority: 20
+    specPath: openspec/changes/kanban-20-pane-controls/
+    summary: Add Close button, closeOnEscape, and fix collapse header in the kanban pane
+    status: pending verification
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+  - id: kanban-21-pane-visual-design
+    title: kanban-21-pane-visual-design
+    lane: Not Started
+    priority: 21
+    specPath: openspec/changes/kanban-21-pane-visual-design/
+    summary: Color-coded lane headers, card-style entries, and priority badges in the pane
     status: tasks ready
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
