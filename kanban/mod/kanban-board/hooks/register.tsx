@@ -62,7 +62,34 @@ function renderInline(entries: Entry[]): string {
   return ['', header, sep, ...rows].join('\n')
 }
 
+const KANBAN_COMMANDS = ['kanban-sync', 'kanban-render', 'opsx-archive', 'opsx-propose'] as const
+
+async function invalidateIfOpen($: any) {
+  const panes = await $.ui.panes()
+  if (panes.some((p: any) => p.id === PANE)) $.ui.invalidate('ui.render')
+}
+
 export const register: Register = on => {
+  on('tool.call', { tool: 'Write' }, async ($, e, next) => {
+    const result = await next(e)
+    if (e.file_path.includes('kanban.yaml')) await invalidateIfOpen($)
+    return result
+  })
+
+  on('tool.call', { tool: 'Edit' }, async ($, e, next) => {
+    const result = await next(e)
+    if (e.file_path.includes('kanban.yaml')) await invalidateIfOpen($)
+    return result
+  })
+
+  for (const cmd of KANBAN_COMMANDS) {
+    on('command.run', { command: cmd }, async ($, e, next) => {
+      const result = await next(e)
+      await invalidateIfOpen($)
+      return result
+    })
+  }
+
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'kanban-view',
