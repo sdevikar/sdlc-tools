@@ -23,13 +23,15 @@ entries:
     completedAt: 2026-10-22
   - id: kanban-05-automation-hooks
     title: kanban-05-automation-hooks
-    lane: Not Started
+    lane: Archived
     priority: 5
-    specPath: openspec/changes/kanban-05-automation-hooks/
+    specPath: openspec/changes/archive/2026-10-22-kanban-05-automation-hooks/
     summary: Auto-sync kanban on OpenSpec lifecycle events
-    status: proposal written
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
   - id: kanban-06-github-issues
     title: kanban-06-github-issues
     lane: Not Started
