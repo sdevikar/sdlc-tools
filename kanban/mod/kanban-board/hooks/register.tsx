@@ -1,11 +1,14 @@
-import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
 const PANE = 'kanban-board'
-const KANBAN_PATH = '/local/mnt/workspace/sdevikar/personal/kanban/docs/kanban.yaml'
 const LANES = ['Not Started', 'In Progress', 'Archived'] as const
 
-const collapsed = atom({ plugin: 'kanban-board', key: 'collapsed' } as const, false)
+async function kanbanPath($: any): Promise<string> {
+  const cwd = await $.session.cwd()
+  return `${cwd}/docs/kanban.yaml`
+}
+
+const collapsed = { plugin: 'kanban-board', key: 'collapsed' } as const
 
 type Entry = { id: string; summary: string; priority: number; lane: string }
 
@@ -99,21 +102,21 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'kanban-view' }, async ($, e) => {
-    const { isPlaced } = await $.ui.open({ id: PANE, title: 'Kanban' })
+    const { isPlaced } = await $.ui.open({ id: PANE, title: 'Kanban', closeOnEscape: true })
     if (!isPlaced) {
-      const text = await $.fs.read(KANBAN_PATH)
-      return { text: renderInline(parseKanban(text)) }
+      const text = await $.fs.read(await kanbanPath($))
+      return { text: '> Widen your terminal to ≥110 columns to open the kanban side pane.\n\n' + renderInline(parseKanban(text)) }
     }
     return { text: 'Kanban board pane opened.' }
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text, Button } = $.ui.resolve(e)
-    const isCollapsed = await read($, collapsed)
+    const { value: isCollapsed = false } = await $.state.get(collapsed)
 
     let entries: Entry[] = []
     try {
-      const text = await $.fs.read(KANBAN_PATH)
+      const text = await $.fs.read(await kanbanPath($))
       entries = parseKanban(text)
     } catch {
       return (
@@ -127,13 +130,19 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column" paddingX={1}>
-        <Box marginBottom={1}>
+        <Box flexDirection="row" justifyContent="space-between" marginBottom={1}>
           <Button
             onPress={async () => {
-              await update($, collapsed, cur => !cur)
+              const held = await $.state.get(collapsed)
+              await $.state.set(collapsed, !(held.value ?? false), { ifVersion: held.version })
             }}
           >
             {isCollapsed ? 'Expand' : 'Collapse'}
+          </Button>
+          <Button
+            onPress={() => { $.ui.close({ id: PANE }) }}
+          >
+            Close
           </Button>
         </Box>
         {LANES.map(lane => (
