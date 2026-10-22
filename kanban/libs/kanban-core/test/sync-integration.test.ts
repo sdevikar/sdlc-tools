@@ -31,7 +31,7 @@ test("sync moves archived specs to Archived lane", async () => {
   const byId = Object.fromEntries(data.entries.map(e=>[e.id,e.lane]));
   assert.equal(byId["kanban-01-core-format"], "Archived");
   assert.equal(byId["kanban-02-core-sync"], "Archived");
-  assert.notEqual(byId["kanban-04-html-render"], "Archived");
+  assert.notEqual(byId["kanban-05-automation-hooks"], "Archived");
 
   await rm(dir, { recursive: true, force: true });
 });

@@ -18,7 +18,7 @@ const SAMPLE = `entries:
     notes: Needs review
   - id: fix-login-redirect
     title: fix-login-redirect
-    lane: Done
+    lane: Archived
     priority: 10
     specPath: openspec/changes/fix-login-redirect/
     summary: Fix redirect

@@ -10,4 +10,4 @@ metadata:
 
 # kanban-view
 
-Read `docs/kanban.yaml`, group entries by `lane`, sort each group by `priority` ascending. Render a Markdown table with one column per lane (Not Started, In Progress, Ready, Done, Archived). Each cell lists cards top-to-bottom as `- **id** — summary (P{priority})`. Print the table to chat. No HTML files are generated.
+Read `docs/kanban.yaml`, group entries by `lane`, sort each group by `priority` ascending. Render a Markdown table with one column per lane (Not Started, In Progress, Archived). Each cell lists cards top-to-bottom as `- **id** — summary (P{priority})`. Print the table to chat. No HTML files are generated.

@@ -23,7 +23,7 @@ function artifactStatus(artifacts: { id: string; status: string }[], id: string)
 export function mapLane(active: SyncActiveChange): string {
   const tasks = artifactStatus(active.artifacts, "tasks");
   const design = artifactStatus(active.artifacts, "design");
-  if (tasks === "done" || tasks === "ready") return "Ready";
+  if (tasks === "done" || tasks === "ready") return "In Progress";
   if (design === "done") return "In Progress";
   return "Not Started";
 }

@@ -15,7 +15,7 @@ test("mergeSync preserves priority and notes", () => {
 });
 
 test("mergeSync moves archived", () => {
-  const existing = [{ id: "a", title: "a", lane: "Ready", priority: 3, specPath: "x", summary: "s", status: "tasks ready", createdAt: "2026-10-01", updatedAt: "2026-10-01" } as any];
+  const existing = [{ id: "a", title: "a", lane: "In Progress", priority: 3, specPath: "x", summary: "s", status: "tasks ready", createdAt: "2026-10-01", updatedAt: "2026-10-01" } as any];
   const merged = mergeSync(existing, [], [{ name: "a", dirName: "2026-10-03-a" }]);
   assert.equal(merged[0].lane, "Archived");
   assert.equal(merged[0].status, "archived");

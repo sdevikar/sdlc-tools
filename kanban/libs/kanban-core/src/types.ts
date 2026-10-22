@@ -1,8 +1,6 @@
 export type KanbanLane =
   | "Not Started"
   | "In Progress"
-  | "Ready"
-  | "Done"
   | "Archived";
 
 export interface KanbanEntry {
@@ -26,8 +24,6 @@ export interface KanbanEntry {
 export const LANES: KanbanLane[] = [
   "Not Started",
   "In Progress",
-  "Ready",
-  "Done",
   "Archived",
 ];
 
