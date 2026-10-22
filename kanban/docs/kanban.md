@@ -66,16 +66,17 @@
 
 ## In Progress
 
-### kanban-01-core-format
-- **priority**: 1
-- **status**: implementation complete
-- **spec**: openspec/changes/kanban-01-core-format/
-- **summary**: Define structured KanbanEntry format and kanban.md parsing/serialization
-- **created**: 2026-10-22
-- **updated**: 2026-10-22
-
 ## Ready
 
 ## Done
 
 ## Archived
+
+### kanban-01-core-format
+- **priority**: 1
+- **status**: archived
+- **spec**: openspec/changes/archive/2026-10-22-kanban-01-core-format/
+- **summary**: Define structured KanbanEntry format and kanban.md parsing/serialization
+- **created**: 2026-10-22
+- **updated**: 2026-10-22
+- **archived**: 2026-10-22
