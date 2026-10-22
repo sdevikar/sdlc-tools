@@ -99,11 +99,11 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'kanban-view' }, async ($, e) => {
-    if (!e.presentation.isFullscreen) {
+    const { isPlaced } = await $.ui.open({ id: PANE, title: 'Kanban' })
+    if (!isPlaced) {
       const text = await $.fs.read(KANBAN_PATH)
       return { text: renderInline(parseKanban(text)) }
     }
-    await $.ui.open({ id: PANE, title: 'Kanban' })
     return { text: 'Kanban board pane opened.' }
   })
 
