@@ -40,6 +40,12 @@ function parseKanban(text: string): Entry[] {
   return entries
 }
 
+const LANE_COLORS: Record<string, string> = {
+  'Not Started': 'cyan',
+  'In Progress': 'yellow',
+  'Archived': 'gray',
+}
+
 function groupAndSort(entries: Entry[]): Record<string, Entry[]> {
   const groups: Record<string, Entry[]> = Object.fromEntries(LANES.map(l => [l, []]))
   for (const e of entries) {
@@ -153,10 +159,14 @@ export const register: Register = on => {
         </Box>
         {LANES.map(lane => (
           <Box key={lane} flexDirection="column" marginBottom={1}>
-            <Text bold>{lane}</Text>
+            <Text bold color={LANE_COLORS[lane] ?? 'white'} dimColor={lane === 'Archived'}>{lane}</Text>
+            <Text dimColor>{'─'.repeat(24)}</Text>
             {!isCollapsed && groups[lane].map(entry => (
               <Box key={entry.id} marginLeft={1} flexDirection="column">
-                <Text>{entry.id}</Text>
+                <Box flexDirection="row" gap={1}>
+                  <Text bold>{entry.id}</Text>
+                  <Text dimColor>[{entry.priority}]</Text>
+                </Box>
                 {entry.summary ? <Text dimColor>{entry.summary}</Text> : null}
               </Box>
             ))}
