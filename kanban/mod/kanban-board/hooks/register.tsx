@@ -1,4 +1,4 @@
-import { atom } from 'claude-code'
+import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
 const PANE = 'kanban-board'
@@ -109,8 +109,7 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text, Button } = $.ui.resolve(e)
-    const held = await $.state.get(collapsed)
-    const isCollapsed = held?.value ?? false
+    const isCollapsed = await read($, collapsed)
 
     let entries: Entry[] = []
     try {
@@ -131,8 +130,7 @@ export const register: Register = on => {
         <Box marginBottom={1}>
           <Button
             onPress={async () => {
-              const cur = await $.state.get(collapsed)
-              await $.state.set(collapsed, !(cur?.value ?? false), { ifVersion: cur?.version })
+              await update($, collapsed, cur => !cur)
             }}
           >
             {isCollapsed ? 'Expand' : 'Collapse'}
