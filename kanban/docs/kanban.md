@@ -7,11 +7,12 @@
 
 ### kanban-02-core-sync
 - **priority**: 2
-- **status**: tasks ready
-- **spec**: openspec/changes/kanban-02-core-sync/
+- **status**: archived
+- **spec**: openspec/changes/archive/2026-10-22-kanban-02-core-sync/
 - **summary**: OpenSpec to kanban.md synchronization logic
 - **created**: 2026-10-22
 - **updated**: 2026-10-22
+- **archived**: 2026-10-22
 
 ### kanban-03-opencode-plugin-mvp
 - **priority**: 3
@@ -71,4 +72,13 @@
 - **created**: 2026-10-22
 - **updated**: 2026-10-22
 - **completed**: 2026-10-22
+- **archived**: 2026-10-22
+
+### kanban-02-core-sync
+- **priority**: 2
+- **status**: archived
+- **spec**: openspec/changes/archive/2026-10-22-kanban-02-core-sync/
+- **summary**: OpenSpec to kanban.md synchronization logic
+- **created**: 2026-10-22
+- **updated**: 2026-10-22
 - **archived**: 2026-10-22
