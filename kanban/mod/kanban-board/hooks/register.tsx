@@ -46,6 +46,11 @@ const LANE_COLORS: Record<string, string> = {
   'Archived':    'gray',
 }
 
+const SUMMARY_COLORS: Record<string, string> = {
+  'Not Started': 'black',
+  'In Progress': 'black',
+}
+
 const LANE_ENTRY_BG: Record<string, string> = {
   'Not Started': '#87867f',
   'In Progress': '#d97757',
@@ -178,7 +183,7 @@ export const register: Register = on => {
                   <Text bold color="white">{entry.id}</Text>
                   <Text dimColor>[{entry.priority}]</Text>
                 </Box>
-                {entry.summary ? <Text color="white" dimColor>{entry.summary}</Text> : null}
+                {entry.summary ? <Text color={SUMMARY_COLORS[lane] ?? 'white'} dimColor={!SUMMARY_COLORS[lane]}>{entry.summary}</Text> : null}
               </Box>
             ))}
           </Box>
