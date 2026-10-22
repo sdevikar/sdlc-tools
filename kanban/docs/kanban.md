@@ -3,14 +3,11 @@
 <!-- Lane moves are respected. Auto-sync only adds/removes/updates status. -->
 
 # Kanban Board
-
-> Last synced: 2026-10-22T00:00:00Z
-
 ## Not Started
 
 ### kanban-02-core-sync
 - **priority**: 2
-- **status**: proposal written
+- **status**: tasks ready
 - **spec**: openspec/changes/kanban-02-core-sync/
 - **summary**: OpenSpec to kanban.md synchronization logic
 - **created**: 2026-10-22
@@ -64,12 +61,6 @@
 - **created**: 2026-10-22
 - **updated**: 2026-10-22
 
-## In Progress
-
-## Ready
-
-## Done
-
 ## Archived
 
 ### kanban-01-core-format
@@ -79,4 +70,5 @@
 - **summary**: Define structured KanbanEntry format and kanban.md parsing/serialization
 - **created**: 2026-10-22
 - **updated**: 2026-10-22
+- **completed**: 2026-10-22
 - **archived**: 2026-10-22
