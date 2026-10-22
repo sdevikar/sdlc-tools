@@ -43,13 +43,15 @@ entries:
     updatedAt: 2026-10-22
   - id: kanban-07-multi-harness-adapters
     title: kanban-07-multi-harness-adapters
-    lane: Not Started
+    lane: Archived
     priority: 7
-    specPath: openspec/changes/kanban-07-multi-harness-adapters/
+    specPath: openspec/changes/archive/2026-10-22-kanban-07-multi-harness-adapters/
     summary: Cross-harness support via thin adapters (Ponytail model)
-    status: proposal written
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
   - id: kanban-08-claude-mcp-server
     title: kanban-08-claude-mcp-server
     lane: Not Started
