@@ -32,6 +32,37 @@ shared core (skills, commands, libs/kanban-core)
   └── AGENTS.md      (universal fallback)
 ```
 
+## Claude Code Setup
+
+The mod lives in `mod/kanban-board/`. It registers `/kanban-view` as a programmatic command (no LLM call) and auto-syncs the pane when `kanban.yaml` changes.
+
+### 1. Auto-load the mod
+
+Create `.claude/settings.json` in the project root. Use the absolute path to this project's `mod/` directory.
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_PLUGIN_DIRS": "/absolute/path/to/kanban/mod"
+  }
+}
+```
+
+### 2. Link project skills
+
+Claude Code reads skills from `.claude/skills/`. Link them from the canonical `skills/` directory.
+
+```bash
+mkdir -p .claude/skills
+for skill in skills/*/; do
+  ln -s "../../$skill" ".claude/skills/$(basename $skill)"
+done
+```
+
+After setup, `/kanban-view` opens the board pane without an LLM call. Skills `/kanban-sync`, `/kanban-render`, and the OpenSpec skills are also available.
+
+> `.claude/` is gitignored. Each contributor runs these steps once after cloning.
+
 ## Proposals
 
 Eight sequenced OpenSpec proposals define the implementation roadmap:
