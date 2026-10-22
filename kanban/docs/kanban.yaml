@@ -16,7 +16,7 @@ entries:
     priority: 14
     specPath: openspec/changes/kanban-14-claude-mod-autosync/
     summary: Live pane sync on kanban.yaml writes and kanban command runs
-    status: tasks complete
+    status: tasks ready
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
   - id: kanban-15-claude-mod-init
@@ -80,6 +80,7 @@ entries:
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
     archivedAt: 2026-10-22
+    completedAt: 2026-10-22
   - id: kanban-18-kanban-view-pane-fix
     title: kanban-18-kanban-view-pane-fix
     lane: Not Started
