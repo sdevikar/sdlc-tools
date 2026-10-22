@@ -101,3 +101,14 @@ entries:
     updatedAt: 2026-10-22
     archivedAt: 2026-10-22
     completedAt: 2026-10-22
+  - id: kanban-11-combine-lanes
+    title: kanban-11-combine-lanes
+    lane: Archived
+    priority: 99
+    specPath: openspec/changes/archive/2026-10-22-kanban-11-combine-lanes/
+    summary: ""
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
