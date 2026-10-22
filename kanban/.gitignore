@@ -1,3 +1,4 @@
 node_modules/
 dist/
 .claude/
+mod/**/.claude-plugin/types/

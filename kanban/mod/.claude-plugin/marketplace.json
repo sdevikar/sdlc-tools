@@ -1,0 +1,5 @@
+{
+  "name": "kanban",
+  "owner": { "name": "Swapnil Devikar" },
+  "plugins": [{ "name": "kanban-board", "source": "./kanban-board/" }]
+}

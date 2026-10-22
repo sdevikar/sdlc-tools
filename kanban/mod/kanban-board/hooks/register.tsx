@@ -2,7 +2,7 @@ import { atom } from 'claude-code'
 import type { Register } from 'claude-code'
 
 const PANE = 'kanban-board'
-const KANBAN_PATH = 'docs/kanban.yaml'
+const KANBAN_PATH = '/local/mnt/workspace/sdevikar/personal/kanban/docs/kanban.yaml'
 const LANES = ['Not Started', 'In Progress', 'Archived'] as const
 
 const collapsed = atom({ plugin: 'kanban-board', key: 'collapsed' } as const, false)
