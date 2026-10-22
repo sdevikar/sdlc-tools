@@ -34,3 +34,6 @@ Users need to interact with the kanban board from within OpenCode. Without a plu
 - Depends on: `kanban-01-core-format`, `kanban-02-core-sync`
 - New package: `packages/opencode-plugin/`
 - Consumes: `libs/kanban-core/`
+## Additional Notes
+
+- Move `.opencode/skills/kanban-view/SKILL.md` into the plugin's shared skill location as part of this change.
