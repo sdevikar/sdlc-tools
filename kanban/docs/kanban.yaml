@@ -58,7 +58,7 @@ entries:
     priority: 8
     specPath: openspec/changes/archive/2026-10-22-kanban-08-claude-mcp-server/
     summary: MCP server packaging kanban tools for Claude Desktop
-    status: cancelled
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
     archivedAt: 2026-10-22
@@ -112,6 +112,17 @@ entries:
     lane: Archived
     priority: 99
     specPath: openspec/changes/archive/2026-10-22-kanban-11-combine-lanes/
+    summary: ""
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+  - id: kanban-12-claude-marketplace
+    title: kanban-12-claude-marketplace
+    lane: Archived
+    priority: 99
+    specPath: openspec/changes/archive/2026-10-22-kanban-12-claude-marketplace/
     summary: ""
     status: archived
     createdAt: 2026-10-22
