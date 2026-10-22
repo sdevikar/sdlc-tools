@@ -54,13 +54,15 @@ entries:
     completedAt: 2026-10-22
   - id: kanban-08-claude-mcp-server
     title: kanban-08-claude-mcp-server
-    lane: Not Started
+    lane: Archived
     priority: 8
-    specPath: openspec/changes/kanban-08-claude-mcp-server/
+    specPath: openspec/changes/archive/2026-10-22-kanban-08-claude-mcp-server/
     summary: MCP server packaging kanban tools for Claude Desktop
-    status: proposal written
+    status: cancelled
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
   - id: kanban-01-core-format
     title: kanban-01-core-format
     lane: Archived
