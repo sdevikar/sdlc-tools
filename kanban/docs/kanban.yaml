@@ -110,14 +110,16 @@ entries:
     updatedAt: 2026-10-22
   - id: kanban-21-pane-visual-design
     title: kanban-21-pane-visual-design
-    lane: Not Started
+    lane: Archived
     priority: 21
-    specPath: openspec/changes/kanban-21-pane-visual-design/
+    specPath: openspec/changes/archive/2026-10-22-kanban-21-pane-visual-design/
     summary: Color-coded lane headers, card-style entries, and priority badges in
       the pane
-    status: tasks ready
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
   - id: kanban-22-pane-close-keyboard
     title: kanban-22-pane-close-keyboard
     lane: Not Started
