@@ -12,13 +12,15 @@ entries:
     completedAt: 2026-10-22
   - id: kanban-14-claude-mod-autosync
     title: kanban-14-claude-mod-autosync
-    lane: In Progress
+    lane: Archived
     priority: 14
-    specPath: openspec/changes/kanban-14-claude-mod-autosync/
+    specPath: openspec/changes/archive/2026-10-22-kanban-14-claude-mod-autosync/
     summary: Live pane sync on kanban.yaml writes and kanban command runs
-    status: code done, smoke test pending
+    status: archived
     createdAt: 2026-10-22
-    updatedAt: 2026-10-22
+    updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
   - id: kanban-15-claude-mod-init
     title: kanban-15-claude-mod-init
     lane: Not Started
@@ -109,7 +111,7 @@ entries:
     summary: Add Close button, closeOnEscape, and fix collapse header in the kanban pane
     status: tasks ready
     createdAt: 2026-10-22
-    updatedAt: 2026-10-22
+    updatedAt: 2026-10-23
   - id: kanban-21-pane-visual-design
     title: kanban-21-pane-visual-design
     lane: Archived
@@ -124,13 +126,15 @@ entries:
     completedAt: 2026-10-23
   - id: kanban-22-pane-close-keyboard
     title: kanban-22-pane-close-keyboard
-    lane: In Progress
+    lane: Archived
     priority: 22
-    specPath: openspec/changes/kanban-22-pane-close-keyboard/
+    specPath: openspec/changes/archive/2026-10-22-kanban-22-pane-close-keyboard/
     summary: Hotkeys x/c for Close/Collapse and focus:true so they work without a mouse
-    status: tasks ready
+    status: archived
     createdAt: 2026-10-22
-    updatedAt: 2026-10-22
+    updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
   - id: kanban-23-pane-renderer-hint
     title: kanban-23-pane-renderer-hint
     lane: In Progress
