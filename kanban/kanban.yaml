@@ -152,6 +152,15 @@ entries:
     updatedAt: 2026-10-23
     archivedAt: 2026-10-23
     completedAt: 2026-10-23
+  - id: kanban-27-zero-config-install
+    title: kanban-27-zero-config-install
+    lane: Not Started
+    priority: 5
+    specPath: openspec/changes/kanban-27-zero-config-install/
+    summary: Postinstall script configures CLAUDE_CODE_PLUGIN_DIRS and skill symlinks automatically
+    status: proposal written
+    createdAt: 2026-10-23
+    updatedAt: 2026-10-23
   - id: kanban-06-github-issues
     title: kanban-06-github-issues
     lane: Not Started
