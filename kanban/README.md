@@ -12,7 +12,7 @@ The plugin also installs as a **Claude Code mod** — a live kanban pane that do
 2. You start working → move the card to "In Progress".
 3. You archive the spec → the board moves it to "Archived" automatically.
 
-The board answers one question: **what is the next priority item?**
+The board gives you a quick overview of current project status based on OpenSpec proposal statuses.
 
 ## Features
 
