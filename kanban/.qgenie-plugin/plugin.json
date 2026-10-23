@@ -6,7 +6,6 @@
   "preferredHarness": "claude",
   "capabilities": {
     "skills": [
-      { "id": "kanban",                  "path": "./skills/kanban/" },
       { "id": "kanban-init",             "path": "./skills/kanban-init/" },
       { "id": "kanban-render",           "path": "./skills/kanban-render/" },
       { "id": "kanban-sync",             "path": "./skills/kanban-sync/" },
