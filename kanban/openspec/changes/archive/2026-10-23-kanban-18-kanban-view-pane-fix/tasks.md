@@ -11,9 +11,9 @@
 ## 3. Deploy and verify
 
 - [x] 3.1 Copy the updated `mod/kanban-board/hooks/register.tsx` to the deployed mod directory (`~/.claude/dev-mods/<uuid>/kanban-board/hooks/register.tsx`) and verify the file timestamps match.
-- [ ] 3.2 Reload the mod (restart the Claude Code session or re-invoke the plugin-authoring skill) and verify the mod loads without errors in the transcript.
-- [ ] 3.3 Run `/kanban-view` in a fullscreen terminal and verify a side pane opens instead of an inline Markdown table.
-- [ ] 3.4 Run `/kanban-view` in a non-pane context (e.g. `claude -p` or a narrow terminal) and verify an inline Markdown table is printed.
+- [x] 3.2 Reload the mod (restart the Claude Code session or re-invoke the plugin-authoring skill) and verify the mod loads without errors in the transcript.
+- [x] 3.3 Run `/kanban-view` in a fullscreen terminal and verify a side pane opens instead of an inline Markdown table.
+- [x] 3.4 Run `/kanban-view` in a non-pane context (e.g. `claude -p` or a narrow terminal) and verify an inline Markdown table is printed.
 
 ## Workflow follow-up
 

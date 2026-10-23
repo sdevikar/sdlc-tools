@@ -75,10 +75,17 @@ invoke the sync path instead.
 - **WHEN** `/kanban:setup` runs and `kanban.yaml` already exists at the project root
 - **THEN** the skill invokes the sync path (not the init path) and preserves existing entries
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: README setup section uses plugin install
 
 The README setup section SHALL replace the manual "Auto-load the mod" and "Link project skills"
 steps with `/plugin install kanban --marketplace qcom-all-gh-users/kanban` and
 `/kanban:setup`.
+
+#### Scenario: README setup section contains the two-command install
+
+- **WHEN** a contributor reads the setup section of README.md
+- **THEN** they see `/plugin install kanban --marketplace qcom-all-gh-users/kanban` and
+  `/kanban:setup` as the install steps, with no manual `CLAUDE_CODE_PLUGIN_DIRS` edits or
+  symlink commands

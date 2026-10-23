@@ -35,38 +35,20 @@ If you have not initialized openspec in this project yet:
 npx openspec init
 ```
 
-### 1. Auto-load the mod
+### 1. Install the plugin
 
-Create `.claude/settings.json` in the project root. Use the absolute path to this project's `mod/` directory.
-
-```json
-{
-  "env": {
-    "CLAUDE_CODE_PLUGIN_DIRS": "/absolute/path/to/kanban/mod"
-  }
-}
+```
+/plugin install kanban --marketplace qcom-all-gh-users/kanban
+/kanban:setup
 ```
 
-### 2. Link project skills
+Each contributor runs both commands once after cloning. The plugin install writes an `enabledPlugins` entry to `.claude/settings.json` at project scope. After setup, `/kanban-view` opens the board pane without an LLM call.
 
-Claude Code reads skills from `.claude/skills/`. Link them from the canonical `skills/` directory.
-
-```bash
-mkdir -p .claude/skills
-for skill in skills/*/; do
-  ln -s "../../$skill" ".claude/skills/$(basename $skill)"
-done
-```
-
-After setup, `/kanban-view` opens the board pane without an LLM call.
-
-### 3. Run Claude Code in fullscreen mode
+### 2. Run Claude Code in fullscreen mode
 
 The side pane docks beside the transcript only in the fullscreen renderer. Run `/tui fullscreen` inside Claude Code, or start Claude Code with `CLAUDE_CODE_NO_FLICKER=1`.
 
 In the classic renderer, `/kanban-view` opens the pane above the prompt instead. The pane still works — use keyboard shortcuts to close or collapse it.
-
-> `.claude/` is gitignored. Each contributor runs these steps once after cloning.
 
 ## Pane Controls
 

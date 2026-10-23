@@ -2,13 +2,13 @@
 
 ## 1. Fix `hooks/hooks.json`
 
-- [ ] 1.1 Change `hooks/hooks.json` at the repo root from `{ "hooks": {} }` to
+- [x] 1.1 Change `hooks/hooks.json` at the repo root from `{ "hooks": {} }` to
   `{ "modules": ["./mod/kanban-board/hooks/register.tsx"] }` and verify that
   `claude plugin validate .` reports no errors for the hooks component.
 
 ## 2. Fix `marketplace.json`
 
-- [ ] 2.1 Rewrite `.claude-plugin/marketplace.json` to the required format:
+- [x] 2.1 Rewrite `.claude-plugin/marketplace.json` to the required format:
   ```json
   {
     "name": "kanban",
@@ -20,7 +20,7 @@
 
 ## 3. Add setup skill
 
-- [ ] 3.1 Create `skills/setup/SKILL.md`. The skill must:
+- [x] 3.1 Create `skills/setup/SKILL.md`.
   1. Check for `package.json` at the project root and run `npm install` if
      `node_modules/@fission-ai/openspec` is absent.
   2. Check for `libs/kanban-core/dist/src/cli.js` and run `npm install && npm run build`
@@ -29,12 +29,12 @@
   4. Invoke the `kanban-init` skill to create or sync `kanban.yaml`.
   5. Print one summary line: `Setup complete: openspec ready, kanban-core built, kanban.yaml
      created/synced`.
-- [ ] 3.2 Verify that running `/kanban:setup` in a fresh clone (no `node_modules`, no
+- [x] 3.2 Verify that running `/kanban:setup` in a fresh clone (no `node_modules`, no
   `dist`, no `kanban.yaml`) produces the summary line and leaves a valid `kanban.yaml`.
 
 ## 4. README update
 
-- [ ] 4.1 In `README.md`, replace the "Auto-load the mod" and "Link project skills" sections
+- [x] 4.1 In `README.md`, replace the "Auto-load the mod" and "Link project skills" sections
   with:
   ```
   /plugin install kanban --marketplace qcom-all-gh-users/kanban
@@ -42,7 +42,7 @@
   ```
   Add a note: each contributor runs both commands once after cloning; project-scope install
   writes an `enabledPlugins` entry to `.claude/settings.json`.
-- [ ] 4.2 Verify the updated setup section reads correctly end-to-end.
+- [x] 4.2 Verify the updated setup section reads correctly end-to-end.
 
 ## Workflow follow-up
 
