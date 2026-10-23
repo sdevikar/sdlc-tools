@@ -2,26 +2,38 @@
 
 ## Why
 
-New users must manually create `.claude/settings.json` and symlink skills after cloning — two steps that are error-prone and undiscoverable. A package install should configure itself.
+New contributors must manually write `CLAUDE_CODE_PLUGIN_DIRS` into `~/.claude/settings.json`
+and symlink skills into `.claude/skills/` after cloning. Both steps are error-prone and
+undiscoverable. Claude Code's native plugin-install system already handles mod loading, skill
+registration, and auto-reload — the repo just needs to expose the right plugin artifacts.
 
 ## What Changes
 
-- Add a `postinstall` script to `package.json` that runs a setup binary.
-- The setup binary writes `CLAUDE_CODE_PLUGIN_DIRS` into the consuming project's `.claude/settings.json`.
-- The setup binary symlinks all skills from `skills/` into the consuming project's `.claude/skills/`.
-- Remove the manual "Auto-load the mod" and "Link project skills" steps from `README.md` setup instructions.
+- Fix `hooks/hooks.json` at the repo root to use the modules format so the TypeScript mod loads
+  on plugin install (currently it is an empty settings-style file that does nothing).
+- Fix `.claude-plugin/marketplace.json` to the required `{ plugins: [{ name, source }] }` format
+  so `/plugin install kanban --marketplace qcom-all-gh-users/kanban` resolves correctly.
+- Add a `skills/setup/SKILL.md` that installs openspec, builds `libs/kanban-core`, and creates or
+  syncs `kanban.yaml` — the post-install steps a new contributor needs.
+- Replace the "Auto-load the mod" and "Link project skills" manual sections in `README.md` with
+  one `/plugin install` command and one `/kanban:setup` invocation.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `zero-config-install`: A postinstall script that automatically configures the consuming project's `.claude/settings.json` and skill symlinks so no manual setup is needed after `npm install`.
+- `zero-config-install`: After one `/plugin install` command and one `/kanban:setup` invocation,
+  Claude Code loads the pane mod, registers all skills, and has a working `kanban.yaml`. No manual
+  settings edits or symlinks are needed.
 
 ### Modified Capabilities
 
+- `kanban:setup` — new skill that drives the post-install steps.
+
 ## Impact
 
-- `package.json` — new `postinstall` script entry and bin definition.
-- `libs/kanban-core/` or a new `bin/setup.js` — setup binary implementation.
-- `README.md` — setup section simplified to just `npm install`.
-- `.claude/` directories in consuming projects — written by the setup binary (gitignored).
+- `hooks/hooks.json` — format change; previously empty.
+- `.claude-plugin/marketplace.json` — format fix; previously missing the `plugins` array.
+- `skills/setup/SKILL.md` — new file.
+- `README.md` — setup section simplified to two commands.
+- `package.json` and `bin/` — no changes needed; the Node.js postinstall approach is dropped.
