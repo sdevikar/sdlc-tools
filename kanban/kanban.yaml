@@ -156,6 +156,15 @@ entries:
     updatedAt: 2026-10-23
     archivedAt: 2026-10-23
     completedAt: 2026-10-23
+  - id: kanban-28-setup-kanban-dialog
+    title: kanban-28-setup-kanban-dialog
+    lane: In Progress
+    priority: 4
+    specPath: openspec/changes/kanban-28-setup-kanban-dialog/
+    summary: Move kanban create/sync dialog from /init observer to a mod tool called by /kanban:setup
+    status: tasks ready
+    createdAt: 2026-10-23
+    updatedAt: 2026-10-23
   - id: kanban-27-zero-config-install
     title: kanban-27-zero-config-install
     lane: Not Started

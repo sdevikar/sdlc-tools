@@ -16,7 +16,7 @@ The board answers one question: **what is the next priority item?**
 - **`kanban.html`** — a generated visual board from `/kanban-render`.
 - **Skills** — `/kanban-view`, `/kanban-sync`, `/kanban-render`, `/kanban-init`, plus OpenSpec skills (`/openspec-propose`, `/openspec-apply-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`).
 - **Auto-sync** — the pane refreshes when `kanban.yaml` changes, when new proposals appear, and after kanban commands.
-- **`/init` observer** — on project open, detects a missing `kanban.yaml` and offers a create-or-sync dialog.
+- **Setup dialog** — `/kanban:setup` calls the mod tool `kanban_board_setup`. It opens a Yes/No dialog to create or sync `kanban.yaml`. The first call shows one permission prompt.
 - **Multi-harness support** — works in OpenCode, Claude Code, Cursor, Windsurf, Kiro, and Codex.
 
 ## Claude Code Setup

@@ -13,7 +13,7 @@ skills/                       ← canonical skill definitions
   kanban-view/                    render board inline (no LLM call)
   openspec-*/                     OpenSpec lifecycle skills
 mod/kanban-board/             ← Claude Code mod source
-  hooks/register.tsx              pane UI, auto-sync hooks, /init observer
+  hooks/register.tsx              pane UI, auto-sync hooks, setup dialog tool
   hooks/hooks.json                hook module reference
   types/index.d.ts                $.state contract
 .opencode/                    OpenCode V2 commands and skills

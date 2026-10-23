@@ -1,7 +1,7 @@
 import type { Register } from 'claude-code'
 
 const PANE = 'kanban-board'
-const INIT_DIALOG = 'kanban-init-dialog'
+const SETUP_DIALOG = 'kanban-setup-dialog'
 const LANES = ['Not Started', 'In Progress', 'Archived'] as const
 
 async function kanbanPath($: any): Promise<string> {
@@ -10,7 +10,7 @@ async function kanbanPath($: any): Promise<string> {
 }
 
 const collapsed = { plugin: 'kanban-board', key: 'collapsed' } as const
-const initMode = { plugin: 'kanban-board', key: 'initMode' } as const
+const setupMode = { plugin: 'kanban-board', key: 'setupMode' } as const
 
 // Display-only entry (pane rendering)
 type Entry = { id: string; summary: string; priority: number; lane: string }
@@ -264,6 +264,78 @@ async function invalidateIfOpen($: any) {
   if (panes.some((p: any) => p.id === PANE)) $.ui.invalidate('ui.render')
 }
 
+let setupTool = ''
+let pending: ((text: string) => void) | null = null
+
+function settle(text: string) {
+  pending?.(text)
+  pending = null
+}
+
+// Scans openspec, merges into kanban.yaml, and returns the result line or `error: <reason>`.
+async function runKanbanSetup($: any): Promise<string> {
+  const cwd = await $.session.cwd()
+  const kbPath = await kanbanPath($)
+
+  const listResult = await $.process.run(['openspec', 'list', '--json'], { cwd })
+  if (listResult.exitCode !== 0) {
+    return `error: openspec list failed — ${listResult.stderr.trim() || 'unknown error'}`
+  }
+
+  let listData: { changes: { name: string }[] }
+  try { listData = JSON.parse(listResult.stdout) }
+  catch {
+    return 'error: could not parse openspec list output'
+  }
+
+  const active: ActiveChange[] = []
+  for (const c of listData.changes) {
+    const st = await $.process.run(
+      ['openspec', 'status', '--change', c.name, '--json'],
+      { cwd }
+    )
+    if (st.exitCode === 0) {
+      try {
+        const parsed = JSON.parse(st.stdout) as { artifacts: ArtifactStatus[] }
+        active.push({ name: c.name, artifacts: parsed.artifacts ?? [] })
+      } catch { /* skip */ }
+    }
+  }
+
+  const archived: ArchivedChange[] = []
+  try {
+    const dirs = await $.fs.list(`${cwd}/openspec/changes/archive`)
+    for (const d of dirs) {
+      if (d.kind !== 'directory') continue
+      const m = d.name.match(/^\d{4}-\d{2}-\d{2}-(.+)$/)
+      archived.push({ name: m ? m[1] : d.name, dirName: d.name })
+    }
+  } catch { /* no archive dir */ }
+
+  let existing: KanbanEntry[] = []
+  try { existing = parseKanbanFull(await $.fs.read(kbPath)) } catch { /* ok */ }
+
+  const existingIds = new Set(existing.map(e => e.id))
+  const existingMap = new Map(existing.map(e => [e.id, JSON.stringify(e)]))
+
+  const merged = mergeSync(existing, active, archived)
+  await $.fs.write(kbPath, serialiseKanban(merged))
+  await invalidateIfOpen($)
+
+  let changed = 0, added = 0
+  for (const m of merged) {
+    if (!existingIds.has(m.id)) added++
+    else if (existingMap.get(m.id) !== JSON.stringify(m)) changed++
+  }
+  const unchanged = merged.length - changed - added
+
+  const { value: currentMode } = await $.state.get(setupMode)
+  const resultLine = currentMode === 'init'
+    ? `Kanban init: ${merged.length} entries created`
+    : `Kanban sync: ${changed + added} updated, ${unchanged} unchanged`
+  return resultLine
+}
+
 let archiveMtime = 0
 let changesMtime = 0
 const skippedFolders = new Set<string>()
@@ -364,6 +436,11 @@ export const register: Register = on => {
   }
 
   on('session.start', async ($, e, next) => {
+    setupTool = (await $.tool.register({
+      name: 'kanban_board_setup',
+      description: 'Ask the user to create or sync kanban.yaml for this project. Opens a Yes/No dialog and returns the result line, "declined", or "error: <reason>".',
+      inputSchema: { type: 'object' },
+    })).tool
     await $.command.register({
       name: 'kanban-view',
       description: 'Open the kanban board pane (or print inline in non-fullscreen)',
@@ -386,19 +463,26 @@ export const register: Register = on => {
     return { text: 'Kanban board pane opened.' + hint }
   })
 
-  on('command.run', { command: 'init' }, async ($, e, next) => {
-    const result = await next(e)
-    const cwd = await $.session.cwd()
+  on('tool.call', async ($, e, next) => {
+    if (e.tool !== setupTool) return next(e)
     let mode: 'init' | 'sync' = 'init'
     try { await $.fs.stat(await kanbanPath($)); mode = 'sync' } catch { /* init mode */ }
-    await $.state.set(initMode, mode)
-    await $.ui.open({ id: INIT_DIALOG, title: 'Kanban', focus: true, closeOnEscape: true, rows: 5 })
-    return result
+    await $.state.set(setupMode, mode)
+    const opened = await $.ui.open({ id: SETUP_DIALOG, title: 'Kanban', focus: true, closeOnEscape: true, rows: 5 })
+    if (!opened.isPlaced) return { result: `error: ${opened.reason}` }
+    settle('declined')
+    return { result: await new Promise<string>(resolve => { pending = resolve }) }
   })
 
-  on('ui.render', { component: 'Pane', requestId: INIT_DIALOG }, async ($, e) => {
+  on('ui.close', { id: SETUP_DIALOG }, async ($, e, next) => {
+    if (e.origin.kind === 'person') settle('declined')
+    return next(e)
+  })
+
+
+  on('ui.render', { component: 'Pane', requestId: SETUP_DIALOG }, async ($, e) => {
     const { Box, Text, Button } = $.ui.resolve(e)
-    const { value: mode } = await $.state.get(initMode)
+    const { value: mode } = await $.state.get(setupMode)
 
     const prompt = mode === 'sync'
       ? 'Kanban board found. Sync it with current openspec state?'
@@ -412,81 +496,15 @@ export const register: Register = on => {
             autoFocus
             hotkey="y"
             onPress={async () => {
-              const cwd = await $.session.cwd()
-              const kbPath = await kanbanPath($)
-
-              const listResult = await $.process.run(['openspec', 'list', '--json'], { cwd })
-              if (listResult.exitCode !== 0) {
-                await $.ui.toast(`Kanban: openspec list failed — ${listResult.stderr.trim() || 'unknown error'}`)
-                await $.ui.close({ id: INIT_DIALOG })
-                return
-              }
-
-              let listData: { changes: { name: string }[] }
-              try { listData = JSON.parse(listResult.stdout) }
-              catch {
-                await $.ui.toast('Kanban: could not parse openspec list output')
-                await $.ui.close({ id: INIT_DIALOG })
-                return
-              }
-
-              const active: ActiveChange[] = []
-              for (const c of listData.changes) {
-                const st = await $.process.run(
-                  ['openspec', 'status', '--change', c.name, '--json'],
-                  { cwd }
-                )
-                if (st.exitCode === 0) {
-                  try {
-                    const parsed = JSON.parse(st.stdout) as { artifacts: ArtifactStatus[] }
-                    active.push({ name: c.name, artifacts: parsed.artifacts ?? [] })
-                  } catch { /* skip */ }
-                }
-              }
-
-              const archived: ArchivedChange[] = []
-              try {
-                const dirs = await $.fs.list(`${cwd}/openspec/changes/archive`)
-                for (const d of dirs) {
-                  if (d.kind !== 'directory') continue
-                  const m = d.name.match(/^\d{4}-\d{2}-\d{2}-(.+)$/)
-                  archived.push({ name: m ? m[1] : d.name, dirName: d.name })
-                }
-              } catch { /* no archive dir */ }
-
-              let existing: KanbanEntry[] = []
-              try { existing = parseKanbanFull(await $.fs.read(kbPath)) } catch { /* ok */ }
-
-              const existingIds = new Set(existing.map(e => e.id))
-              const existingMap = new Map(existing.map(e => [e.id, JSON.stringify(e)]))
-
-              const merged = mergeSync(existing, active, archived)
-              await $.fs.write(kbPath, serialiseKanban(merged))
-              await invalidateIfOpen($)
-
-              let changed = 0, added = 0
-              for (const m of merged) {
-                if (!existingIds.has(m.id)) added++
-                else if (existingMap.get(m.id) !== JSON.stringify(m)) changed++
-              }
-              const unchanged = merged.length - changed - added
-
-              const { value: currentMode } = await $.state.get(initMode)
-              const resultLine = currentMode === 'init'
-                ? `Kanban init: ${merged.length} entries created`
-                : `Kanban sync: ${changed + added} updated, ${unchanged} unchanged`
-
-              await $.session.append({
-                message: { type: 'system', content: [{ type: 'text', text: resultLine }] }
-              })
-              await $.ui.close({ id: INIT_DIALOG })
+              settle(await runKanbanSetup($))
+              await $.ui.close({ id: SETUP_DIALOG })
             }}
           >
             Yes
           </Button>
           <Button
             hotkey="n"
-            onPress={() => { $.ui.close({ id: INIT_DIALOG }) }}
+            onPress={async () => { settle('declined'); await $.ui.close({ id: SETUP_DIALOG }) }}
           >
             No
           </Button>

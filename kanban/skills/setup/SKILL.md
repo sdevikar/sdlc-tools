@@ -23,12 +23,14 @@ If it is absent, run `npx openspec init` at the project root.
 
 **4. Create or sync kanban.yaml**
 
-Invoke the `kanban-init` skill. It creates `kanban.yaml` when one does not exist, or syncs it when one already exists. It preserves any fields the user set manually.
+If the tool `kanban_board_setup` (full name ends in `__kanban_board_setup`) is available, call it. It opens a Yes/No dialog and returns the result line, `declined`, or `error: <reason>`.
+
+Otherwise, ask the user in chat: "Create or sync kanban.yaml now?" On yes, invoke the `kanban-init` skill. It preserves any fields the user set manually.
 
 **5. Report**
 
-Print one line:
+Print one line that names the outcome of step 4: created, synced, skipped (user declined), or failed (with the reason):
 
 ```
-Setup complete: openspec ready, kanban-core built, kanban.yaml created/synced
+Setup complete: openspec ready, kanban-core built, kanban.yaml <created|synced|skipped|failed>
 ```
