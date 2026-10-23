@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readdirSync, existsSync } from "node:fs";
+import { readdirSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { KanbanEntry } from "./types.js";
 import { readKanban, writeKanban } from "./kanban.js";
@@ -95,6 +95,114 @@ export function mergeSync(
   }
 
   return [...byId.values()];
+}
+
+export async function applyArchives(cwd: string, kanbanPath: string): Promise<void> {
+  const archiveDir = join(cwd, "openspec", "changes", "archive");
+  if (!existsSync(archiveDir)) return;
+
+  const archived: SyncArchivedChange[] = [];
+  for (const dir of readdirSync(archiveDir)) {
+    const m = dir.match(/^\d{4}-\d{2}-\d{2}-(.+)$/);
+    const name = m ? m[1] : dir;
+    archived.push({ name, dirName: dir });
+  }
+
+  let current: KanbanEntry[] = [];
+  try {
+    current = await readKanban(kanbanPath);
+  } catch {
+    current = [];
+  }
+
+  const byId = new Map(current.map((e) => [e.id, e]));
+  const d = new Date().toISOString().slice(0, 10);
+  let changed = false;
+  const entries = [...current];
+
+  for (const ar of archived) {
+    const prev = byId.get(ar.name);
+    if (prev && prev.lane.toLowerCase() === "archived") continue;
+
+    changed = true;
+    const entry: KanbanEntry = {
+      id: ar.name,
+      title: prev?.title ?? ar.name,
+      lane: "Archived",
+      priority: prev?.priority ?? 99,
+      specPath: `openspec/changes/archive/${ar.dirName}/`,
+      summary: prev?.summary ?? "",
+      status: "archived",
+      createdAt: prev?.createdAt ?? d,
+      updatedAt: d,
+      archivedAt: prev?.archivedAt ?? d,
+      completedAt: prev?.completedAt ?? d,
+    };
+    if (prev) {
+      if (prev.notes !== undefined) entry.notes = prev.notes;
+      if (prev.tags !== undefined) entry.tags = prev.tags;
+      if (prev.assignee !== undefined) entry.assignee = prev.assignee;
+      if (prev.githubIssue !== undefined) entry.githubIssue = prev.githubIssue;
+      const idx = entries.findIndex((e) => e.id === ar.name);
+      entries[idx] = entry;
+    } else {
+      entries.push(entry);
+    }
+  }
+
+  if (changed) await writeKanban(kanbanPath, entries);
+}
+
+export async function applyNewChanges(cwd: string, kanbanPath: string): Promise<void> {
+  const changesDir = join(cwd, "openspec", "changes");
+  if (!existsSync(changesDir)) return;
+
+  const folders = readdirSync(changesDir).filter((d) => d !== "archive");
+
+  let current: KanbanEntry[] = [];
+  try {
+    current = await readKanban(kanbanPath);
+  } catch {
+    current = [];
+  }
+
+  const existingIds = new Set(current.map((e) => e.id));
+  const d = new Date().toISOString().slice(0, 10);
+  const toAdd: KanbanEntry[] = [];
+
+  for (const folder of folders) {
+    if (existingIds.has(folder)) continue;
+    const proposalPath = join(changesDir, folder, "proposal.md");
+    if (!existsSync(proposalPath)) continue;
+
+    const m = folder.match(/^[a-z]+-(\d+)-/);
+    const priority = m ? parseInt(m[1], 10) : 99;
+
+    let summary = "";
+    try {
+      const content = readFileSync(proposalPath, "utf8");
+      const whyMatch = content.match(/^## Why\s*\n+([\s\S]*?)(?=\n##|\s*$)/m);
+      if (whyMatch) {
+        const text = whyMatch[1].trim();
+        const sentence = text.split(/\.\s|\.\n/)[0] ?? text;
+        summary = sentence.slice(0, 80);
+      }
+    } catch { /* ok */ }
+
+    toAdd.push({
+      id: folder,
+      title: folder,
+      lane: "Not Started",
+      priority,
+      specPath: `openspec/changes/${folder}/`,
+      summary,
+      status: "proposal written",
+      createdAt: d,
+      updatedAt: d,
+    });
+  }
+
+  if (toAdd.length > 0) await writeKanban(kanbanPath, [...current, ...toAdd]);
 }
 
 export async function syncFromOpenSpec(
