@@ -1,42 +1,27 @@
 # OpenSpec Kanban Bridge
 
-A plugin that bridges OpenSpec spec-driven development with lightweight kanban task management. It synchronizes your project's task board with your specs so you always know what to work on next.
+A plugin that bridges OpenSpec spec-driven development with lightweight kanban task management. It keeps your task board in sync with your specs so you always know what to work on next.
 
 ## How It Works
 
-1. You propose an OpenSpec change → the kanban board adds it to "Not Started"
-2. You refine the spec and start working → the card moves to "In Progress"
-3. You finish and archive the spec → the card moves to "Done"
+1. You propose an OpenSpec change → the board adds it to "Not Started" automatically.
+2. You start working → move the card to "In Progress".
+3. You archive the spec → the board moves it to "Archived" automatically.
 
 The board answers one question: **what is the next priority item?**
 
 ## Features
 
-- **`kanban.md`** as the human-editable source of truth — structured entries with priority, status, and metadata
-- **`kanban.html`** as a generated visual board — drag-and-drop, filtering, sorting
-- **Standalone `/kanban-*` skills** — `/kanban-next`, `/kanban-priority`, `/kanban-move`, `/kanban-render`
-- **Auto-sync** on OpenSpec lifecycle events (propose, archive, task completion)
-- **GitHub Issues integration** — link specs to issues with labels
-- **Multi-harness support** — works across OpenCode, Claude Code, Codex, Cursor, Windsurf, and more
-
-## Architecture
-
-This project follows the [Ponytail](https://github.com/dietrichgebert/ponytail) multi-harness model: a shared core (skills, commands, parsing library) with thin adapters for each AI coding agent.
-
-```
-shared core (skills, commands, libs/kanban-core)
-  ├── .opencode/     (OpenCode V2 plugin)
-  ├── .claude-plugin/ (Claude Code)
-  ├── .cursor/rules/  (Cursor)
-  ├── .windsurf/      (Windsurf)
-  └── AGENTS.md      (universal fallback)
-```
+- **`kanban.yaml`** at project root — human-editable YAML with priority, status, lane, and metadata per entry.
+- **`kanban.html`** — a generated visual board from `/kanban-render`.
+- **Skills** — `/kanban-view`, `/kanban-sync`, `/kanban-render`, `/kanban-init`, plus OpenSpec skills (`/openspec-propose`, `/openspec-apply-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`).
+- **Auto-sync** — the pane refreshes when `kanban.yaml` changes, when new proposals appear, and after kanban commands.
+- **`/init` observer** — on project open, detects a missing `kanban.yaml` and offers a create-or-sync dialog.
+- **Multi-harness support** — works in OpenCode, Claude Code, Cursor, Windsurf, Kiro, and Codex.
 
 ## Claude Code Setup
 
-The mod lives in `mod/kanban-board/`. It registers `/kanban-view` as a programmatic command (no LLM call) and auto-syncs the pane when `kanban.yaml` changes.
-
-### Prerequisites: install openspec
+### Prerequisites
 
 This plugin requires [`@fission-ai/openspec`](https://www.npmjs.com/package/@fission-ai/openspec). Install it at project scope:
 
@@ -75,38 +60,39 @@ done
 
 After setup, `/kanban-view` opens the board pane without an LLM call.
 
-> **Renderer note:** The side pane docks beside the transcript only in the fullscreen layout. In the classic terminal, the pane opens above the prompt. Run `/tui fullscreen` or start Claude with `CLAUDE_CODE_NO_FLICKER=1` to get the docked side pane. Skills `/kanban-sync`, `/kanban-render`, and the OpenSpec skills are also available.
-
 ### 3. Run Claude Code in fullscreen mode
 
-The board pane needs fullscreen mode. Run `/tui fullscreen` inside Claude Code, or start Claude Code with `CLAUDE_CODE_NO_FLICKER=1`.
+The side pane docks beside the transcript only in the fullscreen renderer. Run `/tui fullscreen` inside Claude Code, or start Claude Code with `CLAUDE_CODE_NO_FLICKER=1`.
 
-Fullscreen mode turns on mouse support. Use the mouse to click the Collapse and Expand buttons. To turn mouse support off, set `CLAUDE_CODE_DISABLE_MOUSE=1`. The buttons then do not respond to clicks.
+In the classic renderer, `/kanban-view` opens the pane above the prompt instead. The pane still works — use keyboard shortcuts to close or collapse it.
 
 > `.claude/` is gitignored. Each contributor runs these steps once after cloning.
 
-## Proposals
+## Pane Controls
 
-Eight sequenced OpenSpec proposals define the implementation roadmap:
+| Key | Action |
+|-----|--------|
+| `x` | Close the pane |
+| `c` | Collapse / expand lane cards |
+| Esc | Close the pane |
 
-| # | Change | Goal |
-|---|---|---|
-| 01 | `kanban-01-core-format` | Structured kanban entry format and parsing |
-| 02 | `kanban-02-core-sync` | OpenSpec → kanban.md synchronization |
-| 03 | `kanban-03-opencode-plugin-mvp` | OpenCode V2 plugin (tools, commands, skills) |
-| 04 | `kanban-04-html-render` | Visual kanban.html board generation |
-| 05 | `kanban-05-automation-hooks` | Auto-sync on lifecycle events |
-| 06 | `kanban-06-github-issues` | GitHub Issues integration |
-| 07 | `kanban-07-multi-harness-adapters` | Cross-harness support |
-| 08 | `kanban-08-claude-mcp-server` | MCP server for Claude Desktop |
+## Lane Colors
 
-## Research
+| Lane | Color |
+|------|-------|
+| Not Started | cyan |
+| In Progress | yellow |
+| Archived | dim gray |
 
-See [docs/plans/opencode-openspec-kanban-plugin-research.md](docs/plans/opencode-openspec-kanban-plugin-research.md) for the full research report.
+Each entry shows a bold ID, a bracketed priority number, and a dim summary line.
 
-## Migration
+## Contributing
 
-Board moved to `kanban.yaml` at project root. Run `git mv docs/kanban.yaml kanban.yaml`.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Planned Support
+
+Support for [OpenCode](https://opencode.ai) is planned.
 
 ## License
 
