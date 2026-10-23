@@ -17,38 +17,52 @@ The board answers one question: **what is the next priority item?**
 - **Skills** — `/kanban-view`, `/kanban-sync`, `/kanban-render`, `/kanban-init`, plus OpenSpec skills (`/openspec-propose`, `/openspec-apply-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`).
 - **Auto-sync** — the pane refreshes when `kanban.yaml` changes, when new proposals appear, and after kanban commands.
 - **Setup dialog** — `/kanban:setup` calls the mod tool `kanban_board_setup`. It opens a Yes/No dialog to create or sync `kanban.yaml`. The first call shows one permission prompt.
-- **Multi-harness support** — works in OpenCode, Claude Code, Cursor, Windsurf, Kiro, and Codex.
 
-## Claude Code Setup
+## Installation (Claude Code)
 
 ### Prerequisites
 
-This plugin requires [`@fission-ai/openspec`](https://www.npmjs.com/package/@fission-ai/openspec). Install it at project scope:
-
-```bash
-npm install @fission-ai/openspec
-```
-
-If you have not initialized openspec in this project yet:
-
-```bash
-npx openspec init
-```
+- Node.js and npm.
+- A project directory that is a git repository.
 
 ### 1. Install the plugin
 
+Run these commands inside Claude Code, in your project:
+
 ```
-/plugin install kanban --marketplace qcom-all-gh-users/kanban
+/plugin marketplace add qcom-all-gh-users/kanban
+/plugin install kanban@kanban
+```
+
+The install writes an `enabledPlugins` entry to `.claude/settings.json`. Each contributor runs these commands once.
+
+### 2. Run setup
+
+```
 /kanban:setup
 ```
 
-Each contributor runs both commands once after cloning. The plugin install writes an `enabledPlugins` entry to `.claude/settings.json` at project scope. After setup, `/kanban-view` opens the board pane without an LLM call.
+Setup does five things:
 
-### 2. Run Claude Code in fullscreen mode
+1. Install `@fission-ai/openspec` with `npm install`.
+2. Build `libs/kanban-core`.
+3. Run `npx openspec init` if the project has no `openspec/config.yaml`.
+4. Ask you to create or sync `kanban.yaml` in a Yes/No dialog.
+5. Print a one-line summary.
 
-The side pane docks beside the transcript only in the fullscreen renderer. Run `/tui fullscreen` inside Claude Code, or start Claude Code with `CLAUDE_CODE_NO_FLICKER=1`.
+Claude Code asks for permission the first time it calls the `kanban_board_setup` tool. Allow it.
 
-In the classic renderer, `/kanban-view` opens the pane above the prompt instead. The pane still works — use keyboard shortcuts to close or collapse it.
+### 3. Open the board
+
+```
+/kanban-view
+```
+
+The side pane docks beside the transcript only in fullscreen mode. Run `/tui fullscreen`, or start Claude Code with `CLAUDE_CODE_NO_FLICKER=1`. In the classic renderer, the pane opens above the prompt.
+
+### Update
+
+Run `/plugin marketplace update kanban`, then `/kanban:setup` again. Setup is safe to repeat.
 
 ## Pane Controls
 
