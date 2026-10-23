@@ -4,11 +4,16 @@ description: Sync kanban board with OpenSpec changes.
 license: MIT
 ---
 
-Sync the kanban board by running the compiled kanban-core CLI.
+Sync the kanban board with the OpenSpec changes in the current project.
 
-```bash
-[ -f libs/kanban-core/dist/src/cli.js ] || (cd libs/kanban-core && npm install && npm run build)
-node libs/kanban-core/dist/src/cli.js
-```
+**1. Call the sync tool**
 
-Run these commands from the project root. Report any non-zero exit as an error.
+If the tool `kanban_board_setup` (full name ends in `__kanban_board_setup`) is available, call it. It runs silently and returns one of:
+
+- A status line (for example `Kanban sync: …`) → report it. Stop.
+- `convert-needed` → `kanban.yaml` exists but uses an unrecognized format. Follow the `convert-needed` handling in `/kanban:setup` step 3.
+- `error: <reason>` → report the error.
+
+**2. Fallback**
+
+If the tool is not available, follow steps 4 and 5 of the `kanban-setup` skill. Scan `openspec/changes/`, assign lanes, and write `kanban.yaml` in sync mode.
