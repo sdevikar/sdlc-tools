@@ -46,15 +46,16 @@ The install writes an `enabledPlugins` entry to `.claude/settings.json`. Each co
 /kanban:setup
 ```
 
-Setup does five things:
+Setup does four things:
 
-1. Install `@fission-ai/openspec` with `npm install`.
-2. Build `libs/kanban-core`.
-3. Run `npx openspec init` if the project has no `openspec/config.yaml`.
-4. Ask you to create or sync `kanban.yaml` in a Yes/No dialog.
-5. Print a one-line summary.
+1. Check for `openspec`. Ask before it runs `npm install -g @fission-ai/openspec`.
+2. Run `npx openspec init` if the project has no `openspec/config.yaml`.
+3. Create or sync `kanban.yaml`.
+4. Print a one-line summary.
 
 Claude Code asks for permission the first time it calls the `kanban_board_setup` tool. Allow it.
+
+If you upgrade from 0.1.0, run `/plugin update kanban` to get the version without the `libs/kanban-core` build step.
 
 ### 3. Open the board
 
