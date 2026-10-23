@@ -4,4 +4,4 @@ description: Sync kanban board with OpenSpec changes.
 license: MIT
 ---
 
-Run syncFromOpenSpec against docs/kanban.yaml and report result.
+Run syncFromOpenSpec against kanban.yaml and report result.

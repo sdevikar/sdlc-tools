@@ -104,6 +104,10 @@ Eight sequenced OpenSpec proposals define the implementation roadmap:
 
 See [docs/plans/opencode-openspec-kanban-plugin-research.md](docs/plans/opencode-openspec-kanban-plugin-research.md) for the full research report.
 
+## Migration
+
+Board moved to `kanban.yaml` at project root. Run `git mv docs/kanban.yaml kanban.yaml`.
+
 ## License
 
 MIT

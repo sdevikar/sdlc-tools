@@ -1,12 +1,13 @@
 import { syncFromOpenSpec, applyArchives, applyNewChanges } from './sync.js'
+import { KANBAN_FILE } from './paths.js'
 
 const [,, cmd] = process.argv
 
 const run = cmd === 'archive-sync'
-  ? applyArchives(process.cwd(), 'docs/kanban.yaml')
+  ? applyArchives(process.cwd(), KANBAN_FILE)
   : cmd === 'new-sync'
-  ? applyNewChanges(process.cwd(), 'docs/kanban.yaml')
-  : syncFromOpenSpec(process.cwd(), 'docs/kanban.yaml')
+  ? applyNewChanges(process.cwd(), KANBAN_FILE)
+  : syncFromOpenSpec(process.cwd(), KANBAN_FILE)
 
 run
   .then(() => process.exit(0))

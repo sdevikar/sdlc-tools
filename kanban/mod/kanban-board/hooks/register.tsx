@@ -6,7 +6,7 @@ const LANES = ['Not Started', 'In Progress', 'Archived'] as const
 
 async function kanbanPath($: any): Promise<string> {
   const cwd = await $.session.cwd()
-  return `${cwd}/docs/kanban.yaml`
+  return `${cwd}/kanban.yaml`
 }
 
 const collapsed = { plugin: 'kanban-board', key: 'collapsed' } as const
@@ -390,7 +390,7 @@ export const register: Register = on => {
     const result = await next(e)
     const cwd = await $.session.cwd()
     let mode: 'init' | 'sync' = 'init'
-    try { await $.fs.stat(`${cwd}/docs/kanban.yaml`); mode = 'sync' } catch { /* init mode */ }
+    try { await $.fs.stat(await kanbanPath($)); mode = 'sync' } catch { /* init mode */ }
     await $.state.set(initMode, mode)
     await $.ui.open({ id: INIT_DIALOG, title: 'Kanban', focus: true, closeOnEscape: true, rows: 5 })
     return result
@@ -413,7 +413,7 @@ export const register: Register = on => {
             hotkey="y"
             onPress={async () => {
               const cwd = await $.session.cwd()
-              const kbPath = `${cwd}/docs/kanban.yaml`
+              const kbPath = await kanbanPath($)
 
               const listResult = await $.process.run(['openspec', 'list', '--json'], { cwd })
               if (listResult.exitCode !== 0) {
@@ -506,7 +506,7 @@ export const register: Register = on => {
     } catch {
       return (
         <Box>
-          <Text color="red">Could not read docs/kanban.yaml</Text>
+          <Text color="red">Could not read kanban.yaml</Text>
         </Box>
       )
     }

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Keeps the kanban pane up to date when `docs/kanban.yaml` changes, without user action.
+Keeps the kanban pane up to date when `kanban.yaml` changes, without user action.
 
 ## Requirements
 
