@@ -1,0 +1,68 @@
+{
+  "report_path": "qgenie-alignment-review-2026-10-23.md",
+  "generated": "2026-10-23",
+  "project": "kanban board and OpenSpec bridge plugin (Claude Code)",
+  "overall_confidence": "Medium",
+  "components": [
+    {
+      "name": "Kanban skills",
+      "taxonomy_category": "skill",
+      "tier": "ready_to_act_on_now",
+      "pattern": "B",
+      "pattern_name": "Package as a QGenie plugin",
+      "evidence_label": "Cached",
+      "capability_status": "Unknown",
+      "confidence": "Medium",
+      "link": "https://qgenie-docs.qualcomm.com/qgenie-cli/reference/plugin-authoring",
+      "human_approval_gate": true
+    },
+    {
+      "name": "OpenSpec skills",
+      "taxonomy_category": "skill",
+      "tier": "ready_to_act_on_now",
+      "pattern": "B",
+      "pattern_name": "Package as a QGenie plugin",
+      "evidence_label": "Cached",
+      "capability_status": "Unknown",
+      "confidence": "Medium",
+      "link": "https://qgenie-docs.qualcomm.com/qgenie-cli/reference/plugin-authoring",
+      "human_approval_gate": true
+    },
+    {
+      "name": "Claude Code mod",
+      "taxonomy_category": "harness_adapter",
+      "tier": "leave_as_is",
+      "pattern": "F",
+      "pattern_name": "Keep and integrate",
+      "evidence_label": "Not found",
+      "capability_status": "Unknown",
+      "confidence": "High",
+      "link": null,
+      "human_approval_gate": false
+    },
+    {
+      "name": "kanban-core library",
+      "taxonomy_category": "tool",
+      "tier": "leave_as_is",
+      "pattern": "F",
+      "pattern_name": "Keep and integrate",
+      "evidence_label": "Not found",
+      "capability_status": "Unknown",
+      "confidence": "High",
+      "link": null,
+      "human_approval_gate": false
+    },
+    {
+      "name": "Shell hooks",
+      "taxonomy_category": "harness_adapter",
+      "tier": "leave_as_is",
+      "pattern": "F",
+      "pattern_name": "Keep and integrate",
+      "evidence_label": "Not found",
+      "capability_status": "Unknown",
+      "confidence": "High",
+      "link": null,
+      "human_approval_gate": false
+    }
+  ]
+}
