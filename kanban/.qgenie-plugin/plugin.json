@@ -1,5 +1,5 @@
 {
-  "id": "<org>/kanban",
+  "id": "Automotive/kanban",
   "version": "0.1.1",
   "displayName": "Kanban Board + OpenSpec Bridge",
   "description": "YAML-backed kanban board with swim-lane view and OpenSpec spec lifecycle management for Claude Code.",
