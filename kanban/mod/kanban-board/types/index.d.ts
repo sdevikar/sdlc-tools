@@ -1,5 +1,5 @@
 declare module 'claude-code' {
   interface PluginState {
-    'kanban-board': { collapsed: boolean }
+    'kanban-board': { collapsed: boolean; initMode: 'init' | 'sync' | null }
   }
 }
