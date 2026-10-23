@@ -137,14 +137,16 @@ entries:
     completedAt: 2026-10-23
   - id: kanban-23-pane-renderer-hint
     title: kanban-23-pane-renderer-hint
-    lane: In Progress
+    lane: Archived
     priority: 23
-    specPath: openspec/changes/kanban-23-pane-renderer-hint/
+    specPath: openspec/changes/archive/2026-10-22-kanban-23-pane-renderer-hint/
     summary: Hint the user to run /tui fullscreen when in classic renderer; fix
       isPlaced fallback text
-    status: tasks ready
+    status: archived
     createdAt: 2026-10-22
-    updatedAt: 2026-10-22
+    updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
   - id: kanban-06-github-issues
     title: kanban-06-github-issues
     lane: Not Started
