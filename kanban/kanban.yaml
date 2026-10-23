@@ -91,11 +91,13 @@ entries:
     title: kanban-18-kanban-view-pane-fix
     lane: Archived
     priority: 18
-    specPath: openspec/changes/kanban-18-kanban-view-pane-fix/
+    specPath: openspec/changes/archive/2026-10-23-kanban-18-kanban-view-pane-fix/
     summary: Fix /kanban-view pane not opening in fullscreen terminals
-    status: tasks ready
+    status: archived
     createdAt: 2026-10-22
-    updatedAt: 2026-10-22
+    updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
   - id: kanban-19-multi-board
     title: kanban-19-multi-board
     lane: Archived
@@ -112,16 +114,18 @@ entries:
     title: kanban-20-pane-controls
     lane: Archived
     priority: 20
-    specPath: openspec/changes/kanban-20-pane-controls/
+    specPath: openspec/changes/archive/2026-10-23-kanban-20-pane-controls/
     summary: Add Close button, closeOnEscape, and fix collapse header in the kanban pane
-    status: tasks ready
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
   - id: kanban-21-pane-visual-design
     title: kanban-21-pane-visual-design
     lane: Archived
     priority: 21
-    specPath: openspec/changes/archive/2026-10-22-kanban-21-pane-visual-design/
+    specPath: openspec/changes/archive/2026-10-23-kanban-21-pane-visual-design/
     summary: Color-coded lane headers, card-style entries, and priority badges in
       the pane
     status: archived
