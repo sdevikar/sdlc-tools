@@ -2,6 +2,10 @@
 
 A plugin that bridges OpenSpec spec-driven development with lightweight kanban task management. It keeps your task board in sync with your specs so you always know what to work on next.
 
+The plugin also installs as a **Claude Code mod** — a live kanban pane that docks inside your existing Claude Code session. Run `/kanban-view` to open it. No browser required.
+
+![Kanban pane inside Claude Code](docs/ui.png)
+
 ## How It Works
 
 1. You propose an OpenSpec change → the board adds it to "Not Started" automatically.
