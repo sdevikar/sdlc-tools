@@ -1,6 +1,6 @@
 ---
 name: kanban-init
-description: Initialize or sync the kanban board for a project. Installs openspec if needed and creates or syncs docs/kanban.yaml from openspec changes.
+description: Initialize or sync the kanban board for a project. Installs openspec if needed and creates or syncs kanban.yaml from openspec changes.
 license: MIT
 ---
 
@@ -28,10 +28,10 @@ Collect active changes from `openspec/changes/` (exclude the `archive/` subdirec
 | anything else | Not Started | no proposal |
 | Found in archive directory | Archived | archived |
 
-**5. Write or merge `docs/kanban.yaml`**
+**5. Write or merge `kanban.yaml`**
 
-- **Init mode** (`docs/kanban.yaml` does not exist): create the file with all scanned entries. Use default priority 5.
-- **Sync mode** (`docs/kanban.yaml` exists): for new changes, add an entry. For existing changes, update `lane` and `status` only. Preserve these fields as the user set them: `priority`, `notes`, `tags`, `assignee`, `githubIssue`. Do not move a lane the user moved manually unless the change is now archived.
+- **Init mode** (`kanban.yaml` does not exist): create the file with all scanned entries. Use default priority 5.
+- **Sync mode** (`kanban.yaml` exists): for new changes, add an entry. For existing changes, update `lane` and `status` only. Preserve these fields as the user set them: `priority`, `notes`, `tags`, `assignee`, `githubIssue`. Do not move a lane the user moved manually unless the change is now archived.
 
 **6. Report**
 

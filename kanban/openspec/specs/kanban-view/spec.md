@@ -1,7 +1,7 @@
 # kanban-view Specification
 
 ## Purpose
-Render `docs/kanban.yaml` as a Markdown table with one column per lane, sorted by priority.
+Render `kanban.yaml` as a Markdown table with one column per lane, sorted by priority.
 
 ## Requirements
 ### Requirement: kanban-view skill

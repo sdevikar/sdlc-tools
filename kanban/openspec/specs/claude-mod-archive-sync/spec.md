@@ -22,7 +22,7 @@ The mod SHALL check `openspec/changes/archive/` mtime once at session start and 
 - **THEN** the mod updates the baseline and triggers the gap scan
 
 ### Requirement: Mod identifies archive gaps
-The mod SHALL compare archive folder contents with `docs/kanban.yaml` entries to find gaps.
+The mod SHALL compare archive folder contents with `kanban.yaml` entries to find gaps.
 
 #### Scenario: Entry already in Archived lane
 - **WHEN** an archived change has a kanban entry whose lane is `Archived` or `archived` (case-insensitive)

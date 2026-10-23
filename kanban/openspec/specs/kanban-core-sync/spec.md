@@ -15,7 +15,7 @@ The package SHALL expose a `kanban-sync` bin that calls `syncFromOpenSpec` for t
 
 #### Scenario: Successful sync via CLI
 - **WHEN** `node dist/src/cli.js` runs from the project root with a valid `openspec/` directory
-- **THEN** `docs/kanban.yaml` is updated and the process exits 0
+- **THEN** `kanban.yaml` is updated and the process exits 0
 
 #### Scenario: CLI exits non-zero on sync error
 - **WHEN** the `openspec` CLI is not found or sync throws
@@ -52,7 +52,7 @@ The CLI SHALL support a `new-sync` subcommand that adds board entries for active
 - **THEN** new-sync does not add entries for folders inside it
 
 #### Scenario: new-sync exits non-zero on write failure
-- **WHEN** writing to `docs/kanban.yaml` fails
+- **WHEN** writing to `kanban.yaml` fails
 - **THEN** the process writes the error to stderr and exits with code 1
 
 ### Requirement: archive-sync subcommand
@@ -75,6 +75,6 @@ The CLI SHALL support an `archive-sync` subcommand that moves only gap entries t
 - **THEN** archive-sync leaves it unchanged
 
 #### Scenario: archive-sync exits non-zero on write failure
-- **WHEN** writing to `docs/kanban.yaml` fails
+- **WHEN** writing to `kanban.yaml` fails
 - **THEN** the process writes the error to stderr and exits with code 1
 

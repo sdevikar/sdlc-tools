@@ -36,7 +36,7 @@ The mod registers these slash commands:
 
 ### Auto-sync
 
-The mod watches for writes to `docs/kanban.yaml` (via `tool.call` hooks on `Write` and `Edit`) and re-reads the file to update the pane. Kanban commands (`/kanban-sync`, `/kanban-render`, `/opsx-archive`, `/opsx-propose`) also trigger a refresh.
+The mod watches for writes to `kanban.yaml` (via `tool.call` hooks on `Write` and `Edit`) and re-reads the file to update the pane. Kanban commands (`/kanban-sync`, `/kanban-render`, `/opsx-archive`, `/opsx-propose`) also trigger a refresh.
 
 ### Changes
 
