@@ -1,0 +1,26 @@
+{
+  "id": "<org>/kanban",
+  "version": "0.1.1",
+  "displayName": "Kanban Board + OpenSpec Bridge",
+  "description": "YAML-backed kanban board with swim-lane view and OpenSpec spec lifecycle management for Claude Code.",
+  "preferredHarness": "claude",
+  "capabilities": {
+    "skills": [
+      { "id": "kanban",                  "path": "./skills/kanban/" },
+      { "id": "kanban-init",             "path": "./skills/kanban-init/" },
+      { "id": "kanban-render",           "path": "./skills/kanban-render/" },
+      { "id": "kanban-sync",             "path": "./skills/kanban-sync/" },
+      { "id": "setup",                   "path": "./skills/setup/" },
+      { "id": "openspec-propose",        "path": "./skills/openspec-propose/" },
+      { "id": "openspec-apply-change",   "path": "./skills/openspec-apply-change/" },
+      { "id": "openspec-archive-change", "path": "./skills/openspec-archive-change/" },
+      { "id": "openspec-explore",        "path": "./skills/openspec-explore/" },
+      { "id": "openspec-sync-specs",     "path": "./skills/openspec-sync-specs/" }
+    ]
+  },
+  "adapters": {
+    "claude": {
+      "path": "./mod/kanban-board/"
+    }
+  }
+}
