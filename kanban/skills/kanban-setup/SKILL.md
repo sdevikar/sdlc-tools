@@ -22,11 +22,15 @@ If it is absent, run `npm install && npm run build` inside `libs/kanban-core/`.
 Check whether `openspec/config.yaml` exists.
 If it is absent, run `npx openspec init` at the project root.
 
-**4. Confirm with user**
+**4. Create or sync kanban.yaml**
 
-If the tool `kanban_board_setup` (full name ends in `__kanban_board_setup`) is available, call it. It opens a Yes/No dialog and returns the result line, `declined`, or `error: <reason>`. If the user declines, skip to step 7 with outcome `skipped`.
+If the tool `kanban_board_setup` (full name ends in `__kanban_board_setup`) is available, call it. It runs silently and returns one of:
 
-Otherwise, ask the user in chat: "Create or sync kanban.yaml now?" If the user says no, skip to step 7 with outcome `skipped`.
+- A status line (e.g. `Kanban init: …` or `Kanban sync: …`) → report it, skip to step 7.
+- `convert-needed` → `kanban.yaml` exists but uses an unrecognized format. Read the file, show the user its current content, explain the expected format (see step 6), and help them convert it. Write the converted file, then continue to step 5.
+- `error: <reason>` → report the error, skip to step 7 with outcome `failed`.
+
+If the tool is not available, continue to steps 5 and 6 to scan and write kanban.yaml yourself.
 
 **5. Scan changes**
 
