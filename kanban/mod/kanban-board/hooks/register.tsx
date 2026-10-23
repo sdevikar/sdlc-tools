@@ -1,7 +1,6 @@
 import type { Register } from 'claude-code'
 
 const PANE = 'kanban-board'
-const SETUP_DIALOG = 'kanban-setup-dialog'
 const LANES = ['Not Started', 'In Progress', 'Archived'] as const
 
 async function kanbanPath($: any): Promise<string> {
@@ -10,7 +9,6 @@ async function kanbanPath($: any): Promise<string> {
 }
 
 const collapsed = { plugin: 'kanban-board', key: 'collapsed' } as const
-const setupMode = { plugin: 'kanban-board', key: 'setupMode' } as const
 
 // Display-only entry (pane rendering)
 type Entry = { id: string; summary: string; priority: number; lane: string }
@@ -265,12 +263,6 @@ async function invalidateIfOpen($: any) {
 }
 
 let setupTool = ''
-let pending: ((text: string) => void) | null = null
-
-function settle(text: string) {
-  pending?.(text)
-  pending = null
-}
 
 // Scans openspec, merges into kanban.yaml, and returns the result line or `error: <reason>`.
 async function runKanbanSetup($: any): Promise<string> {
@@ -313,7 +305,8 @@ async function runKanbanSetup($: any): Promise<string> {
   } catch { /* no archive dir */ }
 
   let existing: KanbanEntry[] = []
-  try { existing = parseKanbanFull(await $.fs.read(kbPath)) } catch { /* ok */ }
+  let mode: 'init' | 'sync' = 'init'
+  try { existing = parseKanbanFull(await $.fs.read(kbPath)); mode = 'sync' } catch { /* ok */ }
 
   const existingIds = new Set(existing.map(e => e.id))
   const existingMap = new Map(existing.map(e => [e.id, JSON.stringify(e)]))
@@ -329,11 +322,9 @@ async function runKanbanSetup($: any): Promise<string> {
   }
   const unchanged = merged.length - changed - added
 
-  const { value: currentMode } = await $.state.get(setupMode)
-  const resultLine = currentMode === 'init'
+  return mode === 'init'
     ? `Kanban init: ${merged.length} entries created`
     : `Kanban sync: ${changed + added} updated, ${unchanged} unchanged`
-  return resultLine
 }
 
 let archiveMtime = 0
@@ -432,7 +423,7 @@ export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     setupTool = (await $.tool.register({
       name: 'kanban_board_setup',
-      description: 'Ask the user to create or sync kanban.yaml for this project. Opens a Yes/No dialog and returns the result line, "declined", or "error: <reason>".',
+      description: 'Create or sync kanban.yaml for this project. Silent — no dialog. Returns a status line, "convert-needed" (kanban.yaml exists but uses an unrecognized format), or "error: <reason>".',
       inputSchema: { type: 'object' },
     })).tool
     await $.command.register({
@@ -459,52 +450,12 @@ export const register: Register = on => {
 
   on('tool.call', async ($, e, next) => {
     if (e.tool !== setupTool) return next(e)
-    let mode: 'init' | 'sync' = 'init'
-    try { await $.fs.stat(await kanbanPath($)); mode = 'sync' } catch { /* init mode */ }
-    await $.state.set(setupMode, mode)
-    const opened = await $.ui.open({ id: SETUP_DIALOG, title: 'Kanban', focus: true, closeOnEscape: true, rows: 5 })
-    if (!opened.isPlaced) return { result: `error: ${opened.reason}` }
-    settle('declined')
-    return { result: await new Promise<string>(resolve => { pending = resolve }) }
-  })
-
-  on('ui.close', { id: SETUP_DIALOG }, async ($, e, next) => {
-    if (e.origin.kind === 'person') settle('declined')
-    return next(e)
-  })
-
-
-  on('ui.render', { component: 'Pane', requestId: SETUP_DIALOG }, async ($, e) => {
-    const { Box, Text, Button } = $.ui.resolve(e)
-    const { value: mode } = await $.state.get(setupMode)
-
-    const prompt = mode === 'sync'
-      ? 'Kanban board found. Sync it with current openspec state?'
-      : 'No kanban board found. Create one for this project?'
-
-    return (
-      <Box flexDirection="column" paddingX={1} paddingY={1}>
-        <Text>{prompt}</Text>
-        <Box flexDirection="row" gap={2} marginTop={1}>
-          <Button
-            autoFocus
-            hotkey="y"
-            onPress={async () => {
-              settle(await runKanbanSetup($))
-              await $.ui.close({ id: SETUP_DIALOG })
-            }}
-          >
-            Yes
-          </Button>
-          <Button
-            hotkey="n"
-            onPress={async () => { settle('declined'); await $.ui.close({ id: SETUP_DIALOG }) }}
-          >
-            No
-          </Button>
-        </Box>
-      </Box>
-    )
+    const kbPath = await kanbanPath($)
+    try {
+      const text = await $.fs.read(kbPath)
+      if (!/^entries:/m.test(text)) return { result: 'convert-needed' }
+    } catch { /* file absent — init mode */ }
+    return { result: await runKanbanSetup($) }
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {

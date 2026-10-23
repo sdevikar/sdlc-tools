@@ -1,6 +1,6 @@
 {
   "name": "kanban-board",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Kanban board pane for Claude Code",
   "types": "./types/index.d.ts"
 }
