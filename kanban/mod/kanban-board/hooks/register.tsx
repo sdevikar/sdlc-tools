@@ -349,12 +349,9 @@ async function checkArchiveFolder($: any) {
   } catch {
     return
   }
-  const result = await $.process.run(
-    ['node', `${cwd}/libs/kanban-core/dist/src/cli.js`, 'archive-sync'],
-    { cwd }
-  )
-  if (result.exitCode !== 0) {
-    await $.ui.toast(`archive-sync: ${result.stderr.trim() || 'failed'}`)
+  const syncResult = await runKanbanSetup($)
+  if (syncResult.startsWith('error:')) {
+    await $.ui.toast(`archive-sync: ${syncResult.slice(7).trim()}`)
   } else {
     await invalidateIfOpen($)
   }
@@ -403,12 +400,9 @@ async function checkChangesFolder($: any) {
 
   if (!hasMissing) return
 
-  const result = await $.process.run(
-    ['node', `${cwd}/libs/kanban-core/dist/src/cli.js`, 'new-sync'],
-    { cwd }
-  )
-  if (result.exitCode !== 0) {
-    await $.ui.toast(`new-sync: ${result.stderr.trim() || 'failed'}`)
+  const syncResult = await runKanbanSetup($)
+  if (syncResult.startsWith('error:')) {
+    await $.ui.toast(`new-sync: ${syncResult.slice(7).trim()}`)
   } else {
     await invalidateIfOpen($)
   }
