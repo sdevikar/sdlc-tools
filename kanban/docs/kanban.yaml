@@ -104,7 +104,8 @@ entries:
     createdAt: 2026-10-22
     updatedAt: 2026-10-22
     archivedAt: 2026-10-22
-    notes: Rejected. One openspec/ root per repo means sub-boards have no source of changes to sync from.
+    notes: Rejected. One openspec/ root per repo means sub-boards have no source of
+      changes to sync from.
   - id: kanban-20-pane-controls
     title: kanban-20-pane-controls
     lane: Archived
@@ -248,20 +249,24 @@ entries:
     completedAt: 2026-10-22
   - id: kanban-24-mod-archive-sync
     title: kanban-24-mod-archive-sync
-    lane: Not Started
+    lane: Archived
     priority: 24
-    specPath: openspec/changes/kanban-24-mod-archive-sync/
+    specPath: openspec/changes/archive/2026-10-22-kanban-24-mod-archive-sync/
     summary: Mod polls the archive folder and moves archived changes to the Archived
       lane
-    status: proposal written
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
   - id: kanban-25-mod-new-change-sync
     title: kanban-25-mod-new-change-sync
-    lane: Not Started
+    lane: Archived
     priority: 25
-    specPath: openspec/changes/kanban-25-mod-new-change-sync/
+    specPath: openspec/changes/archive/2026-10-22-kanban-25-mod-new-change-sync/
     summary: Mod adds board entries for new changes that have a proposal
-    status: proposal written
+    status: archived
     createdAt: 2026-10-22
     updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
