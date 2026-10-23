@@ -13,8 +13,8 @@
 
 ## 3. Manual check
 
-- [ ] 3.1 Classic renderer (`CLAUDE_CODE_NO_FLICKER=0`): `/kanban-view`, press `x`. Pane closes. Run again, press Escape. Pane closes.
-- [ ] 3.2 Fullscreen renderer (`CLAUDE_CODE_NO_FLICKER=1`): `/kanban-view`, click Close. Pane closes.
+- [x] 3.1 Classic renderer (`CLAUDE_CODE_NO_FLICKER=0`): `/kanban-view`, press `x`. Pane closes. Run again, press Escape. Pane closes.
+- [x] 3.2 Fullscreen renderer (`CLAUDE_CODE_NO_FLICKER=1`): `/kanban-view`, click Close. Pane closes.
 
 ## Workflow follow-up
 
