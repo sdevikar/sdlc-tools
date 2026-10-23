@@ -12,14 +12,7 @@ Keep specs small and focused. One spec per logical change. Review the spec befor
 
 ## Setup
 
-Install dependencies and initialize OpenSpec:
-
-```bash
-npm install @fission-ai/openspec
-npx openspec init
-```
-
-Then follow the [Claude Code Setup](README.md#claude-code-setup) steps in the README to load the mod and link skills.
+Follow the [Installation](README.md#installation-claude-code) steps in the README. The `/kanban:setup` command handles dependencies, OpenSpec init, and the kanban board in one step.
 
 ## Commit Style
 
