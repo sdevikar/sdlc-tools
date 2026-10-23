@@ -274,11 +274,13 @@ entries:
     completedAt: 2026-10-23
   - id: kanban-26-kanban-yaml-root
     title: kanban-26-kanban-yaml-root
-    lane: Not Started
+    lane: Archived
     priority: 26
-    specPath: openspec/changes/kanban-26-kanban-yaml-root/
+    specPath: openspec/changes/archive/2026-10-22-kanban-26-kanban-yaml-root/
     summary: The board file is at `docs/kanban.yaml`, but the generated
       `kanban.html` is at t
-    status: proposal written
+    status: archived
     createdAt: 2026-10-23
     updatedAt: 2026-10-23
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23

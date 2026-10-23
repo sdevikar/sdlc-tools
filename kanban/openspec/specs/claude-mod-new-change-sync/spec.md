@@ -22,7 +22,7 @@ The mod SHALL check `openspec/changes/` mtime on the same 5-second timer used by
 - **THEN** the mod checks each skipped folder for a proposal.md even if the changes folder mtime is unchanged
 
 ### Requirement: Mod identifies missing board entries
-The mod SHALL compare change folders in `openspec/changes/` with `kanban.yaml` to find changes that have a `proposal.md` but no board entry.
+The mod SHALL compare change folders in `openspec/changes/` with `kanban.yaml` at the project root to find changes that have a `proposal.md` but no board entry.
 
 #### Scenario: Change folder with proposal.md and no board entry
 - **WHEN** a folder in `openspec/changes/` has a `proposal.md` and has no kanban entry
