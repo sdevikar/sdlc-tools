@@ -10,7 +10,6 @@
       { "id": "kanban-init",             "path": "./skills/kanban-init/" },
       { "id": "kanban-render",           "path": "./skills/kanban-render/" },
       { "id": "kanban-sync",             "path": "./skills/kanban-sync/" },
-      { "id": "kanban-view",             "path": "./skills/kanban-view/" },
       { "id": "setup",                   "path": "./skills/setup/" },
       { "id": "openspec-propose",        "path": "./skills/openspec-propose/" },
       { "id": "openspec-apply-change",   "path": "./skills/openspec-apply-change/" },
