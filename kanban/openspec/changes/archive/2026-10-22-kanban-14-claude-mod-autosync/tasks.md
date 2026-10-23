@@ -9,4 +9,5 @@
 ## Workflow follow-up
 
 - Reload the mod in Claude Code and smoke-test the golden path: open pane, write kanban.yaml, confirm pane updates silently.
+- Smoke test showed pane does not auto-refresh on Edit hook. Root cause not investigated here. kanban-24 and kanban-25 cover the live sync behavior for archive and new-change events respectively.
 - Archive the change after verification.
