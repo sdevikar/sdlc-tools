@@ -2,39 +2,35 @@
 
 A Claude Code plugin that ships commit, handoff, and review workflows. It brings `superpowers` and `ponytail` with it as dependencies.
 
-## Install
+## Quick install
 
-Run these two commands once per machine, then repeat step 2 in each project where you want devflow.
+Run `/setup` in a Claude Code session inside the project where you want devflow. The skill checks for conflicts, registers the marketplace, and installs the plugin.
 
-**Step 1 — Add this repo as a marketplace (one time only):**
+Or install manually:
 
 ```bash
+# One time — register the marketplace
 claude plugin marketplace add qcom-all-gh-users/devflow
-```
 
-**Step 2 — Install devflow in a project:**
-
-```bash
+# Per project — install at local scope
 claude plugin install devflow@devflow --scope local
 ```
 
-This also installs `superpowers@claude-plugins-official` and `ponytail@ponytail` at local scope in that project.
+## Pre-flight: existing installs
 
-## After install — remove personal skill links
-
-If you have personal skill links for `atomic-commits` or `brainstorming` (e.g. under `~/.agents/skills/`), remove them so the bare skill name runs the plugin version:
+devflow installs `superpowers` from `claude-plugins-official` and `ponytail` from the `ponytail` marketplace. If you already have either plugin installed from a **different** marketplace, uninstall it first to avoid name conflicts:
 
 ```bash
-rm ~/.agents/skills/atomic-commits
-rm ~/.agents/skills/brainstorming
+claude plugin uninstall <name>@<other-marketplace> --scope <scope>
 ```
 
-The source files stay on disk. To restore a link: `ln -s <target> ~/.agents/skills/<name>`.
+The `/setup` skill does this check for you automatically.
 
 ## Skills
 
 | Skill | What it does |
 |---|---|
+| `setup` | Checks for conflicts, registers the marketplace, installs devflow |
 | `atomic-commits` | Plans commits before coding, enforces merge rules, volume check, combine pass |
 
 ## Rollback
@@ -42,5 +38,3 @@ The source files stay on disk. To restore a link: `ln -s <target> ~/.agents/skil
 ```bash
 claude plugin uninstall devflow@devflow --scope local
 ```
-
-Re-create any personal skill links you removed.
