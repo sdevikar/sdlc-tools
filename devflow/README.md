@@ -49,8 +49,6 @@ If you already have `superpowers` or `ponytail` installed from a **different** m
 | `self-review` | Review | Run, verify, rate, and gate-approve fixes from a code review |
 | `address-pr-comments` | Review | Fetch, verify, rate, and gate-approve fixes from PR review threads |
 
-> `self-review` and `address-pr-comments` ship in the next release.
-
 ## Handoff and pickup
 
 `/handoff` writes the session state to `docs/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` in the project root. On a feature branch, `<slug>` is the branch name with `/` changed to `-`. On `main`, it is a short topic. The file starts with frontmatter (`branch`, `head`, `base`, `pr`, `status`, `next`), so tools can find it without a pasted path.
@@ -58,6 +56,17 @@ If you already have `superpowers` or `ponytail` installed from a **different** m
 When a session starts, clears, or resumes, a hook prints one line. The line names the newest handoff for the current branch whose `status` is not `done`, and its `next` step. Run `/devflow:pickup` to read that handoff, check it against git, and choose the next step. Pass a path to pick up a specific file: `/devflow:pickup docs/handoffs/<file>.md`.
 
 Keep `docs/` in `.gitignore`. `/handoff` warns you if git does not ignore the path. The hook needs `python3` on `PATH`.
+
+## Review
+
+Both review skills share one loop, in `references/review-loop.md`. It verifies each finding, checks it against earlier decisions, writes one report table, rates each fix, and stops for your approval. Approved fixes go through `atomic-commits`. Nothing is pushed or posted until you say so.
+
+| Skill | Input | Report |
+|---|---|---|
+| `/devflow:self-review` | The built-in `/code-review` on your PR, unpushed commits, or `<default branch>...HEAD` | `docs/reviews/review_<slug>_<YYYYMMDD>.md` |
+| `/devflow:address-pr-comments` | Inline threads, review bodies, and general comments on a PR | `docs/reviews/review_pr<n>_<YYYYMMDD>.md` |
+
+Both skills are safe to re-run on the same target. A re-run reuses the newest report, adds a `## Round <n>` note, and adds no duplicate rows, commits, or replies. Thread replies state only facts: `**Fixed** in <sha>: <what changed>. <file>:<line>`, or `**Rejected**: <reason>`.
 
 ## Rollback
 
