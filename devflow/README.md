@@ -49,7 +49,15 @@ If you already have `superpowers` or `ponytail` installed from a **different** m
 | `self-review` | Review | Run, verify, rate, and gate-approve fixes from a code review |
 | `address-pr-comments` | Review | Fetch, verify, rate, and gate-approve fixes from PR review threads |
 
-> `handoff`, `pickup`, `self-review`, and `address-pr-comments` ship in the next two releases.
+> `self-review` and `address-pr-comments` ship in the next release.
+
+## Handoff and pickup
+
+`/handoff` writes the session state to `docs/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` in the project root. On a feature branch, `<slug>` is the branch name with `/` changed to `-`. On `main`, it is a short topic. The file starts with frontmatter (`branch`, `head`, `base`, `pr`, `status`, `next`), so tools can find it without a pasted path.
+
+When a session starts, clears, or resumes, a hook prints one line. The line names the newest handoff for the current branch whose `status` is not `done`, and its `next` step. Run `/devflow:pickup` to read that handoff, check it against git, and choose the next step. Pass a path to pick up a specific file: `/devflow:pickup docs/handoffs/<file>.md`.
+
+Keep `docs/` in `.gitignore`. `/handoff` warns you if git does not ignore the path. The hook needs `python3` on `PATH`.
 
 ## Rollback
 
