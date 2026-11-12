@@ -9,7 +9,7 @@ Run these two commands once per machine, then repeat step 2 in each project wher
 **Step 1 — Add this repo as a marketplace (one time only):**
 
 ```bash
-claude plugin marketplace add https://github.com/qcom-all-gh-users/devflow
+claude plugin marketplace add qcom-all-gh-users/devflow
 ```
 
 **Step 2 — Install devflow in a project:**
