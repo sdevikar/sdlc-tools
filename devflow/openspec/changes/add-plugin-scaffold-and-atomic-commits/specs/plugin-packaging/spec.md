@@ -17,12 +17,12 @@ The repo root SHALL be a valid plugin marketplace that lists one plugin, `devflo
 - **WHEN** the user runs `claude plugin validate ~/personal/devflow`
 - **THEN** the output reports that validation passed, with no warnings
 
-### Requirement: Ship superpowers as a dependency
-The plugin SHALL declare `superpowers` from the `claude-plugins-official` marketplace as a dependency. The marketplace SHALL allow cross-marketplace dependencies on `claude-plugins-official`.
+### Requirement: Ship superpowers and ponytail as dependencies
+The plugin SHALL declare `superpowers` from the `claude-plugins-official` marketplace and `ponytail` from the `ponytail` marketplace as dependencies. The marketplace SHALL allow cross-marketplace dependencies on both `claude-plugins-official` and `ponytail`.
 
-#### Scenario: Dependency installs with the plugin
-- **WHEN** the user installs devflow at local scope in a project that has no superpowers
-- **THEN** `superpowers@claude-plugins-official` also installs and is enabled at local scope in that project
+#### Scenario: Dependencies install with the plugin
+- **WHEN** the user installs devflow at local scope in a project that has neither superpowers nor ponytail
+- **THEN** `superpowers@claude-plugins-official` and `ponytail@ponytail` also install and are enabled at local scope in that project
 
 ### Requirement: Local scope only
 The documented install SHALL use local scope (`--scope local`). The README SHALL NOT tell the user to install at user or project scope.
