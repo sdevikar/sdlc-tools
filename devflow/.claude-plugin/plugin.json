@@ -8,6 +8,7 @@
   "skills": "./skills/",
   "dependencies": [
     { "name": "superpowers", "marketplace": "claude-plugins-official" },
-    { "name": "ponytail", "marketplace": "ponytail" }
+    { "name": "ponytail", "marketplace": "ponytail" },
+    { "name": "kanban", "marketplace": "kanban" }
   ]
 }
