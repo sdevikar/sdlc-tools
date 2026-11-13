@@ -4,6 +4,5 @@
   "version": "0.1.2",
   "author": {
     "name": "Swapnil Devikar"
-  },
-  "dependencies": ["openspec"]
+  }
 }

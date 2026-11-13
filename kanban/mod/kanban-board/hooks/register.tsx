@@ -1,4 +1,4 @@
-import { update, type Register } from 'claude-code'
+import type { Register } from 'claude-code'
 
 const PANE = 'kanban-board'
 const LANES = ['Not Started', 'In Progress', 'Archived'] as const
@@ -9,16 +9,49 @@ async function kanbanPath($: any): Promise<string> {
 }
 
 const collapsed = { plugin: 'kanban-board', key: 'collapsed' } as const
+const collapsedProjects = { plugin: 'kanban-board', key: 'collapsedProjects' } as const
+
+async function toggleCollapsed($: any) {
+  for (;;) {
+    const { value, version } = await $.state.get(collapsed)
+    try { await $.state.set(collapsed, !(value ?? false), { ifVersion: version }); return } catch { /* retry on version conflict */ }
+  }
+}
+
+async function toggleProjectCollapsed($: any, project: string) {
+  for (;;) {
+    const { value, version } = await $.state.get(collapsedProjects)
+    const list: string[] = value ?? []
+    const next = list.includes(project) ? list.filter(p => p !== project) : [...list, project]
+    try { await $.state.set(collapsedProjects, next, { ifVersion: version }); return } catch { /* retry */ }
+  }
+}
+
+function groupByProject(entries: Entry[]): Array<[string, Entry[]]> {
+  const byProject = new Map<string, Entry[]>()
+  const other: Entry[] = []
+  for (const e of entries) {
+    if (e.project) {
+      if (!byProject.has(e.project)) byProject.set(e.project, [])
+      byProject.get(e.project)!.push(e)
+    } else {
+      other.push(e)
+    }
+  }
+  const result: Array<[string, Entry[]]> = [...byProject.entries()]
+  if (other.length > 0) result.push(['Other', other])
+  return result
+}
 
 // Display-only entry (pane rendering)
-type Entry = { id: string; summary: string; priority: number; lane: string }
+type Entry = { id: string; summary: string; priority: number; lane: string; project?: string }
 
 // Full entry (sync logic)
 type KanbanEntry = {
   id: string; title: string; lane: string; priority: number; specPath: string
   summary: string; status: string; createdAt: string; updatedAt: string
   archivedAt?: string; completedAt?: string; notes?: string
-  tags?: string[]; assignee?: string; githubIssue?: string
+  tags?: string[]; assignee?: string; githubIssue?: string; project?: string
 }
 type ArtifactStatus = { id: string; status: string }
 type ActiveChange = { name: string; artifacts: ArtifactStatus[] }
@@ -47,6 +80,7 @@ function parseKanban(text: string): Entry[] {
     else if (key === 'summary') current.summary = v
     else if (key === 'priority') current.priority = Number(v) || 99
     else if (key === 'lane') current.lane = v
+    else if (key === 'project') current.project = v
   }
   if (current?.id) entries.push(current as Entry)
   return entries
@@ -95,10 +129,16 @@ function parseKanbanFull(text: string): KanbanEntry[] {
     else if (key === 'notes') current.notes = v
     else if (key === 'assignee') current.assignee = v
     else if (key === 'githubIssue') current.githubIssue = v
+    else if (key === 'project') current.project = v
     else if (key === 'tags') { inTags = true; current.tags = [] }
   }
   if (current?.id) entries.push(current as KanbanEntry)
   return entries
+}
+
+function extractProject(id: string): string | undefined {
+  const m = id.match(/^(.+?)(?=-\d+-)/)
+  return m ? m[1] : undefined
 }
 
 // Inline sync functions (from libs/kanban-core/src/sync.ts)
@@ -149,6 +189,8 @@ function mergeSync(
     if (prev?.tags !== undefined) entry.tags = prev.tags
     if (prev?.assignee !== undefined) entry.assignee = prev.assignee
     if (prev?.githubIssue !== undefined) entry.githubIssue = prev.githubIssue
+    if (prev?.project) entry.project = prev.project
+    if (!entry.project) { const p = extractProject(a.name); if (p) entry.project = p }
     byId.set(a.name, entry)
   }
 
@@ -171,6 +213,8 @@ function mergeSync(
     if (prev?.tags !== undefined) entry.tags = prev.tags
     if (prev?.assignee !== undefined) entry.assignee = prev.assignee
     if (prev?.githubIssue !== undefined) entry.githubIssue = prev.githubIssue
+    if (prev?.project) entry.project = prev.project
+    if (!entry.project) { const p = extractProject(ar.name); if (p) entry.project = p }
     byId.set(ar.name, entry)
   }
 
@@ -209,6 +253,7 @@ function serialiseKanban(entries: KanbanEntry[]): string {
     }
     if (e.assignee) lines.push(`    assignee: ${yamlStr(e.assignee)}`)
     if (e.githubIssue) lines.push(`    githubIssue: ${yamlStr(e.githubIssue)}`)
+    if (e.project) lines.push(`    project: ${yamlStr(e.project)}`)
   }
   return lines.join('\n') + '\n'
 }
@@ -460,7 +505,10 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text, Button } = $.ui.resolve(e)
-    const { value: isCollapsed = false } = await $.state.get(collapsed)
+    let isCollapsed = false
+    try { isCollapsed = (await $.state.get(collapsed)).value ?? false } catch { /* not available in test context */ }
+    let collapsedProjectsList: string[] = []
+    try { collapsedProjectsList = (await $.state.get(collapsedProjects)).value ?? [] } catch { /* not available in test context */ }
 
     let entries: Entry[] = []
     try {
@@ -475,6 +523,19 @@ export const register: Register = on => {
     }
 
     const groups = groupAndSort(entries)
+    const hasProjects = entries.some(e => e.project)
+
+    const renderEntry = (entry: Entry, lane: string) => (
+      <Box key={entry.id} flexDirection="column"
+           backgroundColor={LANE_ENTRY_BG[lane]}
+           paddingX={1} marginTop={1}>
+        <Box flexDirection="row" gap={1}>
+          <Text bold color={TEXT_COLORS[lane] ?? 'white'}>{entry.id}</Text>
+          <Text dimColor={!TEXT_COLORS[lane]}>[{entry.priority}]</Text>
+        </Box>
+        {entry.summary ? <Text color={TEXT_COLORS[lane] ?? 'white'} dimColor={!TEXT_COLORS[lane]}>{entry.summary}</Text> : null}
+      </Box>
+    )
 
     return (
       <Box flexDirection="column" paddingX={1}>
@@ -482,7 +543,7 @@ export const register: Register = on => {
         <Box flexDirection="row" justifyContent="space-between" marginBottom={1}>
           <Button
             hotkey="c"
-            onPress={() => update($, collapsed, v => !(v ?? false))}
+            onPress={() => toggleCollapsed($)}
           >
             {isCollapsed ? 'Expand' : 'Collapse'}
           </Button>
@@ -500,17 +561,20 @@ export const register: Register = on => {
             <Text bold color={LANE_COLORS[lane] ?? 'white'} inverse>
               {` ${lane.toUpperCase()} `}
             </Text>
-            {!isCollapsed && groups[lane].map(entry => (
-              <Box key={entry.id} flexDirection="column"
-                   backgroundColor={LANE_ENTRY_BG[lane]}
-                   paddingX={1} marginTop={1}>
-                <Box flexDirection="row" gap={1}>
-                  <Text bold color={TEXT_COLORS[lane] ?? 'white'}>{entry.id}</Text>
-                  <Text dimColor={!TEXT_COLORS[lane]}>[{entry.priority}]</Text>
-                </Box>
-                {entry.summary ? <Text color={TEXT_COLORS[lane] ?? 'white'} dimColor={!TEXT_COLORS[lane]}>{entry.summary}</Text> : null}
-              </Box>
-            ))}
+            {!isCollapsed && (hasProjects
+              ? groupByProject(groups[lane]).map(([proj, projEntries]) => {
+                  const isProjCollapsed = collapsedProjectsList.includes(proj)
+                  return (
+                    <Box key={proj} flexDirection="column" marginTop={1}>
+                      <Button onPress={() => toggleProjectCollapsed($, proj)}>
+                        {isProjCollapsed ? '▶' : '▼'} {proj}
+                      </Button>
+                      {!isProjCollapsed && projEntries.map(entry => renderEntry(entry, lane))}
+                    </Box>
+                  )
+                })
+              : groups[lane].map(entry => renderEntry(entry, lane))
+            )}
           </Box>
         ))}
       </Box>
