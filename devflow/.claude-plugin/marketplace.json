@@ -5,7 +5,7 @@
   "owner": {
     "name": "Swapnil Devikar"
   },
-  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official", "ponytail"],
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official", "ponytail", "kanban"],
   "plugins": [
     {
       "name": "devflow",
