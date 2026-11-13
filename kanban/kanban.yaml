@@ -173,14 +173,16 @@ entries:
     project: kanban
   - id: kanban-33-project-tagging
     title: kanban-33-project-tagging
-    lane: Not Started
+    lane: Archived
     priority: 33
     specPath: openspec/changes/kanban-33-project-tagging/
     summary: Project tagging for kanban entries via name-prefix convention and pane
       grouping
-    status: tasks ready
+    status: done
     createdAt: 2026-10-29
-    updatedAt: 2026-10-29
+    updatedAt: 2026-11-13
+    completedAt: 2026-11-13
+    archivedAt: 2026-11-13
     project: kanban
   - id: kanban-28-setup-kanban-dialog
     title: kanban-28-setup-kanban-dialog
