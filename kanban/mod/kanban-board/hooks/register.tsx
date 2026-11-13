@@ -1,4 +1,4 @@
-import type { Register } from 'claude-code'
+import { update, type Register } from 'claude-code'
 
 const PANE = 'kanban-board'
 const LANES = ['Not Started', 'In Progress', 'Archived'] as const
@@ -482,10 +482,7 @@ export const register: Register = on => {
         <Box flexDirection="row" justifyContent="space-between" marginBottom={1}>
           <Button
             hotkey="c"
-            onPress={async () => {
-              const held = await $.state.get(collapsed)
-              await $.state.set(collapsed, !(held.value ?? false), { ifVersion: held.version })
-            }}
+            onPress={() => update($, collapsed, v => !(v ?? false))}
           >
             {isCollapsed ? 'Expand' : 'Collapse'}
           </Button>

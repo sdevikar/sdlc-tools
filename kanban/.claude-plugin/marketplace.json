@@ -1,5 +1,8 @@
 {
   "name": "kanban",
   "owner": { "name": "Swapnil Devikar" },
-  "plugins": [{ "name": "kanban", "source": "./" }]
+  "plugins": [
+    { "name": "kanban", "source": "./" },
+    { "name": "openspec", "source": "./openspec/" }
+  ]
 }
