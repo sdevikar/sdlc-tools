@@ -23,7 +23,7 @@ OpenSpec spec-driven development project for an OpenCode/Claude kanban bridge pl
 
 ## Conventions
 
-- Change names use `kanban-NN-<slug>` prefix (NN = sequence number).
+- Change names follow the pattern `<project>-NN-<slug>` (e.g., `kanban-28-setup`). The prefix before the first digit segment (`kanban`) becomes the `project:` tag on the kanban entry — `mergeSync` and `new-sync` extract it automatically via regex `^(.+?)(?=-\d+-)`.
 - Proposals are written manually; artifacts (design, specs, tasks) are generated via openspec skills.
 - Research report in `docs/plans/` is the source of truth for architecture decisions.
 

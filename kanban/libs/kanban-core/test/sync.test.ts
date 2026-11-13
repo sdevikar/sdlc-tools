@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mergeSync } from "../src/sync.js";
+import { mergeSync, extractProject } from "../src/sync.js";
 
 test("mergeSync preserves priority and notes", () => {
   const existing = [
@@ -27,4 +27,25 @@ test("mergeSync adds new active", () => {
   assert.equal(merged.length, 1);
   assert.equal(merged[0].id, "b");
   assert.equal(merged[0].priority, 99);
+});
+
+test("extractProject extracts prefix before first digit segment", () => {
+  assert.equal(extractProject("kanban-28-setup"), "kanban");
+  assert.equal(extractProject("marketplace-plugin-03-icon"), "marketplace-plugin");
+  assert.equal(extractProject("myfeat"), undefined);
+});
+
+test("mergeSync sets project on new entries", () => {
+  const active = [{ name: "kanban-29-foo", lastModified: "2026-10-02T00:00:00Z", artifacts: [] }];
+  const merged = mergeSync([], active, []);
+  assert.equal(merged[0].project, "kanban");
+});
+
+test("mergeSync preserves user-set project on update", () => {
+  const existing = [
+    { id: "kanban-29-foo", title: "foo", lane: "In Progress", priority: 1, specPath: "x", summary: "", status: "old", createdAt: "2026-10-01", updatedAt: "2026-10-01", project: "my-override" } as any,
+  ];
+  const active = [{ name: "kanban-29-foo", lastModified: "2026-10-02T00:00:00Z", artifacts: [] }];
+  const merged = mergeSync(existing, active, []);
+  assert.equal(merged[0].project, "my-override");
 });

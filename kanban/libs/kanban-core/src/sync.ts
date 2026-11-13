@@ -16,6 +16,11 @@ export interface SyncArchivedChange {
   lastModified?: string;
 }
 
+export function extractProject(changeId: string): string | undefined {
+  const m = changeId.match(/^(.+?)(?=-\d+-)/)
+  return m ? m[1] : undefined
+}
+
 function artifactStatus(artifacts: { id: string; status: string }[], id: string): string {
   return artifacts.find((a) => a.id === id)?.status ?? "blocked";
 }
@@ -65,6 +70,11 @@ export function mergeSync(
       if (prev.tags !== undefined) entry.tags = prev.tags;
       if (prev.assignee !== undefined) entry.assignee = prev.assignee;
       if (prev.githubIssue !== undefined) entry.githubIssue = prev.githubIssue;
+      if (prev.project) entry.project = prev.project;
+    }
+    if (!entry.project) {
+      const derived = extractProject(a.name);
+      if (derived) entry.project = derived;
     }
     byId.set(a.name, entry);
   }
@@ -90,6 +100,11 @@ export function mergeSync(
       if (prev.tags !== undefined) entry.tags = prev.tags;
       if (prev.assignee !== undefined) entry.assignee = prev.assignee;
       if (prev.githubIssue !== undefined) entry.githubIssue = prev.githubIssue;
+      if (prev.project) entry.project = prev.project;
+    }
+    if (!entry.project) {
+      const derived = extractProject(ar.name);
+      if (derived) entry.project = derived;
     }
     byId.set(ar.name, entry);
   }
@@ -143,9 +158,12 @@ export async function applyArchives(cwd: string, kanbanPath: string): Promise<vo
       if (prev.tags !== undefined) entry.tags = prev.tags;
       if (prev.assignee !== undefined) entry.assignee = prev.assignee;
       if (prev.githubIssue !== undefined) entry.githubIssue = prev.githubIssue;
+      if (prev.project) entry.project = prev.project;
       const idx = entries.findIndex((e) => e.id === ar.name);
       entries[idx] = entry;
     } else {
+      const proj = extractProject(ar.name);
+      if (proj) entry.project = proj;
       entries.push(entry);
     }
   }
@@ -189,7 +207,7 @@ export async function applyNewChanges(cwd: string, kanbanPath: string): Promise<
       }
     } catch { /* ok */ }
 
-    toAdd.push({
+    const newEntry: KanbanEntry = {
       id: folder,
       title: folder,
       lane: "Not Started",
@@ -199,7 +217,10 @@ export async function applyNewChanges(cwd: string, kanbanPath: string): Promise<
       status: "proposal written",
       createdAt: d,
       updatedAt: d,
-    });
+    };
+    const proj = extractProject(folder);
+    if (proj) newEntry.project = proj;
+    toAdd.push(newEntry);
   }
 
   if (toAdd.length > 0) await writeKanban(kanbanPath, [...current, ...toAdd]);

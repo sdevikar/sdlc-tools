@@ -19,6 +19,7 @@ export interface KanbanEntry {
   tags?: string[];
   assignee?: string;
   notes?: string;
+  project?: string;
 }
 
 export const LANES: KanbanLane[] = [
@@ -34,4 +35,5 @@ export const OPTIONAL_FIELDS = [
   "tags",
   "assignee",
   "notes",
+  "project",
 ] as const;
