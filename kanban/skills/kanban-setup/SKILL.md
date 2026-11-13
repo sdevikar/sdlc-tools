@@ -44,7 +44,26 @@ Collect active changes from `openspec/changes/` (exclude the `archive/` subdirec
 - **Init mode** (`kanban.yaml` does not exist): create the file with all scanned entries. Use default priority 5.
 - **Sync mode** (`kanban.yaml` exists): for new changes, add an entry. For existing changes, update `lane` and `status` only. Preserve these fields as the user set them: `priority`, `notes`, `tags`, `assignee`, `githubIssue`. Do not move a lane the user moved manually unless the change is now archived.
 
-**6. Report**
+**6. Project-area CLAUDE.md (opt-in)**
+
+Ask the user: "Generate subdirectory CLAUDE.md files for project-area tagging? (y/N)"
+
+If the user declines, skip this step entirely and continue to step 7.
+
+If the user accepts:
+- Scan immediate non-hidden subdirectories at the project root (skip `node_modules`, `.git`, and any directory starting with `.`).
+- For each subdirectory found, propose a CLAUDE.md with this content (substituting `<subdir>` for the directory name):
+
+```
+# Project Context
+
+When proposing OpenSpec changes in this directory, use the change name prefix `<subdir>` (e.g., `<subdir>-01-my-feature`). This sets the `project:` tag on the kanban board entry.
+```
+
+- If a CLAUDE.md already exists in a subdirectory, show its current content and ask the user to confirm before overwriting. Skip on decline.
+- Write the file and report each directory processed.
+
+**7. Report**
 
 Print one line that names the outcome:
 
