@@ -6,19 +6,20 @@
 
 ## Problem
 
-Keep coding sessions focused by enforcing backlog-first intent, design gates, and session recaps inside Claude Code.
+Keep one Claude Code session on the agreed goal: an LLM judges each file edit against the approved design, asks the user when an edit drifts, and recaps where you left off when you come back.
 
 ## Proposed Outcome
 
-**MVP v1.0** — 0/3 items complete
-- [ ] Conversational onboarding (intent:launch)
-- [ ] Mutation skills for mission, MVP, and constraints
-- [ ] One full dogfood week on this repo
+**MVP v2.0** — 0/3 items complete
+- [ ] Store the full approved design
+- [ ] Design guard on Edit and Write
+- [ ] Five-day dogfood with an eval set
 
 ## Constraints
-- [critical] No LLM calls inside core
-- [high] No Node.js in the runtime path
-- [high] No new features before dogfood week completes
+- [high] Claude Code is the only host
+- [critical] The guard fails open
+- [high] Python owns every write to .mission/
+- [high] Every LLM verdict is logged with its reason
 
 ## Open Questions
 - Fix sync_after_write for CLI path

@@ -3,17 +3,18 @@
 # Project Intent
 
 ## Mission
-Keep coding sessions focused by enforcing backlog-first intent, design gates, and session recaps inside Claude Code.
+Keep one Claude Code session on the agreed goal: an LLM judges each file edit against the approved design, asks the user when an edit drifts, and recaps where you left off when you come back.
 
-## MVP (v1.0) — 0/3 Complete
-- [ ] Conversational onboarding (intent:launch)
-- [ ] Mutation skills for mission, MVP, and constraints
-- [ ] One full dogfood week on this repo
+## MVP (v2.0) — 0/3 Complete
+- [ ] Store the full approved design
+- [ ] Design guard on Edit and Write
+- [ ] Five-day dogfood with an eval set
 
 ## Constraints
-- [critical] No LLM calls inside core
-- [high] No Node.js in the runtime path
-- [high] No new features before dogfood week completes
+- [high] Claude Code is the only host
+- [critical] The guard fails open
+- [high] Python owns every write to .mission/
+- [high] Every LLM verdict is logged with its reason
 
 ## Current Focus
 none (no spec in progress)
@@ -25,7 +26,22 @@ none (no spec in progress)
 
 ---
 ## Agent Instructions
-1. All new ideas go to backlog first (/mission-ctrl:add-idea).
-2. No implementation before design is approved (/mission-ctrl:design-propose -> /mission-ctrl:design-approve).
-3. Prefer MVP items over parked ideas unless explicitly overridden.
-4. Respect constraints; if one must be broken, explain why via /mission-ctrl:next.
+1. For work that adds a feature or changes behavior, write the design first (/mission-ctrl:design-propose) and get it approved (/mission-ctrl:design-approve). Small fixes, docs, and tests do not need a design.
+2. Stay inside the active design. If the work needs to go outside it, say so and ask the user. Do not widen scope without asking.
+3. If a new idea comes up mid-task, offer to log it (/mission-ctrl:add-idea) and continue the current task.
+4. Respect constraints. If one must be broken, say which one and why before you act.
+
+## Available Skills
+| Skill | Purpose |
+|---|---|
+| `/mission-ctrl:init` | Initialize `.mission/` store for a new or existing project |
+| `/mission-ctrl:add-idea` | Add a raw idea to the backlog |
+| `/mission-ctrl:triage` | Classify a backlog idea (bucket + alignment verdict) |
+| `/mission-ctrl:spec-create` | Promote a triaged idea into a spec node |
+| `/mission-ctrl:spec-status` | Advance a spec through the status state machine |
+| `/mission-ctrl:design-propose` | Record a design digest for a spec (gate before implementation) |
+| `/mission-ctrl:design-approve` | Approve or reject a proposed design |
+| `/mission-ctrl:recap` | Generate a session recap (mission, MVP %, focus, changes, next) |
+| `/mission-ctrl:next` | Return the top-ranked unblocked spec to work on next |
+| `/mission-ctrl:status` | Full project dashboard (all stores, summary) |
+| `/mission-ctrl:log-feedback` | Log structured feedback about mission-ctrl itself |

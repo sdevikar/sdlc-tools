@@ -5,6 +5,45 @@
 
 ---
 
+## [2026-10-17] Direction Change — LLM Judgment Is Now In Scope
+
+**Decisions this session:**
+- Removed constraint: "No LLM calls inside core." LLM reasoning may now run inside core.
+- Removed constraint: "No new features before dogfood week completes." The user confirmed the dogfood week is done.
+- The MVP item "One full dogfood week" is still unchecked in `.mission/mvp.json`. The store has no done-field yet (F4, `store-mvp-tracking-15`). The user confirmed it. The store still shows 0/3.
+
+**Edits:**
+- `.mission/constraints.json`: removed `con_001` and `con_003`. `con_002` remains.
+- `AGENTS.md`, `intent/intent.md`: removed the same two constraint lines by hand. These files say "auto-generated", but no sync run was verified. Regenerate with `mission-ctrl sync agents-md` when that path works.
+- `intent/mission-ctrl.md`, `README.md`: removed the "no LLM" wording.
+- `docs/kanban.md`: ticked the M4 dogfood checkbox.
+
+**Housekeeping commits:**
+- `1a1cca0` logs the session-open event `evt_000004`.
+- `675acbe` adds `session-handoff-23` to the kanban.
+- `.serena/` was deleted by the user. It was untracked.
+
+**Feedback status (no changes this session):**
+- The e2eeval store has events `evt_000067`–`evt_000076`. They add no new feedback.
+- They do show spec_004, spec_005, spec_006, and spec_007 were all set to `done` by hand. This is more evidence for F11 and I4.
+
+**Next:**
+1. Run `/mission-ctrl:design-propose` for `judgment-layer-18`. Get approval before you write code.
+2. Start the prerequisites: `store-mvp-tracking-15` (F4, blocker), then `backlog-planner-integration-16`.
+3. Then build the judgment layer on top of them. Order after that: `auto-triage-19`, `semantic-intent-20`, `auto-advancement-21`, `design-gate-enrichment-22`.
+
+**Not verified this session:**
+- The test count (208) from the 2026-09-11 entry. Tests were not re-run.
+- Whether the `sync_after_write` bug from the 2026-09-05 entry is fixed.
+
+**Research report:** `docs/analysis/llm-orchestration.md` answers the first open point below with a recommendation. Read it first.
+
+**Open for the frontier model:**
+- Where the judgment step runs. The proposal puts it in the agent through `/mission-ctrl:judge`. With the constraint gone, core could call the model directly. Choose one.
+- Whether `store-mvp-tracking-15` should come before the judgment layer or in parallel with it.
+
+---
+
 ## [2026-09-11] Current State
 
 **Plugin status:** Claude Code plugin fully operational. `claude-plugin-08` shipped — skills, hooks, `bin/mission-ctrl` direct-wired to Python. No bridge. 208 tests pass.

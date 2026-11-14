@@ -22,10 +22,10 @@ spec_001 — Async export execution [in_progress]
 
 ---
 ## Agent Instructions
-1. All new ideas go to backlog first (/mission-ctrl:add-idea).
-2. No implementation before design is approved (/mission-ctrl:design-propose -> /mission-ctrl:design-approve).
-3. Prefer MVP items over parked ideas unless explicitly overridden.
-4. Respect constraints; if one must be broken, explain why via /mission-ctrl:next.
+1. For work that adds a feature or changes behavior, write the design first (/mission-ctrl:design-propose) and get it approved (/mission-ctrl:design-approve). Small fixes, docs, and tests do not need a design.
+2. Stay inside the active design. If the work needs to go outside it, say so and ask the user. Do not widen scope without asking.
+3. If a new idea comes up mid-task, offer to log it (/mission-ctrl:add-idea) and continue the current task.
+4. Respect constraints. If one must be broken, say which one and why before you act.
 
 ## Available Skills
 | Skill | Purpose |

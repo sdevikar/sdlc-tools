@@ -33,6 +33,9 @@ Goal: dogfoodable Claude Code plugin with intent-aware project management. Pi/op
 | `auto-advancement-21` | Auto spec-completion detection from git/tests | M5 | 🔲 Planned |
 | `design-gate-enrichment-22` | Structured design artifacts and drift detection | M5 | 🔲 Planned |
 | `session-handoff-23` | Session Handoff Docs | M4x | 🔲 Planned |
+| `tracker-config-24` | Issue Tracker Config File | M4x | 🔲 Planned |
+| `spec-template-25` | Spec Template for design-propose | M3x | 🔲 Planned |
+| `design-grilling-26` | Design Grilling Skill | M5 | 🔲 Planned |
 
 > **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded
 
@@ -119,7 +122,7 @@ See individual proposals in `docs/proposals/`.
 ## M4 — Dogfood & Ship v0.1
 > `dogfood-ship-v0-1-05` | 🔲 Planned
 
-- [ ] Run this project through its own workflow for one week
+- [x] Run this project through its own workflow for one week
 - [ ] Triage feedback; fix [blocker] items in M4
 - [ ] README with install + quickstart
 - [ ] CHANGELOG.md (v0.1.0 entry)
@@ -148,3 +151,5 @@ A `/mission-ctrl:handoff` skill (and optional session-end hook) that writes a st
 > `judgment-layer-18` through `design-gate-enrichment-22` | 🔲 Planned
 
 See individual proposals in `docs/proposals/`. Depends on M3x store completeness.
+
+Research and recommended approach: `docs/analysis/llm-orchestration.md`.
