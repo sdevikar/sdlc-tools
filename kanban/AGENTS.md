@@ -40,6 +40,6 @@ This project builds the kanban bridge plugin and uses the same kanban/OpenSpec w
 - **No application code yet**: keep changes additive and follow existing OpenSpec conventions.
 - **Implementation rule**: no spec is implemented without an approved proposal; follow its tasks.md.
 - **Testing rule**: every implementation must pass its tests before commit.
-- **Commit/push rule**: after tests pass, commit and push to `https://github.com/qcom-all-gh-users/kanban.git`.
+- **Commit/push rule**: after tests pass, commit and push to `https://github.com/qcom-all-gh-users/sdlc-tools.git`.
 - **Archive rule**: after push, archive the change (`openspec archive`) and update `kanban.yaml`.
 - **Constitution rule**: documentation states facts only; history and recordkeeping are handled by git commits.

@@ -34,11 +34,13 @@ The board gives you a quick overview of current project status based on OpenSpec
 Run these commands inside Claude Code, in your project:
 
 ```
-/plugin marketplace add qcom-all-gh-users/kanban
-/plugin install kanban@kanban
+/plugin marketplace add qcom-all-gh-users/sdlc-tools
+/plugin install kanban@sdlc-tools
 ```
 
 The install writes an `enabledPlugins` entry to `.claude/settings.json`. Each contributor runs these commands once.
+
+kanban moved from the `kanban` marketplace to `sdlc-tools`. If `/plugin marketplace list` still shows `kanban`, run `/plugin marketplace remove kanban` before you install `kanban@sdlc-tools`, so two `kanban` plugins do not load. The remove also uninstalls `kanban@kanban`.
 
 ### 2. Run setup
 
@@ -67,7 +69,7 @@ The side pane docks beside the transcript only in fullscreen mode. Run `/tui ful
 
 ### Update
 
-Run `/plugin marketplace update kanban`, then `/kanban:kanban-setup` again. Setup is safe to repeat.
+Run `/plugin marketplace update sdlc-tools`, then `/kanban:kanban-setup` again. Setup is safe to repeat.
 
 ## Pane Controls
 
