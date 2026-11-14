@@ -1,5 +1,8 @@
 # Mission Ctrl
 
+> **Beta.** mission-ctrl is in beta testing. Skills, hooks, and the
+> `.mission/` format can change between releases.
+
 Intent layer between a developer and an AI coding agent. It keeps a
 git-tracked local record (`.mission/`) of mission, MVP, constraints, backlog,
 specs, and a session event log — so the agent works from explicit intent
@@ -31,11 +34,19 @@ For Pi, install the extension from the local path (project-local config with `-l
 pi install ./packages/pi-package
 ```
 
-For Claude Code, load the plugin from the local path (no install step; local
-copy wins over same-named marketplace copies for that session):
+For Claude Code, install the plugin from the `sdlc-tools` marketplace
+(needs `uv` on PATH):
 
 ```bash
-claude --plugin-dir ./packages/claude-plugin
+claude plugin marketplace add qcom-all-gh-users/sdlc-tools
+claude plugin install mission-ctrl@sdlc-tools --scope local
+```
+
+To develop the plugin, load it from this folder instead (no install step;
+the local copy wins over same-named marketplace copies for that session):
+
+```bash
+claude --plugin-dir .
 ```
 
 Then invoke skills namespaced, e.g. `/mission-ctrl:intent-status` (run
@@ -47,11 +58,13 @@ automatically when the system python lacks the deps; set `MISSION_CTRL_ROOT`
 if the plugin ever lives outside this checkout). Validate with:
 
 ```bash
-claude plugin validate ./packages/claude-plugin
+claude plugin validate .
 ```
 
-Remote distribution (PyPI + npm wrapper) lands with v0.1.0 — see
-`docs/kanban.md` (M4). Until then, local path install is the supported route.
+This folder is the plugin root. `.claude-plugin/plugin.json` points at the
+skills and hooks in `packages/claude-plugin/`, and `bin/` links to
+`packages/claude-plugin/bin/`. A marketplace install copies this whole
+folder, so the wrapper finds `packages/core` and `packages/pi-package`.
 
 ## Usage
 
@@ -121,6 +134,7 @@ uv run ruff check . && uv run ruff format .  # lint + format
   Jinja2 template.
 - `packages/claude-plugin` — Claude Code plugin (skills, hooks, `bin/`
   wrapper); prompts + wiring only, executes through the Python packages.
+  The manifest is at `.claude-plugin/plugin.json` in this folder.
 - `docs/` — `design.md` (source of truth), `architecture.md`, `kanban.md`
   (build status), `handoff.md` (session log), `examples/`.
 - `openspec/` — spec changes (active) and synced capability specs.

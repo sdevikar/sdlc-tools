@@ -293,6 +293,9 @@ flowchart TB
 
 ```
 mission-ctrl/
+├── .claude-plugin/               # plugin root: this folder
+│   └── plugin.json               # manifest (namespace: mission-ctrl)
+├── bin -> packages/claude-plugin/bin # puts the wrapper on PATH
 ├── packages/
 │   ├── core/                     # mission_ctrl_core (Python, pip)
 │   │   ├── mission_ctrl_core/
@@ -305,9 +308,7 @@ mission-ctrl/
 │   └── pi-package/               # mission_ctrl_pi (Pi extension, still maintained)
 │       └── ...
 │
-├── packages/claude-plugin/       # Claude Code plugin
-│   ├── .claude-plugin/
-│   │   └── plugin.json           # plugin manifest
+├── packages/claude-plugin/       # Claude Code plugin (skills, hooks, bin)
 │   ├── hooks/
 │   │   └── hooks.json            # UserPromptSubmit, SessionStart, PostToolUse
 │   ├── bin/

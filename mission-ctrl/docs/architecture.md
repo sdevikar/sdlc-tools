@@ -138,6 +138,9 @@ File format (JSON/JSONL) is language-agnostic. Live samples in `docs/examples/do
 
 ```
 mission-ctrl/
+├── .claude-plugin/                  # plugin root: this folder
+│   └── plugin.json                  # manifest (namespace: mission-ctrl)
+├── bin -> packages/claude-plugin/bin # puts the wrapper on PATH
 ├── packages/
 │   ├── core/                        # mission_ctrl_core (Python, pip)
 │   │   ├── mission_ctrl_core/
@@ -159,8 +162,6 @@ mission-ctrl/
 │   │   └── pyproject.toml
 │   │
 │   └── claude-plugin/               # Claude Code plugin (primary surface)
-│       ├── .claude-plugin/
-│       │   └── plugin.json          # manifest (namespace: mission-ctrl)
 │       ├── skills/                  # one SKILL.md per skill
 │       ├── hooks/
 │       │   └── hooks.json           # SessionStart + UserPromptSubmit wiring
