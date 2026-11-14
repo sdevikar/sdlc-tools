@@ -3,7 +3,7 @@ name: self-review
 description: >
   Reviews your own change with the built-in /code-review, verifies each
   finding, rates each fix, and implements only the fixes you approve. Writes
-  the report to docs/reviews/. Use before or after a push, or when the user
+  the report to .devflow/reviews/. Use before or after a push, or when the user
   asks to review their own branch, diff, or PR.
 argument-hint: "[low|medium|high]"
 ---
@@ -55,10 +55,10 @@ report until the findings arrive. Then continue with step 4.
 
 ## Step 4 — Run the review loop
 
-The report path is `docs/reviews/review_<slug>_<YYYYMMDD>.md` in the project
+The report path is `.devflow/reviews/review_<slug>_<YYYYMMDD>.md` in the project
 root. Build `<slug>` as `devflow:handoff` does: the branch name with `/`
 changed to `-`, or a short kebab-case topic on `main`, `master`, or a detached
-HEAD. On a re-run, reuse the newest `docs/reviews/review_<slug>_*.md`, even
+HEAD. On a re-run, reuse the newest `.devflow/reviews/review_<slug>_*.md`, even
 from an earlier day.
 
 Read `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md` and follow it, with:

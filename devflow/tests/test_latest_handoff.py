@@ -27,7 +27,7 @@ class LatestHandoffTest(unittest.TestCase):
         git = ["git", "-C", self.repo, "-c", "user.name=t", "-c", "user.email=t@t"]
         subprocess.run(["git", "init", "-q", "-b", "feat/x", self.repo], check=True)
         subprocess.run(git + ["commit", "-q", "--allow-empty", "-m", "init"], check=True)
-        self.folder = os.path.join(self.repo, "docs", "handoffs")
+        self.folder = os.path.join(self.repo, ".devflow", "handoffs")
         os.makedirs(self.folder)
         self.write("0900", "in-progress")
         self.write("1400", "in-progress", next_step="Write the tests.")
@@ -53,7 +53,7 @@ class LatestHandoffTest(unittest.TestCase):
         self.assertEqual(code, 0)
         data = json.loads(out)
         line = data["systemMessage"]
-        self.assertIn("docs/handoffs/handoff_feat-x_20261112-1400.md", line)
+        self.assertIn(".devflow/handoffs/handoff_feat-x_20261112-1400.md", line)
         self.assertIn("Next: Write the tests. Run", line)
         self.assertIn("/devflow:pickup", line)
         self.assertEqual(data["hookSpecificOutput"]["additionalContext"], line)

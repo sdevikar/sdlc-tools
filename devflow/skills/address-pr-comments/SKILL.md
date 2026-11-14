@@ -47,8 +47,8 @@ Take the host from `git remote get-url origin`. Pass `--hostname <host>` and
 
 ## Step 3 — Run the review loop
 
-The report path is `docs/reviews/review_pr<n>_<YYYYMMDD>.md` in the project
-root. On a re-run, reuse the newest `docs/reviews/review_pr<n>_*.md`.
+The report path is `.devflow/reviews/review_pr<n>_<YYYYMMDD>.md` in the project
+root. On a re-run, reuse the newest `.devflow/reviews/review_pr<n>_*.md`.
 
 Read `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md` and follow it, with the
 fetched comments as the findings, the IDs from step 2, and this report path.

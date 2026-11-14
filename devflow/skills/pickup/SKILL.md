@@ -2,7 +2,7 @@
 name: pickup
 description: >
   Continues work from the current handoff for this branch. Finds the handoff
-  in docs/handoffs/, checks it against git, reports any drift, and lists the
+  in .devflow/handoffs/, checks it against git, reports any drift, and lists the
   next steps. Use when a session starts with a handoff pointer, or when the
   user asks to pick up, continue, or resume earlier work.
 argument-hint: "[path to a handoff file]"
