@@ -9,8 +9,7 @@ specs, and a session event log — so the agent works from explicit intent
 instead of scattered chat context.
 
 The loop: capture an idea → triage it → turn it into a spec → pass a design
-gate → work it → mark it done. Hooks onboard returning sessions automatically
-and nudge implementation-intent messages back to the backlog-first workflow.
+gate → work it → mark it done. A hook onboards returning sessions automatically.
 
 ## Requirements
 
@@ -89,10 +88,10 @@ intent:recap           # on-demand recap (brief / standard / full)
 
 In Claude Code the same skills are namespaced (`/mission-ctrl:intent-init`,
 `/mission-ctrl:intent-add-idea`, … — all 10 loop skills plus a pending
-`intent-log-feedback`, see `packages/claude-plugin/README.md`). Hooks behave
-identically on both hosts: session open injects a gap-tiered recap,
-"implement X" is intercepted with the same redirect ladder and the
-**"override intent"** bypass.
+`intent-log-feedback`, see `packages/claude-plugin/README.md`). On both hosts,
+session open injects a gap-tiered recap. The "implement X" interception runs
+only on Pi. The Claude Code plugin no longer wires it, because it blocked the
+prompts that devflow's commit loop expects.
 
 Minimal happy path:
 
@@ -107,11 +106,9 @@ design-approve → spec-status(in_progress) → spec-status(done) → status
   to the gap since the last session (<1h: skip, 1–8h: brief, 8–48h:
   standard, >48h: full) and logs `SESSION_STARTED`. No `.mission/` → silent
   no-op.
-- **Before send** — messages like "implement X" are intercepted and redirected
-  to the right skill (`add-idea` → `triage` → `spec-create` →
-  `design-propose` → `spec-status`, closest-to-code first). Say
-  **"override intent"** to bypass; bypasses are surfaced and logged, never
-  silent.
+- **Before send (Pi only)** — messages like "implement X" are intercepted and
+  redirected to the right skill. Say **"override intent"** to bypass. The
+  Claude Code plugin does not wire this hook.
 - **AGENTS.md sync** — every skill write regenerates the project's `AGENTS.md`
   context file from a template (user text sanitized; injection patterns
   rejected).
