@@ -6,25 +6,53 @@ A Claude Code plugin marketplace for the software development loop. It holds thr
 | --- | --- | --- |
 | [devflow](devflow/README.md) | Stable | Adds commit, handoff, and review workflows as skills. |
 | [kanban](kanban/README.md) | Stable | Keeps a `kanban.yaml` task board in sync with OpenSpec changes. Shows a live board pane inside Claude Code. |
-| [mission-ctrl](mission-ctrl/README.md) | **Beta** | Keeps a git-tracked record of intent (mission, backlog, specs, design gate) and guides each session from it. |
+| [mission-ctrl](mission-ctrl/README.md) | **Beta** | The intent layer. Decides what to build and in which order, before devflow builds it. |
 
 ## How the plugins work together
 
+Each tool owns one layer. A layer does not take over the job of another layer.
+
+| Layer | Tool | Job |
+| --- | --- | --- |
+| Intent | mission-ctrl (beta) | Decide what to build, when to build it, and what "good" means. |
+| Execution | devflow | Do the work: create proposals, manage docs, plan commits, write handoffs, and run reviews. |
+| Optimization | ponytail (a devflow dependency) | Keep the code that devflow produces small and simple. |
+| UX | kanban | Show the state of the work on a board. |
+
 ```mermaid
 flowchart LR
-    MC["mission-ctrl (beta)<br/>what to build and why"]
-    KB["kanban<br/>which change is in progress"]
-    DF["devflow<br/>how to commit, hand off, and review"]
-    MC -- "specs become OpenSpec changes" --> KB
-    KB -- "the board picks the next task" --> DF
-    DF -- "handoffs and reviews feed the next session" --> MC
+    MC["mission-ctrl (beta)<br/>intent: what, when, what good means"]
+    DF["devflow<br/>execution: proposals, docs, commits, handoffs, reviews"]
+    PT["ponytail<br/>optimization"]
+    KB["kanban<br/>UX: the board"]
+    MC -- "only needed proposals, in priority order" --> DF
+    PT -- "simplicity checks on the work" --> DF
+    DF -- "OpenSpec changes" --> KB
 ```
 
-- **mission-ctrl** captures ideas, triages them, and turns them into specs. A design gate must pass before you start to build. A hook gives a recap at the start of each session.
-- **kanban** tracks OpenSpec changes on a board with the lanes Not Started, In Progress, and Archived.
-- **devflow** plans atomic commits, saves and restores session handoffs, and runs a gated self-review before you push.
+### Intent layer: mission-ctrl
 
-devflow lists kanban as a dependency, so an install of devflow also installs kanban. mission-ctrl has no dependency on the other two. You can install it alone.
+mission-ctrl is a gate before the work starts. ponytail acts after the fact: it trims code that is already being written. mission-ctrl acts earlier, when you choose what to build.
+
+- **A proposal you do not need is never created.** mission-ctrl judges each idea against the mission and the MVP before it becomes an OpenSpec proposal.
+- **A good-to-have proposal is created, but ranked low.** When you ask what is next, it does not show up while more important proposals are open.
+- **mission-ctrl remembers rejected ideas,** so the agent does not propose them again.
+
+This layer is useful only if its judgment beats what a capable agent already does with a short mission statement. A spike tests this before more mission-ctrl code is built. The current mission-ctrl skills do not yet work this way. See [mission-ctrl is in beta](#mission-ctrl-is-in-beta).
+
+### Execution layer: devflow
+
+devflow wires the daily work together. It creates OpenSpec proposals, keeps working docs in `.devflow/`, plans atomic commits, saves and restores handoffs, and runs a gated self-review before you push.
+
+### Optimization layer: ponytail
+
+ponytail pushes for the smallest solution that works. devflow installs it as a dependency.
+
+### UX layer: kanban
+
+kanban tracks OpenSpec changes on a board with the lanes Not Started, In Progress, and Archived. It shows a live board pane inside Claude Code. It shows the work. It does not decide the priority.
+
+devflow lists kanban as a dependency, so an install of devflow also installs kanban. mission-ctrl has no dependency on the other two today. You can install it alone.
 
 ## Install
 
@@ -58,7 +86,7 @@ Inside a Claude Code session, you can use `/plugin marketplace add ...` and `/pl
 
 ## mission-ctrl is in beta
 
-mission-ctrl is in beta testing. Skills, hooks, and the `.mission/` file format can change between releases. Its `UserPromptSubmit` hook blocks prompts that ask to implement something before a spec exists. Type `override intent` in the prompt to continue. Report problems with `/mission-ctrl:log-feedback` or as a GitHub issue.
+mission-ctrl is in beta testing. Skills, hooks, and the `.mission/` file format can change between releases. Today it keeps its own backlog, specs, and design gate in `.mission/`, and a hook gives a recap at the start of each session. These skills will change to match the intent layer above. Report problems with `/mission-ctrl:log-feedback` or as a GitHub issue.
 
 ## Move from the old marketplaces
 
