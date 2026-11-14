@@ -34,7 +34,7 @@ Register the marketplace one time:
 claude plugin marketplace add qcom-all-gh-users/sdlc-tools
 ```
 
-Install each plugin per project, at local scope:
+Install each plugin per project, at local scope. OpenSpec is not a plugin, so no marketplace step exists for it. See [Prerequisites](#prerequisites).
 
 ```bash
 # devflow also needs the ponytail marketplace for one of its dependencies
@@ -53,7 +53,7 @@ Inside a Claude Code session, you can use `/plugin marketplace add ...` and `/pl
 | Plugin | Needs |
 | --- | --- |
 | devflow | `superpowers` (from `claude-plugins-official`) and `ponytail` (from `DietrichGebert/ponytail`). Claude Code installs them as dependencies. |
-| kanban | Node.js and npm. A project that is a git repository. |
+| kanban | Node.js 22.12+ and the [OpenSpec](https://github.com/Fission-AI/OpenSpec) CLI (`npm install -g @fission-ai/openspec@latest`). A project that is a git repository. Run `/kanban:kanban-setup` after the install. It asks before it installs the CLI, then runs `openspec init`, which adds the `/openspec-*` skills to the project. |
 | mission-ctrl | Python 3.11+ and [uv](https://docs.astral.sh/uv/) on PATH. The plugin runs its Python code through `uv`. |
 
 ## mission-ctrl is in beta
