@@ -29,15 +29,15 @@ Goal: dogfoodable Claude Code plugin with intent-aware project management. Pi/op
 | `mid-project-init-17` | Mid-project store repair and import | M4x | 🔲 Planned |
 | `judgment-layer-18` | Judgment layer: structured reasoning at decision points | M5 | 🔲 Planned |
 | `auto-triage-19` | Automated triage via mission-alignment scoring | M5 | 🔲 Planned |
-| `semantic-intent-20` | Semantic before-send classification | M5 | 🔲 Planned |
+| `semantic-intent-20` | Semantic before-send classification | M5 | ❌ Rejected (before-send hook removed) |
 | `auto-advancement-21` | Auto spec-completion detection from git/tests | M5 | 🔲 Planned |
 | `design-gate-enrichment-22` | Structured design artifacts and drift detection | M5 | 🔲 Planned |
-| `session-handoff-23` | Session Handoff Docs | M4x | 🔲 Planned |
+| `session-handoff-23` | Session Handoff Docs | M4x | ❌ Rejected (devflow owns handoffs) |
 | `tracker-config-24` | Issue Tracker Config File | M4x | 🔲 Planned |
 | `spec-template-25` | Spec Template for design-propose | M3x | 🔲 Planned |
 | `design-grilling-26` | Design Grilling Skill | M5 | 🔲 Planned |
 
-> **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded
+> **Status key:** 🔲 Planned · 🔄 In Progress · ✅ Applied · 📦 Archived · ⚠️ Superseded · ❌ Rejected
 
 ---
 
@@ -132,7 +132,7 @@ See individual proposals in `docs/proposals/`.
 ---
 
 ## M4x — Session Handoff
-> `session-handoff-23` | 🔲 Planned
+> `session-handoff-23` | ❌ Rejected (2026-11-14). devflow ships `/devflow:handoff`, `/devflow:pickup`, and the session-start handoff pointer.
 
 A `/mission-ctrl:handoff` skill (and optional session-end hook) that writes a structured handoff document to `.mission/handoffs/YYYY-MM-DD-HHMMSS.md`.
 
