@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.claude/
+mod/**/.claude-plugin/types/
+plugins/**/.claude-plugin/types/
+
+# Dev-only analysis docs and old manifests — not part of the plugin deliverable
+qgenie-alignment-review-*
+docs/plans/
+plugin.yaml
+hooks/on-*.sh

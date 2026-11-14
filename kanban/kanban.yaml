@@ -1,0 +1,377 @@
+entries:
+  - id: kanban-13-claude-mod-pane
+    title: kanban-13-claude-mod-pane
+    lane: Archived
+    priority: 13
+    specPath: openspec/changes/archive/2026-10-22-kanban-13-claude-mod-pane/
+    summary: Claude Code native pane for kanban board with collapse/expand
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-14-claude-mod-autosync
+    title: kanban-14-claude-mod-autosync
+    lane: Archived
+    priority: 14
+    specPath: openspec/changes/archive/2026-10-22-kanban-14-claude-mod-autosync/
+    summary: Live pane sync on kanban.yaml writes and kanban command runs
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-15-claude-mod-init
+    title: kanban-15-claude-mod-init
+    lane: Archived
+    priority: 15
+    specPath: openspec/changes/archive/2026-10-22-kanban-15-claude-mod-init/
+    summary: Create or sync kanban.yaml on /init after user confirmation
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-03-opencode-plugin-mvp
+    title: kanban-03-opencode-plugin-mvp
+    lane: Archived
+    priority: 3
+    specPath: openspec/changes/archive/2026-10-22-kanban-03-opencode-plugin-mvp/
+    summary: OpenCode V2 plugin with tools, commands, and skills
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-04-html-render
+    title: kanban-04-html-render
+    lane: Archived
+    priority: 4
+    specPath: openspec/changes/archive/2026-10-22-kanban-04-html-render/
+    summary: Visual kanban.html board generation from structured entries
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-05-automation-hooks
+    title: kanban-05-automation-hooks
+    lane: Archived
+    priority: 5
+    specPath: openspec/changes/archive/2026-10-22-kanban-05-automation-hooks/
+    summary: Auto-sync kanban on OpenSpec lifecycle events
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-16-kanban-core-cli
+    title: kanban-16-kanban-core-cli
+    lane: Archived
+    priority: 16
+    specPath: openspec/changes/archive/2026-10-22-kanban-16-kanban-core-cli/
+    summary: Build and ship kanban-core CLI so /kanban-sync works in a fresh checkout
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-17-kanban-view-programmatic
+    title: kanban-17-kanban-view-programmatic
+    lane: Archived
+    priority: 17
+    specPath: openspec/changes/archive/2026-10-22-kanban-17-kanban-view-programmatic/
+    summary: Programmatic /kanban-view using compiled kanban-core instead of LLM
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-18-kanban-view-pane-fix
+    title: kanban-18-kanban-view-pane-fix
+    lane: Archived
+    priority: 18
+    specPath: openspec/changes/archive/2026-10-23-kanban-18-kanban-view-pane-fix/
+    summary: Fix /kanban-view pane not opening in fullscreen terminals
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-19-multi-board
+    title: kanban-19-multi-board
+    lane: Archived
+    priority: 19
+    specPath: openspec/changes/archive/2026-10-22-kanban-19-multi-board/
+    summary: Multi-level kanban boards with sub-board discovery and grouped view
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-11-13
+    notes: Rejected. One openspec/ root per repo means sub-boards have no source of
+      changes to sync from.
+    project: kanban
+  - id: kanban-20-pane-controls
+    title: kanban-20-pane-controls
+    lane: Archived
+    priority: 20
+    specPath: openspec/changes/archive/2026-10-23-kanban-20-pane-controls/
+    summary: Add Close button, closeOnEscape, and fix collapse header in the kanban pane
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-21-pane-visual-design
+    title: kanban-21-pane-visual-design
+    lane: Archived
+    priority: 21
+    specPath: openspec/changes/archive/2026-10-23-kanban-21-pane-visual-design/
+    summary: Color-coded lane headers, card-style entries, and priority badges in
+      the pane
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-22-pane-close-keyboard
+    title: kanban-22-pane-close-keyboard
+    lane: Archived
+    priority: 22
+    specPath: openspec/changes/archive/2026-10-22-kanban-22-pane-close-keyboard/
+    summary: Hotkeys x/c for Close/Collapse and focus:true so they work without a mouse
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-23-pane-renderer-hint
+    title: kanban-23-pane-renderer-hint
+    lane: Archived
+    priority: 23
+    specPath: openspec/changes/archive/2026-10-22-kanban-23-pane-renderer-hint/
+    summary: Hint the user to run /tui fullscreen when in classic renderer; fix
+      isPlaced fallback text
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-33-project-tagging
+    title: kanban-33-project-tagging
+    lane: Archived
+    priority: 33
+    specPath: openspec/changes/kanban-33-project-tagging/
+    summary: Project tagging for kanban entries via name-prefix convention and pane
+      grouping
+    status: done
+    createdAt: 2026-10-29
+    updatedAt: 2026-11-13
+    completedAt: 2026-11-13
+    archivedAt: 2026-11-13
+    project: kanban
+  - id: kanban-28-setup-kanban-dialog
+    title: kanban-28-setup-kanban-dialog
+    lane: In Progress
+    priority: 4
+    specPath: openspec/changes/kanban-28-setup-kanban-dialog/
+    summary: Move kanban create/sync dialog from /init observer to a mod tool called
+      by /kanban:setup
+    status: tasks ready
+    createdAt: 2026-10-23
+    updatedAt: 2026-10-23
+    project: kanban
+  - id: kanban-27-zero-config-install
+    title: kanban-27-zero-config-install
+    lane: Archived
+    priority: 5
+    specPath: openspec/changes/archive/2026-10-23-kanban-27-zero-config-install/
+    summary: Postinstall script configures CLAUDE_CODE_PLUGIN_DIRS and skill
+      symlinks automatically
+    status: archived
+    createdAt: 2026-10-23
+    updatedAt: 2026-11-13
+    archivedAt: 2026-11-13
+    completedAt: 2026-11-13
+    project: kanban
+  - id: kanban-06-github-issues
+    title: kanban-06-github-issues
+    lane: Not Started
+    priority: 99
+    specPath: openspec/changes/kanban-06-github-issues/
+    summary: Optional GitHub Issues integration for kanban entries
+    status: proposal written
+    createdAt: 2026-10-22
+    updatedAt: 2026-10-22
+    project: kanban
+  - id: kanban-07-multi-harness-adapters
+    title: kanban-07-multi-harness-adapters
+    lane: Archived
+    priority: 7
+    specPath: openspec/changes/archive/2026-10-22-kanban-07-multi-harness-adapters/
+    summary: Cross-harness support via thin adapters (Ponytail model)
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-08-claude-mcp-server
+    title: kanban-08-claude-mcp-server
+    lane: Archived
+    priority: 8
+    specPath: openspec/changes/archive/2026-10-22-kanban-08-claude-mcp-server/
+    summary: MCP server packaging kanban tools for Claude Desktop
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-01-core-format
+    title: kanban-01-core-format
+    lane: Archived
+    priority: 1
+    specPath: openspec/changes/archive/2026-10-22-kanban-01-core-format/
+    summary: Define structured KanbanEntry format and kanban.md parsing/serialization
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-02-core-sync
+    title: kanban-02-core-sync
+    lane: Archived
+    priority: 2
+    specPath: openspec/changes/archive/2026-10-22-kanban-02-core-sync/
+    summary: OpenSpec to kanban.md synchronization logic
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-09-yaml-format
+    title: kanban-09-yaml-format
+    lane: Archived
+    priority: 99
+    specPath: openspec/changes/archive/2026-10-22-kanban-09-yaml-format/
+    summary: ""
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-10-kanban-view
+    title: kanban-10-kanban-view
+    lane: Archived
+    priority: 99
+    specPath: openspec/changes/archive/2026-10-22-kanban-10-kanban-view/
+    summary: ""
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-11-combine-lanes
+    title: kanban-11-combine-lanes
+    lane: Archived
+    priority: 99
+    specPath: openspec/changes/archive/2026-10-22-kanban-11-combine-lanes/
+    summary: ""
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-12-claude-marketplace
+    title: kanban-12-claude-marketplace
+    lane: Archived
+    priority: 99
+    specPath: openspec/changes/archive/2026-10-22-kanban-12-claude-marketplace/
+    summary: ""
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-22
+    completedAt: 2026-10-22
+    project: kanban
+  - id: kanban-24-mod-archive-sync
+    title: kanban-24-mod-archive-sync
+    lane: Archived
+    priority: 24
+    specPath: openspec/changes/archive/2026-10-22-kanban-24-mod-archive-sync/
+    summary: Mod polls the archive folder and moves archived changes to the Archived
+      lane
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-25-mod-new-change-sync
+    title: kanban-25-mod-new-change-sync
+    lane: Archived
+    priority: 25
+    specPath: openspec/changes/archive/2026-10-22-kanban-25-mod-new-change-sync/
+    summary: Mod adds board entries for new changes that have a proposal
+    status: archived
+    createdAt: 2026-10-22
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-26-kanban-yaml-root
+    title: kanban-26-kanban-yaml-root
+    lane: Archived
+    priority: 26
+    specPath: openspec/changes/archive/2026-10-22-kanban-26-kanban-yaml-root/
+    summary: The board file is at `docs/kanban.yaml`, but the generated
+      `kanban.html` is at t
+    status: archived
+    createdAt: 2026-10-23
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-29-qgenie-packaging
+    title: kanban-29-qgenie-packaging
+    lane: Archived
+    priority: 29
+    specPath: openspec/changes/archive/2026-10-23-kanban-29-qgenie-packaging/
+    summary: Add .qgenie-plugin/plugin.json to enable install via qgenie plugins add
+    status: archived
+    createdAt: 2026-10-23
+    updatedAt: 2026-11-13
+    archivedAt: 2026-10-23
+    completedAt: 2026-10-23
+    project: kanban
+  - id: kanban-32-plugin-path-independence
+    title: kanban-32-plugin-path-independence
+    lane: Not Started
+    priority: 32
+    specPath: openspec/changes/kanban-32-plugin-path-independence/
+    summary: The plugin assumes that `libs/kanban-core/` is under the session
+      working directo
+    status: tasks ready
+    createdAt: 2026-11-13
+    updatedAt: 2026-10-23
+    project: kanban
