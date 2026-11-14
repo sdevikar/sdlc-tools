@@ -116,7 +116,7 @@ uv run ruff check . && uv run ruff format .  # lint + format
 ## Layout
 
 - `packages/core` (`mission_ctrl_core`) — pure Python stores, models,
-  planner, recap. Deterministic, network-free, no LLM calls.
+  planner, recap. Deterministic, network-free.
 - `packages/pi-package` (`mission_ctrl_pi`) — skills, hooks, AGENTS.md sync,
   Jinja2 template.
 - `packages/claude-plugin` — Claude Code plugin (skills, hooks, `bin/`

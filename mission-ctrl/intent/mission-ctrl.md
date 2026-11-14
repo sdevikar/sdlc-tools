@@ -1,49 +1,48 @@
 # Intent: mission-ctrl
 
-**Author:** Swapnil Devikar  
-**Status:** draft  
+**Author:** Swapnil Devikar
+**Status:** v2 (reset on 2026-10-26, see `docs/reset-2026-10-26.md`)
 
 ---
 
 ## Problem
 
-AI coding assistants increase output velocity but also increase scope creep, session drift, and re-entry cost. Each new session starts cold. Ideas get implemented the moment they're suggested. There's no persistent record of what the project is actually trying to achieve, what's been decided, or what should come next. The developer ends up doing the PM work manually in their head every session — or stops doing it at all.
+Claude Code writes code fast. It also drifts fast. You agree on a plan, and twenty minutes later Claude edits files the plan never named, or adds a feature you did not ask for. You notice only when you read the diff.
 
-Existing spec-driven tools (SDD, Jira, Linear) are either too heavy or disconnected from the agent loop. They don't intercept the agent before it starts coding. They don't provide a recap when you return after a break. They don't enforce "backlog first" at the prompt level.
-
----
+The cost is not the bad edit. The cost is that you must watch every step to catch it. And when you come back the next day, you must rebuild the plan in your head before you can judge anything.
 
 ## Proposed outcome
 
-A lightweight Claude Code plugin that acts as a persistent intent layer inside every coding session. It captures mission, MVP, and constraints once at project start, maintains a backlog and spec graph across sessions, intercepts implementation-intent prompts before design is approved, and injects a session recap when you return after time away. The developer stays in Claude Code; nothing changes about how they work except that drift is caught early and focus is protected automatically.
+A Claude Code plugin that holds the agreed plan for the current piece of work, and checks Claude's edits against it.
 
----
+1. You and Claude agree on a short design: goal, what is in scope, what is out of scope, which files you expect to change.
+2. While Claude works, each `Edit` or `Write` goes to a small, fast model with the design. The model returns `fits`, `drift`, or `unclear`.
+3. `fits` passes with no prompt. `drift` stops and asks you, with a one-line reason. You allow it, refuse it, or widen the design.
+4. When you come back, a recap tells you the active design and what changed since.
 
-## Affected users and systems
+The LLM makes the judgment calls. Python stores the state and checks the data. A thin mod connects the two inside Claude Code.
 
-**Users:** Solo developers and small teams using Claude Code for active development work. Specifically those who have experienced scope creep or context loss across multi-session projects.
+## Users
 
-**Systems:**
-- Claude Code (plugin host — skills and hooks)
-- `.mission/` file store in the project repo (git-tracked, human-readable JSON)
-- `AGENTS.md` (auto-regenerated context file read natively by Claude Code)
-- `mission_ctrl_core` Python library (pure, no network, no LLM)
-- `mission_ctrl_pi` Python package (skills and hooks — currently stubbed for Pi, active for Claude Code)
+Solo developers and small teams who use Claude Code for multi-session work. They already like plans and specs, and they lose time when Claude leaves the plan.
 
----
+## Systems
+
+- Claude Code (only host): skills, a SessionStart hook, and one mod.
+- `.mission/` store in the repo: JSON plus one Markdown file per design.
+- `bin/mission-ctrl` (Python): every store write and data check.
+- `AGENTS.md`: generated from the store, read by Claude Code.
 
 ## Constraints
 
-- No LLM calls inside core. All reasoning stays in Claude's context; core only validates and persists.
-- No new agent runtime. Works inside Claude Code as a plugin, not as a separate tool.
-- No heavyweight PM UI. The entire surface is skills (slash commands) and hooks. No dashboards, no drag-and-drop, no external services.
-- Store stays small and diffable. `.mission/` files are plain JSON committed to git. No binary formats, no databases.
-- Minimal dependencies. Python stdlib + Pydantic. No Node.js in the runtime path.
+See `.mission/constraints.json`. In short: Claude Code only; the guard fails open; Python owns every write; every verdict is logged.
 
----
+## Out of scope for v2
+
+Pi, the TS bridge, the Agent SDK, external trackers, backlog ranking, auto-triage, insights, and any second host.
 
 ## Open questions
 
-- Should `intent:launch` also write an `intent.md` file (human-readable proto-spec) as a byproduct of onboarding, for team visibility? Or is `AGENTS.md` sufficient?
-- What's the right intercept threshold for `on_before_send`? Current hardcoded pattern list will generate false positives. Configurable patterns are deferred to v2 — how much friction will this cause during dogfood?
-- How should `.mission/` behave across git branches? Merge conflicts in `specs.json` are currently undocumented and unhandled.
+- Does `$.model.complete` with a small model judge an edit in under 3 s on this machine? Measure this on day 1.
+- How much of the edit to send: the full diff, or file path plus the first N lines of the change?
+- When a spec has no design, should the guard stay silent or ask once per session?
