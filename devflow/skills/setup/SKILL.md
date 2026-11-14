@@ -2,11 +2,12 @@
 name: setup
 description: >
   Install devflow in the current project. Checks for conflicting plugins
-  (superpowers or ponytail installed from a different marketplace), offers
-  to remove them, registers the devflow marketplace if needed, then installs
-  the plugin at local scope. Creates the .devflow/ working folder and the
-  .claude/rules/devflow.md project rule. Run this once per project and once
-  per git worktree, and again after a plugin update.
+  (superpowers, ponytail, or kanban installed from a different marketplace),
+  offers to remove them, registers the devflow, ponytail, and kanban
+  marketplaces if needed, then installs the plugin at local scope. Creates
+  the .devflow/ working folder and the .claude/rules/devflow.md project rule.
+  Run this once per project and once per git worktree, and again after a
+  plugin update.
 ---
 
 ## What this skill does
@@ -26,7 +27,8 @@ claude plugin list --json
 
 Look for any installed plugin whose name is `superpowers` but whose
 marketplace is not `claude-plugins-official`, or whose name is `ponytail`
-but whose marketplace is not `ponytail`.
+but whose marketplace is not `ponytail`, or whose name is `kanban` but
+whose marketplace is not `kanban`.
 
 For each conflict found, tell the user:
 
@@ -45,7 +47,7 @@ Then ask: **Uninstall the conflicting plugin now?**
 
 ---
 
-## Step 2 — Register the marketplace (if needed)
+## Step 2 — Register dependency marketplaces (if needed)
 
 Run:
 
@@ -53,13 +55,26 @@ Run:
 claude plugin marketplace list
 ```
 
-If a marketplace named `devflow` is not in the output, run:
+devflow depends on plugins from three marketplaces. For each one that is
+**not** in the output, run the corresponding `add` command. Skip any that
+are already present. (`claude-plugins-official` is always present; it is
+not in this table.)
+
+| Marketplace name | Source |
+|---|---|
+| `devflow` | `qcom-all-gh-users/devflow` |
+| `ponytail` | `DietrichGebert/ponytail` |
+| `kanban` | `qcom-all-gh-users/kanban` |
+
+For example, if `ponytail` and `kanban` are missing but `devflow` is
+already listed:
 
 ```bash
-claude plugin marketplace add qcom-all-gh-users/devflow
+claude plugin marketplace add DietrichGebert/ponytail
+claude plugin marketplace add qcom-all-gh-users/kanban
 ```
 
-Confirm the marketplace appears in `claude plugin marketplace list` before
+Confirm all three names appear in `claude plugin marketplace list` before
 continuing.
 
 ---
@@ -72,8 +87,8 @@ Run:
 claude plugin install devflow@devflow --scope local
 ```
 
-This also installs `superpowers@claude-plugins-official` and
-`ponytail@ponytail` as dependencies.
+This also installs `superpowers@claude-plugins-official`, `ponytail@ponytail`,
+and `kanban@kanban` as dependencies.
 
 Confirm with:
 
@@ -81,8 +96,8 @@ Confirm with:
 claude plugin list
 ```
 
-Expect `devflow@devflow`, `superpowers@claude-plugins-official`, and
-`ponytail@ponytail` all enabled at local scope.
+Expect `devflow@devflow`, `superpowers@claude-plugins-official`,
+`ponytail@ponytail`, and `kanban@kanban` all enabled at local scope.
 
 ---
 
@@ -146,5 +161,15 @@ worktrees, and never committed.
 Tell the user devflow is installed and list the skills now available:
 `/devflow:atomic-commits`, `/devflow:handoff`, `/devflow:pickup`,
 `/devflow:self-review`, and `/devflow:address-pr-comments`. Tell them that
-working files go in `.devflow/`
-and that `.claude/rules/devflow.md` tells Claude where each kind goes.
+working files go in `.devflow/` and that `.claude/rules/devflow.md` tells
+Claude where each kind goes.
+
+Then tell the user to complete kanban setup with these two commands, in
+order:
+
+1. `/reload-plugins` — A newly installed plugin is not available until
+   plugins are reloaded. Claude cannot run this command; the user must type
+   it in a Claude Code session. Running `/reload-plugins` (or starting a
+   new session) makes `kanban` available.
+2. `/kanban:kanban-setup` — Run this after the reload to finish kanban's
+   own setup.
