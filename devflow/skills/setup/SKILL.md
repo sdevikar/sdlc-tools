@@ -156,6 +156,31 @@ worktrees, and never committed.
 
 ---
 
+## Step 7 — Set the kanban board path
+
+Ask: **Set the kanban board path to `.devflow/kanban.yaml`?**
+
+Explain: this tells kanban to put its board in the `.devflow/` working folder,
+so git ignores it automatically. The board file is per-worktree: each worktree
+has its own `.claude/settings.local.json`, so each gets its own board with no
+special handling.
+
+If the user declines, tell them: kanban will write `kanban.yaml` at the
+worktree root instead. Move on.
+
+If the user says yes:
+
+1. Read `.claude/settings.local.json` from the worktree root. If the file does
+   not exist, treat it as `{}`.
+2. If `env.KANBAN_BOARD` already equals `.devflow/kanban.yaml`, say so and skip
+   the write.
+3. Otherwise, merge `"KANBAN_BOARD": ".devflow/kanban.yaml"` into the `env`
+   key. Keep every other key in the file unchanged. Write the result back to
+   `.claude/settings.local.json`.
+4. Show the resulting `env` block as confirmation.
+
+---
+
 ## Done
 
 Tell the user devflow is installed and list the skills now available:

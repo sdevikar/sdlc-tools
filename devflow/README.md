@@ -63,6 +63,7 @@ devflow keeps its working files in `.devflow/` at the root of each git worktree,
 | `.devflow/research/` | Research notes |
 | `.devflow/analysis/` | Analysis and root-cause notes |
 | `.devflow/artifacts/` | PDFs, diagrams, images, and other binary files |
+| `.devflow/kanban.yaml` | Kanban board (created by `/kanban:kanban-setup`) |
 
 `.devflow/.gitignore` holds `*`, so git ignores the whole folder. You do not need to edit your root `.gitignore`.
 
