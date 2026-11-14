@@ -1,0 +1,33 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "sdlc-tools",
+  "description": "Claude Code plugins for the software development loop: workflows, task board, and intent tracking.",
+  "owner": {
+    "name": "Swapnil Devikar"
+  },
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official", "ponytail"],
+  "plugins": [
+    {
+      "name": "devflow",
+      "description": "Ships commit, handoff, and review workflows as plugin skills.",
+      "source": "./devflow",
+      "category": "workflow",
+      "tags": ["commits", "handoff", "code-review"]
+    },
+    {
+      "name": "kanban",
+      "description": "Kanban board and OpenSpec bridge plugin, with a live board pane inside Claude Code.",
+      "source": "./kanban/plugins/kanban",
+      "category": "productivity",
+      "tags": ["kanban", "openspec", "tasks"]
+    },
+    {
+      "name": "mission-ctrl",
+      "displayName": "mission-ctrl (beta)",
+      "description": "Beta: intent layer for coding sessions: backlog, specs, design gate, recaps, and implementation-intent interception. Needs uv on PATH.",
+      "source": "./mission-ctrl",
+      "category": "productivity",
+      "tags": ["beta", "intent", "backlog", "specs", "design-gate"]
+    }
+  ]
+}
