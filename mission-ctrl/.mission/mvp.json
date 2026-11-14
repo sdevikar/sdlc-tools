@@ -1,0 +1,25 @@
+{
+  "version": "v2.0",
+  "items": [
+    {
+      "id": "mvp_001",
+      "title": "Store the full approved design",
+      "description": "One skill (/mission-ctrl:start) runs add-idea, triage, spec-create, and design-propose in one conversation. design-propose writes the whole design to .mission/designs/<spec_id>.md (goal, in scope, out of scope, expected files). design-approve marks it as the active design.",
+      "linked_specs": []
+    },
+    {
+      "id": "mvp_002",
+      "title": "Design guard on Edit and Write",
+      "description": "A thin mod hooks tool.check on Edit/Write. A small model compares the edit with the active design and returns fits, drift, or unclear. Drift asks the user; fits passes silently. Every verdict is logged.",
+      "linked_specs": []
+    },
+    {
+      "id": "mvp_003",
+      "title": "Five-day dogfood with an eval set",
+      "description": "Use the guard on this repo and on e2eeval for five working days. Record false asks and missed drift. Turn them into claude plugin eval cases.",
+      "linked_specs": []
+    }
+  ],
+  "created_at": "2026-09-05T03:19:51Z",
+  "updated_at": "2026-10-26T00:00:00Z"
+}
