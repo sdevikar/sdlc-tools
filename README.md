@@ -62,7 +62,7 @@ mission-ctrl is in beta testing. Skills, hooks, and the `.mission/` file format 
 
 ## Move from the old marketplaces
 
-Each plugin had its own marketplace before: `devflow`, `kanban`, and `mission-ctrl`. Those repos are archived and point here. To switch:
+devflow and kanban had their own marketplaces before, named `devflow` and `kanban`. mission-ctrl had no marketplace. You loaded it with `--plugin-dir`. The old repos are archived and point here. To switch:
 
 1. Run `claude plugin marketplace list` to see which old marketplaces you have.
 2. Run `claude plugin marketplace remove <old-name>` for each old one. This also uninstalls the plugins from that marketplace.
