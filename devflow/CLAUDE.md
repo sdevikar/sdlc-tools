@@ -10,7 +10,8 @@ A Claude Code plugin that ships the user's commit, handoff, and review workflows
 | Working plan and plan review (gitignored) | `.devflow/plans/`, `.devflow/reviews/` |
 | Handoffs (gitignored) | `.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` |
 | Project rule source, copied by setup to `.claude/rules/devflow.md` | `references/devflow-rule.md` |
-| Plugin manifest and marketplace | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` |
+| Plugin manifest | `.claude-plugin/plugin.json` |
+| Marketplace (shared with kanban and mission-ctrl) | `../.claude-plugin/marketplace.json` |
 | Skills | `skills/<name>/SKILL.md` |
 | Shared review loop | `references/review-loop.md` |
 | SessionStart hook and its script | `hooks/hooks.json`, `scripts/latest_handoff.py` |
@@ -28,7 +29,7 @@ A Claude Code plugin that ships the user's commit, handoff, and review workflows
 
 ## Rules
 
-- Install only at local scope: `claude plugin install devflow@devflow --scope local`.
+- Install only at local scope: `claude plugin install devflow@sdlc-tools --scope local`.
 - Python scripts use the stdlib only. Tests use `unittest` and real git repos in a temp folder. Do not add mocks.
 - Hooks print a pointer, never a document. On any error they exit 0 with no output.
 - Skills never commit, push, post to GitHub, or edit `.gitignore` without the user's approval.
