@@ -1,7 +1,7 @@
 # Intent: mission-ctrl
 
 **Author:** Swapnil Devikar
-**Status:** v2 (reset on 2026-10-26, see `docs/reset-2026-10-26.md`)
+**Status:** Superseded on 2026-11-14. The edit guard below is out of scope. mission-ctrl is now the intent layer that judges ideas before they become proposals. See the root `README.md` and `.mission/mission.json` (v3.0). Kept for history: v2 (reset on 2026-10-26, see `docs/reset-2026-10-26.md`)
 
 ---
 

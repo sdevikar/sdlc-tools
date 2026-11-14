@@ -3,16 +3,16 @@
 # Project Intent
 
 ## Mission
-Keep one Claude Code session on the agreed goal: an LLM judges each file edit against the approved design, asks the user when an edit drifts, and recaps where you left off when you come back.
+Decide what to build, when to build it, and what good means, before devflow builds it: an LLM judges each idea against the mission and MVP, so a proposal you do not need is never created and a good-to-have one ranks below the required ones.
 
-## MVP (v2.0) — 0/3 Complete
-- [ ] Store the full approved design
-- [ ] Design guard on Edit and Write
-- [ ] Five-day dogfood with an eval set
+## MVP (v3.0) — 0/3 Complete
+- [ ] Spike: judge vs plain agent on triage
+- [ ] Gate an idea before it becomes a proposal
+- [ ] Rank what is next
 
 ## Constraints
 - [high] Claude Code is the only host
-- [critical] The guard fails open
+- [critical] The judge fails open
 - [high] Python owns every write to .mission/
 - [high] Every LLM verdict is logged with its reason
 
