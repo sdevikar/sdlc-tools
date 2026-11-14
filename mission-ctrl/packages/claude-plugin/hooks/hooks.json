@@ -10,17 +10,6 @@
           }
         ]
       }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/bin/mission-ctrl hook before-send",
-            "timeout": 30
-          }
-        ]
-      }
     ]
   }
 }

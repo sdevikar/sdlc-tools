@@ -90,7 +90,7 @@ def test_hooks_json_shape():
     raw = json.loads((PLUGIN_DIR / "hooks" / "hooks.json").read_text())
     # hooks.json may be flat {event: [...]} or wrapped {"hooks": {event: [...]}}.
     hooks = raw.get("hooks", raw)
-    assert set(hooks) == {"SessionStart", "UserPromptSubmit"}
+    assert set(hooks) == {"SessionStart"}
     for event, groups in hooks.items():
         assert groups, event
         for group in groups:
@@ -101,4 +101,3 @@ def test_hooks_json_shape():
                 ), event
     commands = [h["command"] for gs in hooks.values() for g in gs for h in g["hooks"]]
     assert any("hook session-start" in c for c in commands)
-    assert any("hook before-send" in c for c in commands)

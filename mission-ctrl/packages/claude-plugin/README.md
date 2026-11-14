@@ -13,8 +13,7 @@ wiring only — all logic lives in `mission_ctrl_core` / `mission_ctrl_pi`.
   is the plugin root, so an install also copies the Python packages.
 - `skills/*/SKILL.md` — one per intent skill, JSON I/O contracts
   mirroring the Pydantic schemas 1:1
-- `hooks/hooks.json` — `SessionStart` recap injection, `UserPromptSubmit`
-  implementation-intent interception
+- `hooks/hooks.json` — `SessionStart` recap injection
 - `bin/mission-ctrl` — runtime wrapper (stdlib only). The root `bin` link
   points here and puts it on the Bash tool PATH.
 
@@ -85,9 +84,6 @@ Errors: stderr `{"code","message"}` + non-zero exit
 
 - `SessionStart` → gap-tiered recap injected as context; silent when the
   project has no `.mission/`.
-- `UserPromptSubmit` → implementation intent (`implement`, `build`, …) is
-  blocked with a redirect to the closest-to-code skill; re-send with the
-  phrase `override intent` to proceed (the bypass is logged).
 
 ## Contract test
 
