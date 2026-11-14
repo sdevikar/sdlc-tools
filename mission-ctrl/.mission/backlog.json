@@ -1,0 +1,38 @@
+{
+  "items": [
+    {
+      "id": "idea_001",
+      "title": "Fix sync_after_write for CLI path",
+      "description": "Decorator does not fire via CLI; AGENTS.md never updates automatically",
+      "bucket": "untriaged",
+      "alignment": {
+        "mission": "neutral",
+        "mvp": "not_required",
+        "constraints": []
+      },
+      "links": {
+        "specs": [],
+        "mvp_items": []
+      },
+      "created_at": "2026-09-05T03:22:59Z",
+      "updated_at": "2026-09-05T03:22:59Z"
+    },
+    {
+      "id": "idea_002",
+      "title": "CLI sync smoke test",
+      "description": null,
+      "bucket": "untriaged",
+      "alignment": {
+        "mission": "neutral",
+        "mvp": "not_required",
+        "constraints": []
+      },
+      "links": {
+        "specs": [],
+        "mvp_items": []
+      },
+      "created_at": "2026-09-07T03:04:46Z",
+      "updated_at": "2026-09-07T03:04:46Z"
+    }
+  ]
+}

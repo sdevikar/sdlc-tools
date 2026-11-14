@@ -1,0 +1,35 @@
+{
+  "version": "v2.0",
+  "constraints": [
+    {
+      "id": "con_004",
+      "rule": "Claude Code is the only host",
+      "rationale": "Pi, the TS bridge, and the Agent SDK split effort and shipped nothing a user can try. Build for one host until the MVP works.",
+      "severity": "high",
+      "scope": []
+    },
+    {
+      "id": "con_005",
+      "rule": "The guard fails open",
+      "rationale": "A timeout, model error, or missing store must never block an edit. Log the failure and let the normal permission flow decide.",
+      "severity": "critical",
+      "scope": ["packages/claude-plugin/hooks"]
+    },
+    {
+      "id": "con_006",
+      "rule": "Python owns every write to .mission/",
+      "rationale": "One write path keeps the store valid. The mod may read .mission/ files directly, but it writes only through bin/mission-ctrl.",
+      "severity": "high",
+      "scope": ["packages/claude-plugin"]
+    },
+    {
+      "id": "con_007",
+      "rule": "Every LLM verdict is logged with its reason",
+      "rationale": "Without a record we cannot tune the judge or build eval cases.",
+      "severity": "high",
+      "scope": []
+    }
+  ],
+  "created_at": "2026-09-05T03:19:51Z",
+  "updated_at": "2026-10-26T00:00:00Z"
+}
