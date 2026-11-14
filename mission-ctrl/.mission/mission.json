@@ -1,13 +1,13 @@
 {
   "id": "mis_001",
-  "version": "v2.0",
-  "statement": "Keep one Claude Code session on the agreed goal: an LLM judges each file edit against the approved design, asks the user when an edit drifts, and recaps where you left off when you come back.",
+  "version": "v3.0",
+  "statement": "Decide what to build, when to build it, and what good means, before devflow builds it: an LLM judges each idea against the mission and MVP, so a proposal you do not need is never created and a good-to-have one ranks below the required ones.",
   "success_criteria": [
-    "On a real repo, an edit outside the approved design gets a one-line question before it lands",
-    "Edits inside the approved design pass with no prompt and no visible delay (under 3 s)",
-    "Every verdict (fits, drift, unclear) and its reason is in .mission/meta.jsonl",
-    "A new user goes from install to first guarded edit in under 10 minutes"
+    "An idea that does not serve the MVP does not become an OpenSpec proposal unless the user says so",
+    "While a required proposal is open, 'what is next' does not suggest a good-to-have one",
+    "A rejected idea is not proposed again",
+    "Every LLM verdict and its reason is in .mission/meta.jsonl"
   ],
   "created_at": "2026-09-05T03:19:51Z",
-  "updated_at": "2026-10-26T00:00:00Z"
+  "updated_at": "2026-11-14T00:00:00Z"
 }
