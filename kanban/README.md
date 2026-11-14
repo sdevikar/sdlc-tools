@@ -20,7 +20,7 @@ The board gives you a quick overview of current project status based on OpenSpec
 - **`kanban.html`** — a generated visual board from `/kanban-render`.
 - **Skills** — `/kanban-view`, `/kanban-sync`, `/kanban-render`, `/kanban-init`, plus OpenSpec skills (`/openspec-propose`, `/openspec-apply-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`).
 - **Auto-sync** — the pane refreshes when `kanban.yaml` changes, when new proposals appear, and after kanban commands.
-- **Setup dialog** — `/kanban:setup` calls the mod tool `kanban_board_setup`. It opens a Yes/No dialog to create or sync `kanban.yaml`. The first call shows one permission prompt.
+- **Setup dialog** — `/kanban:kanban-setup` calls the mod tool `kanban_board_setup`. It opens a Yes/No dialog to create or sync `kanban.yaml`. The first call shows one permission prompt.
 
 ## Installation (Claude Code)
 
@@ -43,7 +43,7 @@ The install writes an `enabledPlugins` entry to `.claude/settings.json`. Each co
 ### 2. Run setup
 
 ```
-/kanban:setup
+/kanban:kanban-setup
 ```
 
 Setup does four things:
@@ -67,7 +67,7 @@ The side pane docks beside the transcript only in fullscreen mode. Run `/tui ful
 
 ### Update
 
-Run `/plugin marketplace update kanban`, then `/kanban:setup` again. Setup is safe to repeat.
+Run `/plugin marketplace update kanban`, then `/kanban:kanban-setup` again. Setup is safe to repeat.
 
 ## Pane Controls
 

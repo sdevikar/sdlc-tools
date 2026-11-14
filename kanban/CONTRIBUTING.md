@@ -12,7 +12,7 @@ Keep specs small and focused. One spec per logical change. Review the spec befor
 
 ## Setup
 
-Follow the [Installation](README.md#installation-claude-code) steps in the README. The `/kanban:setup` command handles dependencies, OpenSpec init, and the kanban board in one step.
+Follow the [Installation](README.md#installation-claude-code) steps in the README. The `/kanban:kanban-setup` command handles dependencies, OpenSpec init, and the kanban board in one step.
 
 ## Commit Style
 

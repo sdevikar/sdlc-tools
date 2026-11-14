@@ -5,7 +5,9 @@ const LANES = ['Not Started', 'In Progress', 'Archived'] as const
 
 async function kanbanPath($: any): Promise<string> {
   const cwd = await $.session.cwd()
-  return `${cwd}/kanban.yaml`
+  let board = 'kanban.yaml'
+  try { board = (await $.env.get('KANBAN_BOARD')) || 'kanban.yaml' } catch { /* not available in test context */ }
+  return `${cwd}/${board}`
 }
 
 const collapsed = { plugin: 'kanban-board', key: 'collapsed' } as const
@@ -447,13 +449,13 @@ async function checkChangesFolder($: any) {
 export const register: Register = on => {
   on('tool.call', { tool: 'Write' }, async ($, e, next) => {
     const result = await next(e)
-    if (e.file_path.includes('kanban.yaml')) await invalidateIfOpen($)
+    if (e.file_path === await kanbanPath($)) await invalidateIfOpen($)
     return result
   })
 
   on('tool.call', { tool: 'Edit' }, async ($, e, next) => {
     const result = await next(e)
-    if (e.file_path.includes('kanban.yaml')) await invalidateIfOpen($)
+    if (e.file_path === await kanbanPath($)) await invalidateIfOpen($)
     return result
   })
 
