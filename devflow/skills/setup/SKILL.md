@@ -144,6 +144,7 @@ worktrees, and never committed.
 ## Done
 
 Tell the user devflow is installed and list the skills now available:
-`/atomic-commits`, plus the handoff, review, and PR-comment skills once
-the remaining changes ship. Tell them that working files go in `.devflow/`
+`/devflow:atomic-commits`, `/devflow:handoff`, `/devflow:pickup`,
+`/devflow:self-review`, and `/devflow:address-pr-comments`. Tell them that
+working files go in `.devflow/`
 and that `.claude/rules/devflow.md` tells Claude where each kind goes.
