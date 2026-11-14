@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "devflow",
+  "description": "Commit, handoff, and review workflow plugin.",
+  "owner": {
+    "name": "Swapnil Devikar"
+  },
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official", "ponytail", "kanban"],
+  "plugins": [
+    {
+      "name": "devflow",
+      "description": "Ships commit, handoff, and review workflows as plugin skills.",
+      "source": "./"
+    }
+  ]
+}

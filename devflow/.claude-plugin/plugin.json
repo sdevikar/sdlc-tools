@@ -1,0 +1,14 @@
+{
+  "name": "devflow",
+  "version": "0.3.0",
+  "description": "Ships commit, handoff, and review workflows as plugin skills.",
+  "author": {
+    "name": "Swapnil Devikar"
+  },
+  "skills": "./skills/",
+  "dependencies": [
+    { "name": "superpowers", "marketplace": "claude-plugins-official" },
+    { "name": "ponytail", "marketplace": "ponytail" },
+    { "name": "kanban", "marketplace": "kanban" }
+  ]
+}
