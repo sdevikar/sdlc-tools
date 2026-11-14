@@ -31,7 +31,7 @@ If the tool is not available, continue to steps 4 and 5 to scan and write kanban
 
 Collect active changes from `openspec/changes/` (exclude the `archive/` subdirectory). Collect archived changes from `openspec/changes/archive/`. For each change, call `openspec status --change "<name>" --json` to get artifact readiness.
 
-**5. Assign lanes and write kanban.yaml**
+**5. Assign lanes and write the board file**
 
 | Artifact state | Lane | Status |
 |---|---|---|
@@ -41,8 +41,10 @@ Collect active changes from `openspec/changes/` (exclude the `archive/` subdirec
 | anything else | Not Started | no proposal |
 | Found in archive directory | Archived | archived |
 
-- **Init mode** (`kanban.yaml` does not exist): create the file with all scanned entries. Use default priority 5.
-- **Sync mode** (`kanban.yaml` exists): for new changes, add an entry. For existing changes, update `lane` and `status` only. Preserve these fields as the user set them: `priority`, `notes`, `tags`, `assignee`, `githubIssue`. Do not move a lane the user moved manually unless the change is now archived.
+Use `$KANBAN_BOARD` relative to the project root as the board file path if that variable is set; otherwise use `kanban.yaml` at the project root. Call this path BOARD_PATH.
+
+- **Init mode** (BOARD_PATH does not exist): create the file with all scanned entries. Use default priority 5.
+- **Sync mode** (BOARD_PATH exists): for new changes, add an entry. For existing changes, update `lane` and `status` only. Preserve these fields as the user set them: `priority`, `notes`, `tags`, `assignee`, `githubIssue`. Do not move a lane the user moved manually unless the change is now archived.
 
 **6. Project-area CLAUDE.md (opt-in)**
 
