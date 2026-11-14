@@ -20,22 +20,21 @@ The three loops compose: a task starts with a commit plan, produces handoffs as 
 
 The value is not any single skill — it is the encoded process rules. The merge test, the approval gates, the report format, the rating rubric, the decision that an earlier handoff overrides a reviewer's finding — these are specific, tested rules that live in the skills, not in a prompt you retype each session. Install devflow once per project and the rules travel with the repo.
 
-The plugin brings `superpowers`, `ponytail`, and `kanban` as dependencies. `superpowers` provides the receiving-code-review and executing-plans contexts the review loop calls. `ponytail` enforces simplicity discipline on code the commit loop produces. `kanban` tracks tasks on a shared board.
+The plugin brings `superpowers`, `ponytail`, and `kanban` as dependencies. `kanban` comes from the same `sdlc-tools` marketplace. `superpowers` provides the receiving-code-review and executing-plans contexts the review loop calls. `ponytail` enforces simplicity discipline on code the commit loop produces. `kanban` tracks tasks on a shared board.
 
 ## Install
 
-Run `/setup` in a Claude Code session inside the project. It checks for conflicts, registers the marketplace, and installs the plugin.
+Run `/setup` in a Claude Code session inside the project. It checks for conflicts, registers the marketplaces, and installs the plugin.
 
 Or manually:
 
 ```bash
 # One time — register the marketplaces
-claude plugin marketplace add qcom-all-gh-users/devflow
+claude plugin marketplace add qcom-all-gh-users/sdlc-tools
 claude plugin marketplace add DietrichGebert/ponytail
-claude plugin marketplace add qcom-all-gh-users/kanban
 
 # Per project
-claude plugin install devflow@devflow --scope local
+claude plugin install devflow@sdlc-tools --scope local
 ```
 
 If you already have `superpowers`, `ponytail`, or `kanban` installed from a **different** marketplace, uninstall them first. `/setup` checks this for you.
@@ -96,5 +95,5 @@ Both skills are safe to re-run on the same target. A re-run reuses the newest re
 ## Rollback
 
 ```bash
-claude plugin uninstall devflow@devflow --scope local
+claude plugin uninstall devflow@sdlc-tools --scope local
 ```

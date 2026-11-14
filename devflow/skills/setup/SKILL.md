@@ -3,7 +3,7 @@ name: setup
 description: >
   Install devflow in the current project. Checks for conflicting plugins
   (superpowers, ponytail, or kanban installed from a different marketplace),
-  offers to remove them, registers the devflow, ponytail, and kanban
+  offers to remove them, registers the sdlc-tools and ponytail
   marketplaces if needed, then installs the plugin at local scope. Creates
   the .devflow/ working folder and the .claude/rules/devflow.md project rule.
   Run this once per project and once per git worktree, and again after a
@@ -28,7 +28,7 @@ claude plugin list --json
 Look for any installed plugin whose name is `superpowers` but whose
 marketplace is not `claude-plugins-official`, or whose name is `ponytail`
 but whose marketplace is not `ponytail`, or whose name is `kanban` but
-whose marketplace is not `kanban`.
+whose marketplace is not `sdlc-tools`.
 
 For each conflict found, tell the user:
 
@@ -55,26 +55,30 @@ Run:
 claude plugin marketplace list
 ```
 
-devflow depends on plugins from three marketplaces. For each one that is
+devflow and its dependencies come from three marketplaces. For each one that is
 **not** in the output, run the corresponding `add` command. Skip any that
 are already present. (`claude-plugins-official` is always present; it is
 not in this table.)
 
 | Marketplace name | Source |
 |---|---|
-| `devflow` | `qcom-all-gh-users/devflow` |
+| `sdlc-tools` | `qcom-all-gh-users/sdlc-tools` |
 | `ponytail` | `DietrichGebert/ponytail` |
-| `kanban` | `qcom-all-gh-users/kanban` |
 
-For example, if `ponytail` and `kanban` are missing but `devflow` is
-already listed:
+`sdlc-tools` hosts both devflow and kanban. For example, if both are
+missing:
 
 ```bash
+claude plugin marketplace add qcom-all-gh-users/sdlc-tools
 claude plugin marketplace add DietrichGebert/ponytail
-claude plugin marketplace add qcom-all-gh-users/kanban
 ```
 
-Confirm all three names appear in `claude plugin marketplace list` before
+If the old `devflow` or `kanban` marketplace is still listed, tell the user
+it moved to `sdlc-tools`, and ask before removing it with
+`claude plugin marketplace remove <name>`. Removing a marketplace also
+uninstalls its plugins.
+
+Confirm `sdlc-tools`, `ponytail`, and `claude-plugins-official` appear in `claude plugin marketplace list` before
 continuing.
 
 ---
@@ -84,11 +88,11 @@ continuing.
 Run:
 
 ```bash
-claude plugin install devflow@devflow --scope local
+claude plugin install devflow@sdlc-tools --scope local
 ```
 
 This also installs `superpowers@claude-plugins-official`, `ponytail@ponytail`,
-and `kanban@kanban` as dependencies.
+and `kanban@sdlc-tools` as dependencies.
 
 Confirm with:
 
@@ -96,8 +100,8 @@ Confirm with:
 claude plugin list
 ```
 
-Expect `devflow@devflow`, `superpowers@claude-plugins-official`,
-`ponytail@ponytail`, and `kanban@kanban` all enabled at local scope.
+Expect `devflow@sdlc-tools`, `superpowers@claude-plugins-official`,
+`ponytail@ponytail`, and `kanban@sdlc-tools` all enabled at local scope.
 
 ---
 
