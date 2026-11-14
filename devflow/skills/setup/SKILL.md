@@ -4,7 +4,9 @@ description: >
   Install devflow in the current project. Checks for conflicting plugins
   (superpowers or ponytail installed from a different marketplace), offers
   to remove them, registers the devflow marketplace if needed, then installs
-  the plugin at local scope. Run this once per project.
+  the plugin at local scope. Creates the .devflow/ working folder and the
+  .claude/rules/devflow.md project rule. Run this once per project and once
+  per git worktree, and again after a plugin update.
 ---
 
 ## What this skill does
@@ -84,8 +86,64 @@ Expect `devflow@devflow`, `superpowers@claude-plugins-official`, and
 
 ---
 
+## Step 4 — Create the working folder
+
+Run all commands in this step from the root of the current worktree
+(`git rev-parse --show-toplevel`). Each git worktree has its own `.devflow/`.
+
+Create these folders if they are missing:
+
+```bash
+mkdir -p .devflow/handoffs .devflow/reviews .devflow/plans \
+  .devflow/research .devflow/analysis .devflow/artifacts
+```
+
+If `.devflow/.gitignore` is missing, create it with the single line `*`. That
+file makes git ignore the whole `.devflow/` folder, so do not touch the root
+`.gitignore` for it.
+
+Confirm with `git check-ignore -q .devflow/handoffs` (exit 0).
+
+---
+
+## Step 5 — Install the project rule
+
+The rule tells Claude where each kind of working file goes. Claude Code loads
+every `.claude/rules/*.md` file next to `CLAUDE.md`. **Do not edit `CLAUDE.md`.**
+
+The source is `${CLAUDE_PLUGIN_ROOT}/references/devflow-rule.md`. The target is
+`.claude/rules/devflow.md`.
+
+- If the target is missing, create `.claude/rules/` and copy the source there.
+- If the target exists and matches the source, do nothing.
+- If the target differs, show the difference. Ask: **Replace
+  `.claude/rules/devflow.md` with the version from the plugin?** Replace it
+  only if the user says yes.
+
+---
+
+## Step 6 — Make git ignore the rule file
+
+Skip this step if `git check-ignore -q .claude/rules/devflow.md` exits 0.
+
+Ask: **Add `.claude/rules/devflow.md` to this repo's `info/exclude` file, so
+git ignores it?** That file is local to this clone, shared by all its
+worktrees, and never committed.
+
+- If yes: append the path as one line to the file that
+  `git rev-parse --git-path info/exclude` prints. Then run
+  `git check-ignore -q .claude/rules/devflow.md`.
+- If the check still fails, a root `.gitignore` pattern such as `!**/*.md`
+  un-ignores the file. Tell the user this. Ask: **Add
+  `.claude/rules/devflow.md` to the root `.gitignore` instead?** Edit
+  `.gitignore` only if the user says yes.
+- If no: tell the user that git shows the rule file as untracked.
+
+---
+
 ## Done
 
 Tell the user devflow is installed and list the skills now available:
 `/atomic-commits`, plus the handoff, review, and PR-comment skills once
-the remaining changes ship.
+the remaining changes ship. Tell them that working files go in `.devflow/`
+and that `.claude/rules/devflow.md` tells Claude where each kind goes.

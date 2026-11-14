@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Find the current handoff for the git branch in the working directory.
 
-The current handoff is the file in <git root>/docs/handoffs/ whose frontmatter
-`branch` matches the current branch and whose `status` is not `done`, with the
-newest timestamp in its file name.
+The current handoff is the file in <git root>/.devflow/handoffs/ whose
+frontmatter `branch` matches the current branch and whose `status` is not
+`done`, with the newest timestamp in its file name.
 
 Plain mode prints the absolute path. `--hook` mode reads SessionStart JSON on
 stdin and prints hook JSON with a one-line pointer. On any error, or when no
@@ -44,7 +44,7 @@ def find(cwd):
     """Return (git root, handoff path, frontmatter), or None."""
     root = git(cwd, "rev-parse", "--show-toplevel")
     branch = git(cwd, "branch", "--show-current")
-    folder = os.path.join(root, "docs", "handoffs")
+    folder = os.path.join(root, ".devflow", "handoffs")
     if not branch or not os.path.isdir(folder):
         return None
     best = None

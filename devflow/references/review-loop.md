@@ -42,7 +42,7 @@ Load `superpowers:receiving-code-review` and follow it. For each finding:
 
 Search for a decision that covers the same choice:
 
-- Handoffs in `docs/handoffs/`.
+- Handoffs in `.devflow/handoffs/`.
 - OpenSpec changes in `openspec/changes/` (`design.md`, specs).
 - Commit messages: `git log --oneline --grep=<keyword>` and `git log -S<code>`.
 
@@ -51,6 +51,9 @@ the decision by path or SHA. Keep a list of these findings for the approval
 step.
 
 ## 4. Write the report table
+
+If `.devflow/reviews/` is missing in the project root, create it. If
+`.devflow/.gitignore` is missing, create it with the single line `*`.
 
 Write one table with **exactly** these columns, in this order. Do not add,
 rename, or split columns.

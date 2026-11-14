@@ -2,7 +2,7 @@
 name: handoff
 description: >
   Writes a handoff document for the current branch at
-  docs/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md, so a later session can
+  .devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md, so a later session can
   continue the work with /devflow:pickup. Use when the user asks for a
   handoff, wants to save session state, or reaches a stopping point.
 argument-hint: "[what the next session will focus on]"
@@ -32,26 +32,23 @@ Run these from the working directory:
 
 ## Step 2 — Build the path
 
-`<project_root>/docs/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md`
+`<project_root>/.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md`
 
 - On a feature branch, `<slug>` is the branch name with `/` changed to `-`.
   Branch `feat/foo` gives `handoff_feat-foo_20261112-1405.md`.
 - On `main`, `master`, or a detached HEAD, `<slug>` is a short kebab-case topic
   that describes the work. Do not use the branch name.
 
-## Step 3 — Check that git ignores the path
+## Step 3 — Make sure the folder exists
 
-Run `git check-ignore -q <path>`. Exit 0 means the path is ignored.
-
-If the path is not ignored, warn the user that the handoff could end up in a
-commit. Offer to add `docs/` to `.gitignore`. **Do not edit `.gitignore`
-without approval.** If the user declines, write the file anyway.
+If `.devflow/handoffs/` is missing in the project root, create it. If
+`.devflow/.gitignore` is missing, create it with the single line `*`. That
+file makes git ignore the whole `.devflow/` folder.
 
 ## Step 4 — Write the document
 
-Create `docs/handoffs/` if it does not exist. Start the file with this
-frontmatter. Write every key, one per line, as `key: value`. Leave a value
-empty when it does not apply, but keep the key.
+Start the file with this frontmatter. Write every key, one per line, as
+`key: value`. Leave a value empty when it does not apply, but keep the key.
 
 ```markdown
 ---

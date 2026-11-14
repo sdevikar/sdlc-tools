@@ -7,8 +7,9 @@ A Claude Code plugin that ships the user's commit, handoff, and review workflows
 | Need | Path |
 |---|---|
 | Design record (source of truth) | `openspec/changes/<change>/` (proposal, design, specs, tasks) |
-| Working plan and plan review (gitignored) | `docs/plans/`, `docs/reviews/` |
-| Handoffs (gitignored) | `docs/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` |
+| Working plan and plan review (gitignored) | `.devflow/plans/`, `.devflow/reviews/` |
+| Handoffs (gitignored) | `.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` |
+| Project rule source, copied by setup to `.claude/rules/devflow.md` | `references/devflow-rule.md` |
 | Plugin manifest and marketplace | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` |
 | Skills | `skills/<name>/SKILL.md` |
 | Shared review loop | `references/review-loop.md` |
