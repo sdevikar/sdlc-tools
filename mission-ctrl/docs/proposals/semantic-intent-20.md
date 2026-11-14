@@ -1,7 +1,7 @@
 # Proposal: Semantic Before-Send Classification
 
 **ID:** `semantic-intent-20`
-**Status:** 🔲 Planned
+**Status:** ❌ Rejected (2026-11-14). The Claude Code plugin no longer wires the before-send hook. mission-ctrl does not judge prompts.
 **Depends on:** `judgment-layer-18`
 
 ## Why

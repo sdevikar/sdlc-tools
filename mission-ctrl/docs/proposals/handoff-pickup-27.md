@@ -1,7 +1,7 @@
 # Proposal: Deterministic Handoffs and Session Pickup
 
 **ID:** `handoff-pickup-27`  
-**Status:** 🔲 Planned  
+**Status:** ❌ Rejected (2026-11-14). devflow ships `/devflow:handoff`, `/devflow:pickup`, and the session-start handoff pointer.  
 **Depends on:** none  
 
 ## Why
