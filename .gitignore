@@ -1,0 +1,11 @@
+# Working docs stay local. Design records (docs/decisions.md) are tracked.
+/docs/analysis/
+/docs/artifacts/
+/docs/handoffs/
+/docs/plans/
+/docs/research/
+/docs/reviews/
+.devflow/
+.claude/
+.venv/
+__pycache__/
