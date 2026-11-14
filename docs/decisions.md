@@ -9,7 +9,8 @@ A log of decisions and assumptions for the sdlc-tools marketplace.
 | Move devflow, kanban, and mission-ctrl into one repo, one top-level folder each. | The plugins work together. One marketplace gives one install source and lets devflow name `kanban` as a same-marketplace dependency. |
 | Import each repo with `git filter-repo --to-subdirectory-filter`, then `git merge --allow-unrelated-histories`. | This keeps every commit. `git log -- <folder>` shows the full history of each plugin. |
 | Rename old tags to `<plugin>--v<version>`. | This is the tag form Claude Code uses for plugins in a monorepo. It also stops tag names from clashing. |
-| Drop the `openspec` plugin that the old kanban marketplace listed. | The kanban plugin already ships the OpenSpec skills. |
+| Drop the `openspec` plugin that the old kanban marketplace listed. | Its folder had only a `plugin.json` and no skills. The `/openspec-*` skills come from the OpenSpec CLI: `openspec init` adds them to each project. |
+| List the OpenSpec CLI as a kanban prerequisite, not as a plugin dependency. | OpenSpec ships as an npm package, not as a Claude Code plugin. A plugin `dependencies` entry can only name plugins. |
 | Archive the old repos after a "moved" notice. | Users who open the old repo find the new location. |
 
 ## 2026-11-14: mission-ctrl plugin root is the project folder
