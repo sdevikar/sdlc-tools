@@ -9,13 +9,13 @@ working `kanban.yaml`. No manual settings edits or symlinks are needed.
 
 ### Requirement: Plugin install loads the mod and all skills
 
-Running `/plugin install kanban --marketplace qcom-all-gh-users/kanban` SHALL load the
+Running `/plugin install kanban --marketplace qcom-all-gh-users/sdlc-tools` SHALL load the
 `register.tsx` mod and make all skills available under the `kanban:` namespace, with no manual
 `CLAUDE_CODE_PLUGIN_DIRS` edits or symlink creation.
 
 #### Scenario: Fresh install, no prior `.claude/settings.json`
 
-- **WHEN** a contributor runs `/plugin install kanban --marketplace qcom-all-gh-users/kanban`
+- **WHEN** a contributor runs `/plugin install kanban --marketplace qcom-all-gh-users/sdlc-tools`
   at project scope in a freshly cloned repo
 - **THEN** Claude Code loads the mod, registers skills under `/kanban:*`, and writes an
   `enabledPlugins` entry to `.claude/settings.json`
@@ -77,12 +77,12 @@ invoke the sync path instead.
 ### Requirement: README setup section uses plugin install
 
 The README setup section SHALL replace the manual "Auto-load the mod" and "Link project skills"
-steps with `/plugin install kanban --marketplace qcom-all-gh-users/kanban` and
+steps with `/plugin install kanban --marketplace qcom-all-gh-users/sdlc-tools` and
 `/kanban:setup`.
 
 #### Scenario: README setup section contains the two-command install
 
 - **WHEN** a contributor reads the setup section of README.md
-- **THEN** they see `/plugin install kanban --marketplace qcom-all-gh-users/kanban` and
+- **THEN** they see `/plugin install kanban --marketplace qcom-all-gh-users/sdlc-tools` and
   `/kanban:setup` as the install steps, with no manual `CLAUDE_CODE_PLUGIN_DIRS` edits or
   symlink commands

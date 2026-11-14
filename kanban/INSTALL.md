@@ -7,8 +7,8 @@ Copy the appropriate adapter directory to your harness config location. See AGEN
 ### Steps
 
 ```
-/plugin marketplace add qcom-all-gh-users/kanban
-/plugin install kanban@kanban
+/plugin marketplace add qcom-all-gh-users/sdlc-tools
+/plugin install kanban@sdlc-tools
 ```
 
 Run both commands once after cloning, from your project directory. The first command adds the marketplace (user-scoped, one-time). The second installs the plugin at project scope and writes an `enabledPlugins` entry to `.claude/settings.json`.
