@@ -13,7 +13,8 @@ from pathlib import Path
 
 from mission_ctrl_pi import schemas
 
-PLUGIN_DIR = Path(__file__).resolve().parents[2] / "claude-plugin"
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PLUGIN_DIR = PROJECT_ROOT / "packages" / "claude-plugin"
 
 # skill dir -> Input model; None = skill takes no input (block must be {});
 # "PENDING" = skill not implemented yet (no json block, must carry marker).
@@ -75,10 +76,14 @@ def test_skill_frontmatter_has_description():
 
 
 def test_plugin_manifest():
-    manifest = json.loads((PLUGIN_DIR / ".claude-plugin" / "plugin.json").read_text())
+    # The project root is the plugin root, so a marketplace install also
+    # copies packages/core and packages/pi-package for bin/mission-ctrl.
+    manifest = json.loads((PROJECT_ROOT / ".claude-plugin" / "plugin.json").read_text())
     assert manifest["name"] == "mission-ctrl"
     assert manifest["description"]
-    assert "skills/" not in json.dumps(manifest)
+    for key in ("skills", "hooks"):
+        assert (PROJECT_ROOT / manifest[key]).exists(), key
+    assert (PROJECT_ROOT / "bin" / "mission-ctrl").is_file()
 
 
 def test_hooks_json_shape():
