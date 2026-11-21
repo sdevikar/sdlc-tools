@@ -1,0 +1,9 @@
+{
+  "name": "sdlc-tools",
+  "version": "0.1.0",
+  "description": "SDLC tools: devflow, kanban, mission-ctrl",
+  "type": "module",
+  "main": ".opencode/plugins/sdlc-tools.js",
+  "keywords": ["opencode-plugin", "opencode"],
+  "files": [".opencode", "devflow", "kanban", "mission-ctrl"]
+}
