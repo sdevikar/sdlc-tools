@@ -1,0 +1,8 @@
+{
+  "name": "session-band",
+  "version": "0.7.0",
+  "description": "Shows the devflow handoff pointer as a card above the prompt",
+  "author": {
+    "name": "Swapnil Devikar"
+  }
+}

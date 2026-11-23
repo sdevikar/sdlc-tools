@@ -342,6 +342,26 @@ sequenceDiagram
 
 When a session starts, clears, resumes, or compacts, the pointer shows at most 3 lines: the `summary`, the `next` step, and the path of the most recently updated handoff for the current branch whose `status` is not `done`. Run `/devflow:pickup` to read that handoff, check it against git, and choose the next step. Pass a path to pick up a specific file: `/devflow:pickup .devflow/handoffs/<file>.md`.
 
+### Session band
+
+The pointer above goes to Claude as text. For you, devflow also shows the same lines as a card above the prompt:
+
+```
+╭──────────────────────────────────────────────────────────────╮
+│ HANDOFF  Last session: <summary>.                   [ Hide ] │
+│ Next: <next>.                                                │
+│ Handoff: .devflow/handoffs/<file>.md. Run /devflow:pickup …  │
+╰──────────────────────────────────────────────────────────────╯
+```
+
+| When | The card |
+|---|---|
+| The session starts and an open handoff matches the branch | Shows |
+| No open handoff, no `.devflow/`, or a survey holds the band | Does not show |
+| You press Hide, or `/devflow:pickup` runs | Hides for the rest of the session |
+
+The card is a mod (a Claude Code function-hooks module) at `mod/session-band/`. `hooks/hooks.json` names it under `modules`. At session start it runs `scripts/session_start.py` once and shows that script's pointer lines, so the card and Claude always read the same text. It does not show again after `/clear`. Run its tests with `claude plugin test mod/session-band`.
+
 ### Checkpoint
 
 When Claude ends a turn, the `Stop` hook checks for a milestone since the last checkpoint:
