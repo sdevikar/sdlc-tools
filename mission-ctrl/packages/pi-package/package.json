@@ -1,9 +1,0 @@
-{
-  "name": "@mission-ctrl/pi-package",
-  "version": "0.1.0",
-  "description": "Pi extension for Mission Ctrl",
-  "main": "extension.py",
-  "pi": {
-    "extensions": ["extension.py"]
-  }
-}

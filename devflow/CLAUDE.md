@@ -11,7 +11,7 @@ A Claude Code plugin that ships the user's project, commit, handoff, and review 
 | Handoffs (gitignored) | `.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` |
 | Workflow map, printed at session start | `references/workflow-map.md` |
 | Plugin manifest | `.claude-plugin/plugin.json` |
-| Marketplace (shared with kanban and mission-ctrl) | `../.claude-plugin/marketplace.json` |
+| Marketplace (shared with kanban) | `../.claude-plugin/marketplace.json` |
 | Skills | `skills/<name>/SKILL.md` |
 | Shared review loop | `references/review-loop.md` |
 | Hooks and their scripts | `hooks/hooks.json`, `scripts/` |

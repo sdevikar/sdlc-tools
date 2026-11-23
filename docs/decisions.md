@@ -51,3 +51,13 @@ The user set this model:
 | Run a triage spike before any more mission-ctrl code. | Strong agents may already judge scope well from a mission statement. The spike checks whether mission-ctrl adds value. |
 
 Assumption: mission-ctrl must remember rejected ideas, or the agent proposes them again. This record, plus mission and MVP, is the only state mission-ctrl needs to own.
+
+## 2026-11-23: Retire mission-ctrl; devflow carries the intent layer
+
+| Decision | Reason |
+| --- | --- |
+| Merge the intent layer into devflow as `charter`, `triage`, and `next`. Remove the mission-ctrl plugin. | mission-ctrl overlapped devflow (handoff, session pointer), OpenSpec, and kanban (proposal tracking). Its finish line moved three times with 0 of 3 MVP items done. |
+| Hooks decide when; the main agent decides what. No separate judge. | The triage spike showed that a judge with limited context cannot gate. Binning showed signal when the user confirms the bin. |
+| Keep the intent state in two files: `.devflow/charter.md` and `.devflow/kanban.yaml`. Git tracks both. | Markdown and the existing board need no store. Their history explains past decisions. |
+| A SessionStart workflow map replaces the copied `.claude/rules/devflow.md`. | A copy goes stale after a plugin update. The map ships with the plugin. |
+| Remove the open mission-ctrl OpenSpec proposals with the plugin. Git history keeps them. | All of them target the old store or state machine. |
