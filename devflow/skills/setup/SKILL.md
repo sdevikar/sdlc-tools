@@ -5,8 +5,8 @@ description: >
   (superpowers, ponytail, or kanban installed from a different marketplace),
   offers to remove them, registers the sdlc-tools and ponytail
   marketplaces if needed, then installs the plugin at local scope. Creates
-  the .devflow/ working folder, sets up OpenSpec if the user wants it, and
-  removes the old .claude/rules/devflow.md copy. Run this once per project
+  the .devflow/ working folder, sets up OpenSpec if the user wants it, drafts
+  REVIEW.md, and removes the old .claude/rules/devflow.md copy. Run this once per project
   and once per git worktree, and again after a plugin update.
 ---
 
@@ -198,6 +198,51 @@ tasks for each change, and the kanban board syncs from it.
 
 Tell the user to record the answer in the project's `CLAUDE.md`, for example
 "One OpenSpec change per feature."
+
+---
+
+## Step 8 — Review policy
+
+Skip this step if `REVIEW.md` already exists in the worktree root.
+
+`REVIEW.md` holds the repo's review rules, in the format of Anthropic's
+AI-native SDLC playbook. The managed Code Review service on GitHub reads it.
+The local `/code-review` reads only `CLAUDE.md`.
+
+1. Look for what a review must skip: generated or vendored folders (for
+   example `dist/`, `build/`, `vendor/`, `gen/`), lockfiles, and the checks
+   that CI or pre-commit already runs (`.github/workflows/`,
+   `.pre-commit-config.yaml`). List only paths that exist.
+2. Show this draft, with the skips from item 1:
+
+   ```markdown
+   # Review instructions
+
+   ## Passes
+   Run three passes and tag each finding with its pass:
+   - Bugs: logic errors, broken edge cases, subtle regressions
+   - Security: injection risks, authentication gaps, secrets or PII in logs
+   - Compliance: the change matches its intent (`intent/<id>/intent.md`),
+     its spec and plan, and the rules in CLAUDE.md
+
+   ## What Important means here
+   Reserve Important for findings that would break behavior, leak data
+   or breach a policy. Style and naming are nits.
+
+   ## Cap the nits
+   Report at most five nits per review; summarize the rest as a count.
+
+   ## Do not report
+   <the skips from item 1>
+   ```
+
+3. Ask: **Write `REVIEW.md` at the repo root?** Write it only if the user
+   says yes. Tell the user to commit it to the default branch, because the
+   Code Review service reads it from there.
+4. If `CLAUDE.md` has no line with only `@REVIEW.md`, ask: **Import
+   `REVIEW.md` in `CLAUDE.md`, so the local `/code-review` follows it?** Say
+   that the import loads in every session, not only in reviews. Add the
+   line at the end of `CLAUDE.md` only if the user says yes.
 
 ---
 

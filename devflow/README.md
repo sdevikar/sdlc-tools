@@ -61,8 +61,9 @@ flowchart TD
     C3 --> C4["Set the board path to .devflow/kanban.yaml"]
     C4 --> Q{"Use OpenSpec here?"}
     Q -- yes --> K["kanban:kanban-setup<br/>openspec init and the board"]
-    Q -- no --> D
-    K --> D["/devflow:intent<br/>write the first intent"]
+    Q -- no --> R
+    K --> R["Draft REVIEW.md, offer the @REVIEW.md import in CLAUDE.md"]
+    R --> D["/devflow:intent<br/>write the first intent"]
     D --> E["Each session starts with the map,<br/>the intent digest, and the handoff pointer"]
 ```
 
@@ -89,7 +90,7 @@ Run setup again after a plugin update, and once in each new git worktree.
 
 | Skill | Loop | What it does |
 |---|---|---|
-| `setup` | — | Conflict check, marketplace registration, install, `.devflow/` folder, OpenSpec |
+| `setup` | — | Conflict check, marketplace registration, install, `.devflow/` folder, OpenSpec, `REVIEW.md` |
 | `intent` | Project | Write, accept, change, finish, or reject an intent |
 | `triage` | Project | Propose a bin for a new idea and add it to the board |
 | `next` | Project | Recommend one next item and a runner-up |
