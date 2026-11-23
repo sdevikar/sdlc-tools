@@ -64,7 +64,7 @@ devflow keeps its working files in `.devflow/` at the root of each git worktree,
 | `.devflow/artifacts/` | PDFs, diagrams, images, and other binary files |
 | `.devflow/kanban.yaml` | Kanban board (created by `/kanban:kanban-setup`) |
 
-`.devflow/.gitignore` holds `*`, so git ignores the whole folder. You do not need to edit your root `.gitignore`.
+`.devflow/.gitignore` holds `*`, `!.gitignore`, and `!kanban.yaml`. Git tracks the kanban board and ignores every other file in the folder. You do not need to edit your root `.gitignore`.
 
 Setup also copies a rule to `.claude/rules/devflow.md`. Claude Code loads every `.claude/rules/*.md` file next to `CLAUDE.md`, so the rule reaches Claude without any edit to your `CLAUDE.md`. The rule tells Claude where each kind of file goes. If your `CLAUDE.md` names another location, your `CLAUDE.md` wins. Setup asks before it adds the rule file to `.git/info/exclude`. Run setup again after a plugin update to refresh the rule, and once in each new worktree.
 

@@ -117,11 +117,26 @@ mkdir -p .devflow/handoffs .devflow/reviews .devflow/plans \
   .devflow/research .devflow/analysis .devflow/artifacts
 ```
 
-If `.devflow/.gitignore` is missing, create it with the single line `*`. That
-file makes git ignore the whole `.devflow/` folder, so do not touch the root
-`.gitignore` for it.
+If `.devflow/.gitignore` is missing, create it with these three lines:
 
-Confirm with `git check-ignore -q .devflow/handoffs` (exit 0).
+```gitignore
+*
+!.gitignore
+!kanban.yaml
+```
+
+Git then tracks the kanban board and ignores every other file in `.devflow/`.
+Do not touch the root `.gitignore` for it.
+
+If `.devflow/.gitignore` holds only `*` (an older setup), ask: **Add
+`!.gitignore` and `!kanban.yaml` to `.devflow/.gitignore`, so git tracks the
+board?** Add the two lines only if the user says yes.
+
+Confirm with `git check-ignore -q .devflow/handoffs/x.md` (exit 0) and
+`git check-ignore -q .devflow/kanban.yaml` (exit 1). If the second check
+exits 0, a root `.gitignore` pattern such as `.devflow/` excludes the folder.
+Git cannot re-include a file inside an excluded folder. Tell the user this,
+and name the pattern that `git check-ignore -v .devflow/kanban.yaml` prints.
 
 ---
 
@@ -164,10 +179,11 @@ worktrees, and never committed.
 
 Ask: **Set the kanban board path to `.devflow/kanban.yaml`?**
 
-Explain: this tells kanban to put its board in the `.devflow/` working folder,
-so git ignores it automatically. The board file is per-worktree: each worktree
-has its own `.claude/settings.local.json`, so each gets its own board with no
-special handling.
+Explain: this tells kanban to put its board in the `.devflow/` working folder.
+Git tracks the board through `.devflow/.gitignore`, so its history stays in the
+repo. The board file is per-worktree: each worktree has its own
+`.claude/settings.local.json`, so each gets its own board with no special
+handling.
 
 If the user declines, tell them: kanban will write `kanban.yaml` at the
 worktree root instead. Move on.

@@ -2,7 +2,7 @@
 
 `/devflow:setup` copied this file from the devflow plugin. Run setup again to refresh it.
 
-Keep working files in `<worktree_root>/.devflow/`, not in `docs/`. Git ignores the folder through `.devflow/.gitignore`.
+Keep working files in `<worktree_root>/.devflow/`, not in `docs/`. Git ignores the folder through `.devflow/.gitignore`, except the kanban board.
 
 | Kind | Folder |
 |---|---|
@@ -14,6 +14,6 @@ Keep working files in `<worktree_root>/.devflow/`, not in `docs/`. Git ignores t
 | PDFs, diagrams, images, and other binary files | `.devflow/artifacts/` |
 
 - This rule sets the location for superpowers plans and specs. Use `.devflow/plans/` instead of `docs/superpowers/plans/` and `docs/superpowers/specs/`.
-- Do not commit files in `.devflow/`.
-- If a subfolder is missing, create it. If `.devflow/.gitignore` is missing, create it with the single line `*`.
+- Commit `.devflow/kanban.yaml` when it changes. Do not commit any other file in `.devflow/`.
+- If a subfolder is missing, create it. If `.devflow/.gitignore` is missing, create it with the three lines `*`, `!.gitignore`, and `!kanban.yaml`.
 - If this project's `CLAUDE.md` names another location for a kind of file, use that location instead.

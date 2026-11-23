@@ -55,8 +55,9 @@ If it prints a path, rewrite that file. Keep its name. Otherwise, create
 ## Step 3 — Make sure the folder exists
 
 If `.devflow/handoffs/` is missing in the project root, create it. If
-`.devflow/.gitignore` is missing, create it with the single line `*`. That
-file makes git ignore the whole `.devflow/` folder.
+`.devflow/.gitignore` is missing, create it with the three lines `*`,
+`!.gitignore`, and `!kanban.yaml`. Git then ignores every file in `.devflow/`
+except that file and the kanban board.
 
 ## Step 4 — Write the document
 
