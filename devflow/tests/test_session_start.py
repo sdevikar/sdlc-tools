@@ -41,25 +41,54 @@ class SessionStartTest(unittest.TestCase):
         with open(MAP) as f:
             self.assertLessEqual(len(f.readlines()), 40)
 
-    def test_no_charter_offers_charter(self):
+    def intent(self, name, status, outcomes="- [ ] It ships.", constraints="- No GUI."):
+        folder = os.path.join(self.repo, "intent", name)
+        os.makedirs(folder)
+        with open(os.path.join(folder, "intent.md"), "w") as f:
+            f.write(f"# Intent: {name} title\nAuthor: Sam. Status: {status}.\n\n"
+                    f"## Problem\n\nSecret problem.\n\n## Proposed outcome\n\n{outcomes}\n\n"
+                    f"## Affected users and systems\n\nUsers.\n\n"
+                    f"## Constraints\n\n{constraints}\n\n## Open questions\n\nNone.\n")
+
+    def digest(self):
+        text = self.output()["hookSpecificOutput"]["additionalContext"]
+        with open(MAP) as f:
+            head = f.read().strip()
+        self.assertTrue(text.startswith(head))
+        return text[len(head):]
+
+    def test_no_intent_offers_intent(self):
         data = self.output()
-        text = data["hookSpecificOutput"]["additionalContext"]
-        self.assertTrue(text.startswith("# devflow workflow map"))
-        self.assertIn("offer /devflow:charter once", text)
+        self.assertIn("offer /devflow:intent once", self.digest())
         self.assertNotIn("systemMessage", data)
 
-    def test_charter_digest(self):
+    def test_draft_only(self):
+        self.intent("dark-mode", "draft")
+        digest = self.digest()
+        self.assertIn("Draft intents waiting for review: intent/dark-mode/intent.md.", digest)
+        self.assertNotIn("It ships", digest)
+
+    def test_accepted_digest(self):
         body = "\n".join(f"- [ ] line {i}" for i in range(10))
-        self.write("charter.md", f"# Charter\n\n## Goal\n\nShip it.\n\n## Done means\n\n"
-                                 f"{body}\n\n## Process\n\nTDD.\n\n## Out of scope\n\n"
-                                 "- A GUI.\n\n## Parking lot\n\n- Secret idea.\n")
-        text = self.output()["hookSpecificOutput"]["additionalContext"]
-        digest = text[text.index("# Charter"):]
-        for part in ("Goal:\nShip it.", "Process:\nTDD.", "- A GUI.", "- [ ] line 7",
-                     "(more in the file)"):
+        self.intent("ship-it", "Accepted", outcomes=body)
+        digest = self.digest()
+        for part in ("# Accepted intents (intent/)", "## ship-it title (intent/ship-it/intent.md)", "- [ ] line 7",
+                     "(more in the file)", "Constraints:\n- No GUI."):
             self.assertIn(part, digest)
         self.assertNotIn("line 8", digest)
-        self.assertNotIn("Secret idea", digest)
+        self.assertNotIn("Secret problem", digest)
+
+    def test_digest_limits_and_skips(self):
+        for name in ("a", "b", "c", "d"):
+            self.intent(name, "accepted")
+        self.intent("old", "done")
+        self.intent("no", "rejected: not needed")
+        digest = self.digest()
+        self.assertIn("## c title", digest)
+        self.assertNotIn("## d title", digest)
+        self.assertIn("(1 more accepted intents in intent/)", digest)
+        self.assertNotIn("old title", digest)
+        self.assertNotIn("Draft intents", digest)
 
     def test_handoff_pointer(self):
         self.write("handoffs/handoff_feat-x_20261112-1400.md",

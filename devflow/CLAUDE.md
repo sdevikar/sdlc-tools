@@ -24,14 +24,15 @@ A Claude Code plugin that ships the user's project, commit, handoff, and review 
 - `openspec/` is local only (gitignored). The current specs are in `openspec/specs/`.
 - If a spec and the code disagree, fix the spec first, then the code.
 - Read the latest Claude Code plugin docs before you change a manifest, hook, or skill frontmatter.
+- Before each commit that changes a hook, run a live check on the user's Claude Code version (2.1.314: `~/.local/share/qgenie-cli/claude-code/bin/claude`).
 
 ## Rules
 
 - Install only at local scope: `claude plugin install devflow@sdlc-tools --scope local`.
 - Python scripts use the stdlib only. Tests use `unittest` and real git repos in a temp folder. Do not add mocks.
-- SessionStart prints the map (40 lines at most), the charter digest, and a pointer. Other hooks print a pointer or one request, never a document. On any error they exit 0 with no output.
+- SessionStart prints the map (40 lines at most), the intent digest, and a pointer. Other hooks print a pointer or one request, never a document. On any error they exit 0 with no output.
 - Skills never commit, push, post to GitHub, or edit `.gitignore` without the user's approval.
-- Project skills (`charter`, `triage`, `next`) recommend. They never block work.
+- Project skills (`intent`, `triage`, `next`) recommend. They never block work.
 - Do not edit the old skill sources in `~/qcom/tools/agent-skills/`. Remove only the links in `~/.agents/skills/`.
 
 ## Check your work

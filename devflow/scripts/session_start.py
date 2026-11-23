@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Print the devflow workflow map, charter digest, and handoff pointer.
+"""Print the devflow workflow map, intent digest, and handoff pointer.
 
 Reads SessionStart JSON on stdin. When <git root>/.devflow/ exists, it prints
 hook JSON. `additionalContext` holds references/workflow-map.md, the digest of
-.devflow/charter.md, and the pointer to the current handoff. `systemMessage`
-holds the pointer only. On any error, it prints nothing. It always exits 0.
+the accepted intents in intent/<id>/intent.md, and the pointer to the current
+handoff. `systemMessage` holds the pointer only. On any error, it prints nothing. It always exits 0.
 """
 
+import glob
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -19,8 +21,9 @@ MAP = os.path.join(
     "references",
     "workflow-map.md",
 )
-DIGEST = ("Goal", "Done means", "Process", "Out of scope")
+DIGEST = ("Proposed outcome", "Constraints")
 MAX_LINES = 8
+MAX_INTENTS = 3
 
 
 def sections(path):
@@ -35,18 +38,43 @@ def sections(path):
     return found
 
 
+def head(path):
+    """Return the title and the status from the first lines of an intent."""
+    with open(path, encoding="utf-8") as f:
+        top = [next(f, "") for _ in range(5)]
+    title = next((l[len("# Intent:"):].strip() for l in top
+                  if l.startswith("# Intent:")), "")
+    status = next((m.group(1).lower() for l in top
+                   for m in [re.search(r"Status:\s*(\w+)", l, re.I)] if m), "draft")
+    return title, status
+
+
 def digest(root):
-    path = os.path.join(root, ".devflow", "charter.md")
-    if not os.path.exists(path):
-        return ("No charter in .devflow/charter.md. When the user starts new "
-                "work, offer /devflow:charter once.")
-    found = sections(path)
-    lines = ["# Charter (.devflow/charter.md)"]
-    for name in DIGEST:
-        body = found.get(name, [])
-        lines += ["", f"{name}:", *body[:MAX_LINES]]
-        if len(body) > MAX_LINES:
-            lines.append("(more in the file)")
+    paths = sorted(glob.glob(os.path.join(root, "intent", "*", "intent.md")))
+    accepted, drafts = [], []
+    for path in paths:
+        title, status = head(path)
+        rel = os.path.relpath(path, root)
+        if status == "accepted":
+            accepted.append((title or rel, rel, path))
+        elif status not in ("done", "rejected"):
+            drafts.append(rel)
+    if not accepted and not drafts:
+        return ("No accepted intent in intent/. When the user starts new work, "
+                "offer /devflow:intent once.")
+    lines = ["# Accepted intents (intent/)" if accepted else "# Intents (intent/)"]
+    for title, rel, path in accepted[:MAX_INTENTS]:
+        found = sections(path)
+        lines += ["", f"## {title} ({rel})"]
+        for name in DIGEST:
+            body = found.get(name, [])
+            lines += ["", f"{name}:", *body[:MAX_LINES]]
+            if len(body) > MAX_LINES:
+                lines.append("(more in the file)")
+    if len(accepted) > MAX_INTENTS:
+        lines += ["", f"({len(accepted) - MAX_INTENTS} more accepted intents in intent/)"]
+    if drafts:
+        lines += ["", f"Draft intents waiting for review: {', '.join(drafts)}."]
     return "\n".join(lines)
 
 

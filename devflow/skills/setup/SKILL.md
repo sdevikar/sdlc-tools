@@ -117,27 +117,28 @@ mkdir -p .devflow/handoffs .devflow/reviews .devflow/plans \
   .devflow/research .devflow/analysis .devflow/artifacts
 ```
 
-If `.devflow/.gitignore` is missing, create it with these four lines:
+If `.devflow/.gitignore` is missing, create it with these three lines:
 
 ```gitignore
 *
 !.gitignore
 !kanban.yaml
-!charter.md
 ```
 
-Git then tracks the kanban board and the charter, and ignores every other file
-in `.devflow/`. Do not touch the root `.gitignore` for it.
+Git then tracks the kanban board and ignores every other file in `.devflow/`.
+Do not touch the root `.gitignore` for it. Intents live in `intent/` at the
+project root, outside `.devflow/`, so git tracks them like any other file.
 
-If `.devflow/.gitignore` exists but lacks some of the `!` lines (an older
-setup), ask: **Add the missing `!` lines to `.devflow/.gitignore`, so git
-tracks the board and the charter?** Add them only if the user says yes.
+If `.devflow/.gitignore` exists but lacks the `!kanban.yaml` line (an older
+setup), ask: **Add `!kanban.yaml` to `.devflow/.gitignore`, so git tracks the
+board?** Add it only if the user says yes. Leave an old `!charter.md` line; it
+does no harm.
 
 Confirm with `git check-ignore -q .devflow/handoffs/x.md` (exit 0) and
-`git check-ignore -q .devflow/charter.md` (exit 1). If the second check
+`git check-ignore -q .devflow/kanban.yaml` (exit 1). If the second check
 exits 0, a root `.gitignore` pattern such as `.devflow/` excludes the folder.
 Git cannot re-include a file inside an excluded folder. Tell the user this,
-and name the pattern that `git check-ignore -v .devflow/charter.md` prints.
+and name the pattern that `git check-ignore -v .devflow/kanban.yaml` prints.
 
 ---
 
@@ -195,20 +196,21 @@ tasks for each change, and the kanban board syncs from it.
 - If no: move on. `devflow:triage` creates the board when the first idea
   comes in.
 
-Tell the user that `/devflow:charter` records the answer in the charter's
-Process section.
+Tell the user to record the answer in the project's `CLAUDE.md`, for example
+"One OpenSpec change per feature."
 
 ---
 
 ## Done
 
 Tell the user devflow is installed. Tell them that each new session starts
-with a workflow map: when to use each skill, the charter digest, and the
+with a workflow map: when to use each skill, the intent digest, and the
 handoff pointer.
 
-If `.devflow/charter.md` is missing, offer `/devflow:charter` as the next
-step. It sets the finish line that `/devflow:triage` and `/devflow:next`
-measure against.
+If `.devflow/charter.md` exists, it is the older devflow format. Offer
+`/devflow:intent` to convert it to `intent/<id>/intent.md`. Otherwise, if no
+`intent/*/intent.md` exists, offer `/devflow:intent` as the next step. It sets
+the finish line that `/devflow:triage` and `/devflow:next` measure against.
 
 If a newly installed plugin is not available yet, tell the user to type
 `/reload-plugins`. Claude cannot run this command; the user must type it.

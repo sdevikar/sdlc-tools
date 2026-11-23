@@ -11,7 +11,7 @@ devflow puts these rules in skills and hooks. It has four loops:
 ```mermaid
 flowchart LR
     subgraph P["Project loop"]
-        CH["charter<br/>finish line"] --> TR["triage<br/>bin each idea"] --> NX["next<br/>pick one item"]
+        IN["intent<br/>problem and outcomes"] --> TR["triage<br/>bin each idea"] --> NX["next<br/>pick one item"]
     end
     subgraph C["Commit loop"]
         AC["atomic-commits<br/>plan, approve, commit"]
@@ -30,9 +30,9 @@ flowchart LR
 
 | Loop | What it does |
 |---|---|
-| **Project** | `charter` fixes the finish line in `.devflow/charter.md`. `triage` puts each new idea in a bin (`mvp`, `nice-to-have`, `out-of-scope`) on the kanban board, after you confirm. `next` recommends one item and a runner-up. They recommend; you decide. |
+| **Project** | `intent` writes what you want and why to `intent/<id>/intent.md`, in the format of Anthropic's [AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook). `triage` puts each new idea in a bin (`mvp`, `nice-to-have`, `out-of-scope`) on the kanban board, after you confirm. `next` recommends one item and a runner-up. They recommend; you decide. |
 | **Commit** | Before any code, `atomic-commits` proposes a commit plan and waits for approval. It applies merge rules (config and the code that reads it go together; a refactor and a bug fix do not), runs a volume check, and offers a combine pass before a push. |
-| **Session** | Each session starts with the workflow map, the charter digest, and a pointer to the latest handoff. At each milestone, a checkpoint hook asks Claude to keep the handoff current. `pickup` restores it in the next session. |
+| **Session** | Each session starts with the workflow map, the intent digest, and a pointer to the latest handoff. At each milestone, a checkpoint hook asks Claude to keep the handoff current. `pickup` restores it in the next session. |
 | **Review** | `self-review` runs the built-in code review, verifies each finding, checks earlier decisions, rates each fix, and waits for your approval tier by tier. `address-pr-comments` does the same for GitHub review threads. |
 
 ## What makes this stick
@@ -62,13 +62,13 @@ flowchart TD
     C4 --> Q{"Use OpenSpec here?"}
     Q -- yes --> K["kanban:kanban-setup<br/>openspec init and the board"]
     Q -- no --> D
-    K --> D["/devflow:charter<br/>set the finish line"]
-    D --> E["Each session starts with the map,<br/>the charter digest, and the handoff pointer"]
+    K --> D["/devflow:intent<br/>write the first intent"]
+    D --> E["Each session starts with the map,<br/>the intent digest, and the handoff pointer"]
 ```
 
 1. Run `claude plugin install devflow@sdlc-tools --scope local`. This also installs `superpowers`, `ponytail`, and `kanban`.
 2. In Claude Code, type `/reload-plugins`, then run `/devflow:setup`.
-3. Run `/devflow:charter` to set the finish line.
+3. Run `/devflow:intent` to write the first intent.
 
 If the marketplaces are not registered yet:
 
@@ -90,7 +90,7 @@ Run setup again after a plugin update, and once in each new git worktree.
 | Skill | Loop | What it does |
 |---|---|---|
 | `setup` | — | Conflict check, marketplace registration, install, `.devflow/` folder, OpenSpec |
-| `charter` | Project | Write or change the goal, done means, process, and scope |
+| `intent` | Project | Write, accept, change, finish, or reject an intent |
 | `triage` | Project | Propose a bin for a new idea and add it to the board |
 | `next` | Project | Recommend one next item and a runner-up |
 | `atomic-commits` | Commit | Plan, approve, commit, and review, one unit at a time |
@@ -113,15 +113,15 @@ flowchart LR
         S3["checkpoint.py"]
         LH["latest_handoff.py"]
     end
-    subgraph Files[".devflow/"]
+    subgraph Files["Project files"]
         MAP["references/workflow-map.md<br/>(in the plugin)"]
-        CHF["charter.md"]
+        INF["intent/*/intent.md"]
         HF["handoffs/*.md"]
         CP[".checkpoint/&lt;session&gt;.json"]
     end
     SS --> S1 & S2
     ST --> S3
-    S1 -- reads --> MAP & CHF
+    S1 -- reads --> MAP & INF
     S1 -- uses --> LH -- reads --> HF
     S2 -- writes baseline --> CP
     S3 -- reads, moves forward --> CP
@@ -139,7 +139,6 @@ flowchart TB
     subgraph T["Tracked by git"]
         GI[".gitignore"]
         KB["kanban.yaml<br/>ideas, bins, OpenSpec changes"]
-        CHT["charter.md<br/>finish line"]
     end
     subgraph I["Ignored by git: local working notes"]
         H["handoffs/"]
@@ -155,7 +154,6 @@ flowchart TB
 | Path | Contents | Git |
 |---|---|---|
 | `.devflow/kanban.yaml` | Kanban board (created by `/kanban:kanban-setup` or `/devflow:triage`) | Tracked |
-| `.devflow/charter.md` | Project charter (created by `/devflow:charter`) | Tracked |
 | `.devflow/handoffs/` | Handoffs | Ignored |
 | `.devflow/reviews/` | Review reports | Ignored |
 | `.devflow/plans/` | Plans and design specs, including superpowers plans and specs | Ignored |
@@ -164,18 +162,19 @@ flowchart TB
 | `.devflow/artifacts/` | PDFs, diagrams, images, and other binary files | Ignored |
 | `.devflow/.checkpoint/` | Checkpoint state, one file per session | Ignored |
 
-`.devflow/.gitignore` holds four lines:
+`.devflow/.gitignore` holds three lines:
 
 ```gitignore
 *
 !.gitignore
 !kanban.yaml
-!charter.md
 ```
 
 You do not need to edit your root `.gitignore`. A root pattern such as `.devflow/` blocks the `!` lines, because git cannot re-include a file inside an excluded folder. Setup finds this case and names the pattern.
 
-The board and the charter go stale slowly, and their history explains past decisions. The other files go stale fast, and an agent that searches them acts on stale facts. So they stay local.
+Intents are not working notes. They live in `intent/` at the project root, and git tracks them like source files.
+
+The board goes stale slowly, and its history explains past decisions. The other files go stale fast, and an agent that searches them acts on stale facts. So they stay local.
 
 ## Workflow map
 
@@ -194,9 +193,9 @@ sequenceDiagram
         H-->>CC: nothing
     else set-up project
         H->>F: Read references/workflow-map.md
-        H->>F: Read .devflow/charter.md
+        H->>F: Read intent/*/intent.md
         H->>F: Find the latest open handoff for the branch
-        H-->>CC: additionalContext: map + charter digest + pointer
+        H-->>CC: additionalContext: map + intent digest + pointer
         H-->>CC: systemMessage: pointer only
         CC->>C: map, digest, and pointer as context
         CC->>U: pointer lines only
@@ -206,10 +205,10 @@ sequenceDiagram
 | Part | Source | Size |
 |---|---|---|
 | Workflow map: where files go, and which skill to use when | `references/workflow-map.md` | 40 lines at most |
-| Charter digest: Goal, Done means, Process, Out of scope | `.devflow/charter.md` | 8 lines per section at most |
+| Intent digest: title, Proposed outcome, Constraints of each accepted intent | `intent/*/intent.md` | 3 intents, 8 lines per section at most |
 | Handoff pointer | the latest open handoff for the branch | 3 lines at most |
 
-With no charter, the digest is one line that tells Claude to offer `/devflow:charter` once.
+Draft intents show as one line that names them. Done and rejected intents do not show. With no intent, the digest is one line that tells Claude to offer `/devflow:intent` once.
 
 The map says *when*; each skill says *how*. A sample of the map:
 
@@ -224,21 +223,37 @@ The map says *when*; each skill says *how*. A sample of the map:
 
 The plugin prints the map, so a plugin update changes it in every project with no copy to refresh. If your `CLAUDE.md` names another location for a kind of file, your `CLAUDE.md` wins. Older versions copied a rule to `.claude/rules/devflow.md`. Setup offers to delete that copy.
 
-## Project loop: charter, triage, and next
+## Project loop: intent, triage, and next
 
-### Charter
+### Intent
 
-`/devflow:charter` interviews you, one question at a time, with a draft answer for each. It writes `.devflow/charter.md` only after you approve the full file.
+Anthropic's [AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) starts each change with an `intent.md`: a short file, in your own words, that the next stage turns into a spec. `/devflow:intent` writes it. It asks one question at a time, with a draft answer for each, and writes `intent/<id>/intent.md` only after you approve the full file.
 
-```mermaid
-flowchart LR
-    G["Goal<br/>one sentence"] --> D["Done means<br/>3 to 5 checkboxes"] --> P["Process<br/>for example TDD, OpenSpec"] --> O["Out of scope"]
-    O --> PK["Parking lot"] --> RJ["Rejected"] --> CL["Changes<br/>dated log with reasons"]
-    classDef digest fill:#dbeafe,stroke:#1e40af
-    class G,D,P,O digest
+```markdown
+# Intent: <title>
+Author: <name>. Status: draft.
+
+## Problem
+## Proposed outcome     <- checkboxes, at least two
+## Affected users and systems
+## Constraints
+## Open questions
 ```
 
-The session start digest prints the four blue sections. Each change to Goal, Done means, or Out of scope adds a dated line with your reason under Changes. So when the finish line moves, the move is visible.
+The headings are the playbook's. devflow adds two things: each outcome is a checkbox, so `next` can tell when the work is done, and the status sits on the author line.
+
+```mermaid
+stateDiagram-v2
+    [*] --> draft: /devflow:intent
+    draft --> accepted: you review and approve
+    accepted --> done: every outcome checked
+    draft --> rejected: you drop it
+    accepted --> rejected: you drop it
+```
+
+A rejected intent keeps its file with the reason, so Claude does not propose the idea again. After an accept, `/devflow:intent` offers the next stage: `/opsx:propose <id>` when the project uses OpenSpec, else `superpowers:brainstorming`. That stage answers each open question or carries it forward. Process rules, such as TDD or one OpenSpec change per feature, go in the project's `CLAUDE.md`.
+
+If a project still has a `.devflow/charter.md` from an older devflow, `/devflow:intent` uses it as the first draft.
 
 ### Triage
 
@@ -246,33 +261,33 @@ The session start digest prints the four blue sections. Each change to Goal, Don
 
 ```mermaid
 flowchart TD
-    I["New idea"] --> C{"Charter exists?"}
-    C -- no --> OC["Offer /devflow:charter and stop"]
-    C -- yes --> B["Propose a bin with a reason<br/>that names a charter line"]
+    I["New idea"] --> C{"Accepted intent exists?"}
+    C -- no --> OC["Offer /devflow:intent and stop"]
+    C -- yes --> B["Propose a bin with a reason<br/>that names an intent line"]
     B --> U{"You confirm or change the bin"}
-    U --> MVP["mvp<br/>a Done means line needs it"]
+    B -. "serves no intent" .-> NI["Offer /devflow:intent &lt;id&gt;"]
+    U --> MVP["mvp<br/>an outcome needs it"]
     U --> NTH["nice-to-have<br/>helps, but not needed"]
-    U --> OOS["out-of-scope<br/>matches Out of scope"]
+    U --> OOS["out-of-scope<br/>a constraint rules it out"]
     MVP & NTH & OOS --> KB["Entry in .devflow/kanban.yaml<br/>tag = bin, notes = reason"]
-    OOS --> RJ["Line under Rejected<br/>(or Parking lot)"]
-    MVP -. "Process names OpenSpec" .-> OP["Offer /opsx:propose &lt;id&gt;"]
+    MVP -. "openspec/ exists" .-> OP["Offer /opsx:propose &lt;id&gt;"]
 ```
 
 The entry `id` is kebab-case, so it can become the OpenSpec change name. When that change appears, kanban sync keeps the entry's tags and notes. Triage never refuses or delays work on an idea because of its bin.
 
 ### Next
 
-`/devflow:next` reads the charter, the board, the open handoffs, the open OpenSpec changes, and git. It gives one item, the "Done means" line it moves, and one runner-up.
+`/devflow:next` reads the intents, the board, the open handoffs, the open OpenSpec changes, and git. It gives one item, the intent outcome it moves, and one runner-up.
 
 ```mermaid
 flowchart TD
-    S["/devflow:next"] --> C{"Charter exists?"}
-    C -- no --> OC["Offer /devflow:charter"]
-    C -- yes --> A{"Every Done means line checked?"}
-    A -- yes --> DONE["The project is done.<br/>Offer /devflow:charter for a new finish line"]
-    A -- no --> R1{"Something broken?<br/>failing test, blocking question"}
+    S["/devflow:next"] --> C{"Accepted intent exists?"}
+    C -- no --> OC["Offer /devflow:intent"]
+    C -- yes --> A{"Every outcome checked?"}
+    A -- yes --> DONE["The work is done.<br/>Offer /devflow:intent to finish it<br/>and write the next one"]
+    A -- no --> R1{"Something broken?<br/>failing test, blocking question,<br/>draft intent to review"}
     R1 -- yes --> OUT["Recommend it"]
-    R1 -- no --> R2{"Unblocked mvp item<br/>that checks a Done means line?"}
+    R1 -- no --> R2{"Unblocked mvp item<br/>that checks an outcome?"}
     R2 -- yes --> OUT
     R2 -- no --> R3["mvp item that unblocks the most"]
     R3 --> OUT
@@ -308,7 +323,7 @@ sequenceDiagram
     participant SS as SessionStart hook
     participant ST as Stop hook
     participant H as Handoff file
-    SS->>C: map, charter digest, pointer to the last handoff
+    SS->>C: map, intent digest, pointer to the last handoff
     SS->>SS: record the baseline (HEAD, time)
     U->>C: /devflow:pickup
     C->>H: read the last handoff, check it against git

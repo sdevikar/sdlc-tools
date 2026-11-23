@@ -13,14 +13,14 @@ Each tool owns one layer. A layer does not take over the job of another layer.
 
 | Layer | Tool | Job |
 | --- | --- | --- |
-| Intent | devflow (`charter`, `triage`, `next`) | Fix the finish line, bin each idea, and pick the next item. |
+| Intent | devflow (`intent`, `triage`, `next`) | Write what you want and why, bin each idea, and pick the next item. |
 | Execution | devflow | Do the work: create proposals, manage docs, plan commits, write handoffs, and run reviews. |
 | Optimization | ponytail (a devflow dependency) | Keep the code that devflow produces small and simple. |
 | UX | kanban | Show the state of the work on a board. |
 
 ```mermaid
 flowchart LR
-    IN["devflow: charter, triage, next<br/>intent: finish line, bins, next item"]
+    IN["devflow: intent, triage, next<br/>intent: outcomes, bins, next item"]
     DF["devflow<br/>execution: proposals, docs, commits, handoffs, reviews"]
     PT["ponytail<br/>optimization"]
     KB["kanban<br/>UX: the board"]
@@ -38,11 +38,11 @@ sequenceDiagram
     participant OS as OpenSpec
     participant KB as kanban board
     U->>DF: "We should also add X"
-    DF->>DF: triage: propose a bin from the charter
+    DF->>DF: triage: propose a bin from the accepted intents
     U->>DF: confirm the bin
     DF->>KB: entry, status: idea, tag: mvp
     U->>DF: /devflow:next
-    DF-->>U: Next: X. Why first: it checks a Done means line
+    DF-->>U: Next: X. Why first: it checks an intent outcome
     U->>OS: /opsx:propose x
     OS->>KB: sync links the change to the entry
     U->>OS: /opsx:apply x
@@ -51,7 +51,7 @@ sequenceDiagram
     U->>DF: /devflow:self-review, then push
     U->>OS: /opsx:archive x
     OS->>KB: lane: Archived
-    U->>DF: check the Done means line in the charter
+    U->>DF: check the outcome box in intent/<id>/intent.md
 ```
 
 ### Start a new project
@@ -63,17 +63,17 @@ flowchart TD
     C --> Q{"Use OpenSpec?"}
     Q -- yes --> K["kanban-setup: openspec init,<br/>board at .devflow/kanban.yaml"]
     Q -- no --> CH
-    K --> CH["/devflow:charter"]
+    K --> CH["/devflow:intent"]
     CH --> W["Work: triage, next, commits, handoffs, reviews"]
 ```
 
-### Intent layer: devflow charter, triage, and next
+### Intent layer: devflow intent, triage, and next
 
 The intent layer recommends. It never blocks work.
 
-- **`charter`** fixes the finish line in `.devflow/charter.md`: a goal, 3 to 5 checkable "done means" lines, the process, and what is out of scope. Each change to the finish line gets a dated reason.
-- **`triage`** proposes a bin for each new idea (`mvp`, `nice-to-have`, `out-of-scope`) with a reason. You confirm. The idea goes on the kanban board. Rejected ideas go in the charter, so the agent does not propose them again.
-- **`next`** gives one item and a runner-up, ranked against the "done means" lines. `nice-to-have` items show only when no `mvp` item is open.
+- **`intent`** writes `intent/<id>/intent.md` in the format of Anthropic's [AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook): the problem, checkable outcomes, affected users and systems, constraints, and open questions. You review it and accept it.
+- **`triage`** proposes a bin for each new idea (`mvp`, `nice-to-have`, `out-of-scope`) with a reason. You confirm. The idea goes on the kanban board. An idea that serves no intent gets an offer to write its own intent.
+- **`next`** gives one item and a runner-up, ranked against the unchecked outcomes of the accepted intents. `nice-to-have` items show only when no `mvp` item is open.
 
 ### Execution layer: devflow
 
@@ -118,7 +118,7 @@ Inside a Claude Code session, you can use `/plugin marketplace add ...` and `/pl
 
 ## mission-ctrl is retired
 
-mission-ctrl was a separate intent plugin with a Python store, a state machine, and a design gate. devflow's `charter`, `triage`, and `next` skills replace it. Its code stays in the git history. If you installed it, run `claude plugin uninstall mission-ctrl@sdlc-tools --scope local`.
+mission-ctrl was a separate intent plugin with a Python store, a state machine, and a design gate. devflow's `intent`, `triage`, and `next` skills replace it. Its code stays in the git history. If you installed it, run `claude plugin uninstall mission-ctrl@sdlc-tools --scope local`.
 
 ## Move from the old marketplaces
 

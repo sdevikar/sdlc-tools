@@ -61,3 +61,14 @@ Assumption: mission-ctrl must remember rejected ideas, or the agent proposes the
 | Keep the intent state in two files: `.devflow/charter.md` and `.devflow/kanban.yaml`. Git tracks both. | Markdown and the existing board need no store. Their history explains past decisions. |
 | A SessionStart workflow map replaces the copied `.claude/rules/devflow.md`. | A copy goes stale after a plugin update. The map ships with the plugin. |
 | Remove the open mission-ctrl OpenSpec proposals with the plugin. Git history keeps them. | All of them target the old store or state machine. |
+
+## 2026-11-23: Replace the charter with the playbook's intent.md
+
+| Decision | Reason |
+| --- | --- |
+| `/devflow:intent` replaces `/devflow:charter`. It writes `intent/<id>/intent.md` with the headings from Anthropic's AI-native SDLC playbook. | A known format beats our own. The playbook makes intent.md the first file in its chain, and the next stage reads it. |
+| Use Anthropic sources only. No third-party readiness profile. | The user asked for the playbook's own guidance. |
+| Keep intents in `intent/` at the project root, not in `.devflow/`. | The playbook names `intent/` as the home. Git tracks it with no `!` line, so a root `.devflow/` ignore pattern no longer hides it. |
+| Two additions to the template: outcomes as checkboxes, and the status on the author line. | `next` needs a done test, and a checkbox is the smallest one. The playbook example already has `Status: draft.` on that line. |
+| Process rules move to `CLAUDE.md`. | The playbook keeps commands and conventions in `CLAUDE.md`, which Claude Code already loads. |
+| A rejected intent keeps its file with the reason. | It does the job of the old Rejected section: Claude does not propose the idea again. |
