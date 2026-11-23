@@ -6,12 +6,10 @@ frontmatter `branch` matches the current branch and whose `status` is not
 `done`, with the newest modification time. The handoff skill rewrites a
 session's file in place, so the name timestamp is the creation time only.
 
-Plain mode prints the absolute path. `--hook` mode reads SessionStart JSON on
-stdin and prints hook JSON with a pointer of at most 3 lines. On any error, or when no
-handoff matches, the script prints nothing and exits 0.
+It prints the absolute path. On any error, or when no handoff matches, it
+prints nothing and exits 0. scripts/session_start.py reuses `find`.
 """
 
-import json
 import os
 import re
 import subprocess
@@ -65,36 +63,9 @@ def find(cwd):
     return root, best[1], best[2]
 
 
-def hook_output(root, path, keys):
-    lines = []
-    for label, key in (("Last session", "summary"), ("Next", "next")):
-        value = keys.get(key, "").rstrip(".")
-        if value:
-            lines.append(f"{label}: {value}.")
-    lines.append(
-        f"Handoff: {os.path.relpath(path, root)}. Run /devflow:pickup to continue."
-    )
-    text = "\n".join(lines)
-    return {
-        "systemMessage": text,
-        "hookSpecificOutput": {
-            "hookEventName": "SessionStart",
-            "additionalContext": text,
-        },
-    }
-
-
 def main():
-    if "--hook" in sys.argv[1:]:
-        cwd = json.load(sys.stdin).get("cwd") or os.getcwd()
-    else:
-        cwd = os.getcwd()
-    found = find(cwd)
-    if found is None:
-        return
-    if "--hook" in sys.argv[1:]:
-        print(json.dumps(hook_output(*found)))
-    else:
+    found = find(os.getcwd())
+    if found is not None:
         print(found[1])
 
 

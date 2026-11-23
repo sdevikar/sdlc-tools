@@ -1,4 +1,3 @@
-import json
 import os
 import subprocess
 import sys
@@ -12,10 +11,9 @@ SCRIPT = os.path.join(
 )
 
 
-def run(cwd, *args, stdin=""):
+def run(cwd):
     out = subprocess.run(
-        [sys.executable, SCRIPT, *args],
-        cwd=cwd, input=stdin, capture_output=True, text=True,
+        [sys.executable, SCRIPT], cwd=cwd, capture_output=True, text=True,
     )
     return out.returncode, out.stdout.strip()
 
@@ -51,19 +49,6 @@ class LatestHandoffTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(out, os.path.join(self.folder, "handoff_feat-x_20261112-1400.md"))
 
-    def test_hook_mode_prints_pointer(self):
-        code, out = run(os.getcwd(), "--hook", stdin=json.dumps({"cwd": self.repo}))
-        self.assertEqual(code, 0)
-        data = json.loads(out)
-        text = data["systemMessage"]
-        self.assertEqual(text.splitlines(), [
-            "Last session: Hook works.",
-            "Next: Write the tests.",
-            "Handoff: .devflow/handoffs/handoff_feat-x_20261112-1400.md. "
-            "Run /devflow:pickup to continue.",
-        ])
-        self.assertEqual(data["hookSpecificOutput"]["additionalContext"], text)
-
     def test_newest_modification_wins(self):
         older = os.path.join(self.folder, "handoff_feat-x_20261112-0900.md")
         os.utime(older, (1_800_000_000, 1_800_000_000))
@@ -72,11 +57,10 @@ class LatestHandoffTest(unittest.TestCase):
     def test_other_branch_prints_nothing(self):
         subprocess.run(["git", "-C", self.repo, "switch", "-q", "-c", "feat/y"], check=True)
         self.assertEqual(run(self.repo), (0, ""))
-        self.assertEqual(run(self.repo, "--hook", stdin=json.dumps({"cwd": self.repo})), (0, ""))
 
     def test_outside_git_repo_prints_nothing(self):
         with tempfile.TemporaryDirectory() as plain:
-            self.assertEqual(run(plain, "--hook", stdin=json.dumps({"cwd": plain})), (0, ""))
+            self.assertEqual(run(plain), (0, ""))
 
 
 if __name__ == "__main__":

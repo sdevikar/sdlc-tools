@@ -1,6 +1,6 @@
 # devflow
 
-A Claude Code plugin that ships the user's commit, handoff, and review workflows. It wires existing skills together and adds no new review logic. Superpowers and the workflow skills ship only through this plugin.
+A Claude Code plugin that ships the user's project, commit, handoff, and review workflows. It wires existing skills together and adds no new review logic. Superpowers and the workflow skills ship only through this plugin.
 
 ## Where things are
 
@@ -9,12 +9,12 @@ A Claude Code plugin that ships the user's commit, handoff, and review workflows
 | Design record (source of truth) | `openspec/changes/<change>/` (proposal, design, specs, tasks) |
 | Working plan and plan review (gitignored) | `.devflow/plans/`, `.devflow/reviews/` |
 | Handoffs (gitignored) | `.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` |
-| Project rule source, copied by setup to `.claude/rules/devflow.md` | `references/devflow-rule.md` |
+| Workflow map, printed at session start | `references/workflow-map.md` |
 | Plugin manifest | `.claude-plugin/plugin.json` |
 | Marketplace (shared with kanban and mission-ctrl) | `../.claude-plugin/marketplace.json` |
 | Skills | `skills/<name>/SKILL.md` |
 | Shared review loop | `references/review-loop.md` |
-| SessionStart hook and its script | `hooks/hooks.json`, `scripts/latest_handoff.py` |
+| Hooks and their scripts | `hooks/hooks.json`, `scripts/` |
 | Tests | `tests/` |
 
 ## How to work here
@@ -31,8 +31,9 @@ A Claude Code plugin that ships the user's commit, handoff, and review workflows
 
 - Install only at local scope: `claude plugin install devflow@sdlc-tools --scope local`.
 - Python scripts use the stdlib only. Tests use `unittest` and real git repos in a temp folder. Do not add mocks.
-- Hooks print a pointer, never a document. On any error they exit 0 with no output.
+- SessionStart prints the map (40 lines at most), the charter digest, and a pointer. Other hooks print a pointer or one request, never a document. On any error they exit 0 with no output.
 - Skills never commit, push, post to GitHub, or edit `.gitignore` without the user's approval.
+- Project skills (`charter`, `triage`, `next`) recommend. They never block work.
 - Do not edit the old skill sources in `~/qcom/tools/agent-skills/`. Remove only the links in `~/.agents/skills/`.
 
 ## Check your work

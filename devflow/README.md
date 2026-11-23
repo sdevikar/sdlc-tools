@@ -6,15 +6,17 @@ A Claude Code plugin that wires your commit, handoff, and review workflows into 
 
 Without devflow, an AI coding session has no memory of previous sessions, no rules about how commits are structured, and no process for handling review feedback. You type the same instructions into every prompt.
 
-devflow changes that by composing three loops that run automatically:
+devflow changes that by composing a project loop and three work loops:
+
+**Project loop** — `/devflow:charter` fixes the finish line in `.devflow/charter.md`: a goal, 3 to 5 checkable "done means" lines, the process, and what is out of scope. `/devflow:triage` puts each new idea in a bin (`mvp`, `nice-to-have`, `out-of-scope`) on the kanban board, after you confirm. `/devflow:next` recommends one item and a runner-up, ranked against the finish line. They recommend; you decide.
 
 **Commit loop** — before any code is written, `/atomic-commits` proposes a commit plan and waits for approval. It enforces merge rules (config and the code that reads it belong together; a refactor and a bug fix do not), runs a volume check, and offers a combine pass before a push. Each commit is reviewed before the next one starts.
 
-**Session loop** — at the start of every session and after each compaction, a hook prints a short pointer to the latest handoff. `/handoff` saves the session state; `/pickup` restores it. At each milestone, a checkpoint hook asks Claude to keep the handoff current, so you do not need to remember.
+**Session loop** — at the start of every session and after each compaction, a hook gives Claude the workflow map, the charter digest, and a short pointer to the latest handoff. `/handoff` saves the session state; `/pickup` restores it. At each milestone, a checkpoint hook asks Claude to keep the handoff current, so you do not need to remember.
 
 **Review loop** — `/self-review` runs the built-in code review, verifies each finding against the code, checks earlier decisions in handoffs and commit history, rates each proposed fix by blast radius and reversibility, and waits for your approval tier by tier before changing anything. `/address-pr-comments` does the same for GitHub review threads.
 
-The three loops compose: a task starts with a commit plan, produces handoffs as it progresses, and ends with a review before the branch is pushed.
+The loops compose: an idea gets a bin, `next` picks it, the task starts with a commit plan, produces handoffs as it progresses, and ends with a review before the branch is pushed.
 
 ## What makes this stick
 
@@ -24,9 +26,15 @@ The plugin brings `superpowers`, `ponytail`, and `kanban` as dependencies. `kanb
 
 ## Install
 
-Run `/setup` in a Claude Code session inside the project. It checks for conflicts, registers the marketplaces, and installs the plugin.
+In a new project:
 
-Or manually:
+1. Run `claude plugin install devflow@sdlc-tools --scope local`. This also installs `superpowers`, `ponytail`, and `kanban`.
+2. In Claude Code, type `/reload-plugins`, then run `/devflow:setup`. Setup creates `.devflow/` and asks one question: "Use OpenSpec here?"
+3. Run `/devflow:charter` to set the finish line.
+
+After that, each session starts with the workflow map, the charter digest, and the handoff pointer.
+
+If the marketplaces are not registered yet:
 
 ```bash
 # One time — register the marketplaces
@@ -43,7 +51,10 @@ If you already have `superpowers`, `ponytail`, or `kanban` installed from a **di
 
 | Skill | Loop | What it does |
 |---|---|---|
-| `setup` | — | Conflict check, marketplace registration, install, `.devflow/` folder, project rule |
+| `setup` | — | Conflict check, marketplace registration, install, `.devflow/` folder, OpenSpec |
+| `charter` | Project | Write or change the goal, done means, process, and scope |
+| `triage` | Project | Propose a bin for a new idea and add it to the board |
+| `next` | Project | Recommend one next item and a runner-up |
 | `atomic-commits` | Commit | Plan → approve → commit → review, one unit at a time |
 | `handoff` | Session | Write or update this session's handoff |
 | `pickup` | Session | Restore from the latest handoff |
@@ -62,16 +73,24 @@ devflow keeps its working files in `.devflow/` at the root of each git worktree,
 | `.devflow/research/` | Research notes |
 | `.devflow/analysis/` | Analysis and root-cause notes |
 | `.devflow/artifacts/` | PDFs, diagrams, images, and other binary files |
-| `.devflow/kanban.yaml` | Kanban board (created by `/kanban:kanban-setup`) |
+| `.devflow/kanban.yaml` | Kanban board (created by `/kanban:kanban-setup` or `/devflow:triage`) |
+| `.devflow/charter.md` | Project charter (created by `/devflow:charter`) |
 
-`.devflow/.gitignore` holds `*`, `!.gitignore`, and `!kanban.yaml`. Git tracks the kanban board and ignores every other file in the folder. You do not need to edit your root `.gitignore`.
+`.devflow/.gitignore` holds `*`, `!.gitignore`, `!kanban.yaml`, and `!charter.md`. Git tracks the board and the charter, and ignores every other file in the folder. You do not need to edit your root `.gitignore`.
 
-Setup also copies a rule to `.claude/rules/devflow.md`. Claude Code loads every `.claude/rules/*.md` file next to `CLAUDE.md`, so the rule reaches Claude without any edit to your `CLAUDE.md`. The rule tells Claude where each kind of file goes. If your `CLAUDE.md` names another location, your `CLAUDE.md` wins. Setup asks before it adds the rule file to `.git/info/exclude`. Run setup again after a plugin update to refresh the rule, and once in each new worktree.
+## Workflow map
 
-```mermaid
-flowchart LR
-    G["~/.claude/CLAUDE.md<br/>default: docs/"] --> D[".claude/rules/devflow.md<br/>.devflow/&lt;kind&gt;/"] --> P["project CLAUDE.md<br/>wins if it names a location"]
-```
+At each session start, clear, resume, and compaction, a hook gives Claude three parts, in this order:
+
+| Part | Source |
+|---|---|
+| Workflow map: where files go, and which skill to use when | `references/workflow-map.md` (40 lines or fewer) |
+| Charter digest: Goal, Done means, Process, Out of scope | `.devflow/charter.md`, or one line that offers `/devflow:charter` |
+| Handoff pointer | the latest open handoff for the branch |
+
+You see only the handoff pointer. The map says *when*; each skill says *how*. Because the plugin prints the map, a plugin update changes it in every project with no copy to refresh. If your `CLAUDE.md` names another location for a kind of file, your `CLAUDE.md` wins. The hook prints nothing in a project without `.devflow/`.
+
+Older versions copied a rule to `.claude/rules/devflow.md`. Setup offers to delete that copy.
 
 ## Handoff and pickup
 
@@ -79,7 +98,7 @@ flowchart LR
 
 There is one handoff per session. Each later `/handoff` in the same session rewrites that file in place. The handoff is a snapshot: goal, at most 3 outcomes, decisions, dead ends, open questions, and next steps. It never lists commits or files, because pickup reads those from git.
 
-When a session starts, clears, resumes, or compacts, a hook prints at most 3 lines: the `summary`, the `next` step, and the path of the most recently updated handoff for the current branch whose `status` is not `done`. Run `/devflow:pickup` to read that handoff, check it against git, and choose the next step. Pass a path to pick up a specific file: `/devflow:pickup .devflow/handoffs/<file>.md`.
+When a session starts, clears, resumes, or compacts, the pointer is at most 3 lines: the `summary`, the `next` step, and the path of the most recently updated handoff for the current branch whose `status` is not `done`. Run `/devflow:pickup` to read that handoff, check it against git, and choose the next step. Pass a path to pick up a specific file: `/devflow:pickup .devflow/handoffs/<file>.md`.
 
 ### Checkpoint
 

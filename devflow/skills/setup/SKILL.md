@@ -5,9 +5,9 @@ description: >
   (superpowers, ponytail, or kanban installed from a different marketplace),
   offers to remove them, registers the sdlc-tools and ponytail
   marketplaces if needed, then installs the plugin at local scope. Creates
-  the .devflow/ working folder and the .claude/rules/devflow.md project rule.
-  Run this once per project and once per git worktree, and again after a
-  plugin update.
+  the .devflow/ working folder, sets up OpenSpec if the user wants it, and
+  removes the old .claude/rules/devflow.md copy. Run this once per project
+  and once per git worktree, and again after a plugin update.
 ---
 
 ## What this skill does
@@ -117,65 +117,43 @@ mkdir -p .devflow/handoffs .devflow/reviews .devflow/plans \
   .devflow/research .devflow/analysis .devflow/artifacts
 ```
 
-If `.devflow/.gitignore` is missing, create it with these three lines:
+If `.devflow/.gitignore` is missing, create it with these four lines:
 
 ```gitignore
 *
 !.gitignore
 !kanban.yaml
+!charter.md
 ```
 
-Git then tracks the kanban board and ignores every other file in `.devflow/`.
-Do not touch the root `.gitignore` for it.
+Git then tracks the kanban board and the charter, and ignores every other file
+in `.devflow/`. Do not touch the root `.gitignore` for it.
 
-If `.devflow/.gitignore` holds only `*` (an older setup), ask: **Add
-`!.gitignore` and `!kanban.yaml` to `.devflow/.gitignore`, so git tracks the
-board?** Add the two lines only if the user says yes.
+If `.devflow/.gitignore` exists but lacks some of the `!` lines (an older
+setup), ask: **Add the missing `!` lines to `.devflow/.gitignore`, so git
+tracks the board and the charter?** Add them only if the user says yes.
 
 Confirm with `git check-ignore -q .devflow/handoffs/x.md` (exit 0) and
-`git check-ignore -q .devflow/kanban.yaml` (exit 1). If the second check
+`git check-ignore -q .devflow/charter.md` (exit 1). If the second check
 exits 0, a root `.gitignore` pattern such as `.devflow/` excludes the folder.
 Git cannot re-include a file inside an excluded folder. Tell the user this,
-and name the pattern that `git check-ignore -v .devflow/kanban.yaml` prints.
+and name the pattern that `git check-ignore -v .devflow/charter.md` prints.
 
 ---
 
-## Step 5 — Install the project rule
+## Step 5 — Remove the old project rule
 
-The rule tells Claude where each kind of working file goes. Claude Code loads
-every `.claude/rules/*.md` file next to `CLAUDE.md`. **Do not edit `CLAUDE.md`.**
+Older devflow versions copied a rule to `.claude/rules/devflow.md`. The
+session start hook now prints a workflow map instead, so the copy is stale.
 
-The source is `${CLAUDE_PLUGIN_ROOT}/references/devflow-rule.md`. The target is
-`.claude/rules/devflow.md`.
-
-- If the target is missing, create `.claude/rules/` and copy the source there.
-- If the target exists and matches the source, do nothing.
-- If the target differs, show the difference. Ask: **Replace
-  `.claude/rules/devflow.md` with the version from the plugin?** Replace it
-  only if the user says yes.
+If `.claude/rules/devflow.md` exists and its first line is
+`# devflow working files`, ask: **Delete the old `.claude/rules/devflow.md`?
+The session start map replaces it.** Delete it only if the user says yes.
+Leave any line for it in `info/exclude` or `.gitignore`; it does no harm.
 
 ---
 
-## Step 6 — Make git ignore the rule file
-
-Skip this step if `git check-ignore -q .claude/rules/devflow.md` exits 0.
-
-Ask: **Add `.claude/rules/devflow.md` to this repo's `info/exclude` file, so
-git ignores it?** That file is local to this clone, shared by all its
-worktrees, and never committed.
-
-- If yes: append the path as one line to the file that
-  `git rev-parse --git-path info/exclude` prints. Then run
-  `git check-ignore -q .claude/rules/devflow.md`.
-- If the check still fails, a root `.gitignore` pattern such as `!**/*.md`
-  un-ignores the file. Tell the user this. Ask: **Add
-  `.claude/rules/devflow.md` to the root `.gitignore` instead?** Edit
-  `.gitignore` only if the user says yes.
-- If no: tell the user that git shows the rule file as untracked.
-
----
-
-## Step 7 — Set the kanban board path
+## Step 6 — Set the kanban board path
 
 Ask: **Set the kanban board path to `.devflow/kanban.yaml`?**
 
@@ -201,20 +179,36 @@ If the user says yes:
 
 ---
 
+## Step 7 — OpenSpec
+
+Skip this step if `openspec/` already exists in the worktree root.
+
+Ask: **Use OpenSpec here?** OpenSpec keeps a proposal, design, specs, and
+tasks for each change, and the kanban board syncs from it.
+
+- If yes: run the `kanban:kanban-setup` skill. It checks the `openspec` CLI,
+  runs `openspec init`, and creates the board. The `KANBAN_BOARD` value from
+  Step 6 applies only from the next session, so if the user set it, use
+  `.devflow/kanban.yaml` as the board path in this run. If the skill is not available
+  yet, tell the user to type `/reload-plugins` and then run `/devflow:setup`
+  again.
+- If no: move on. `devflow:triage` creates the board when the first idea
+  comes in.
+
+Tell the user that `/devflow:charter` records the answer in the charter's
+Process section.
+
+---
+
 ## Done
 
-Tell the user devflow is installed and list the skills now available:
-`/devflow:atomic-commits`, `/devflow:handoff`, `/devflow:pickup`,
-`/devflow:self-review`, and `/devflow:address-pr-comments`. Tell them that
-working files go in `.devflow/` and that `.claude/rules/devflow.md` tells
-Claude where each kind goes.
+Tell the user devflow is installed. Tell them that each new session starts
+with a workflow map: when to use each skill, the charter digest, and the
+handoff pointer.
 
-Then tell the user to complete kanban setup with these two commands, in
-order:
+If `.devflow/charter.md` is missing, offer `/devflow:charter` as the next
+step. It sets the finish line that `/devflow:triage` and `/devflow:next`
+measure against.
 
-1. `/reload-plugins` — A newly installed plugin is not available until
-   plugins are reloaded. Claude cannot run this command; the user must type
-   it in a Claude Code session. Running `/reload-plugins` (or starting a
-   new session) makes `kanban` available.
-2. `/kanban:kanban-setup` — Run this after the reload to finish kanban's
-   own setup.
+If a newly installed plugin is not available yet, tell the user to type
+`/reload-plugins`. Claude cannot run this command; the user must type it.
