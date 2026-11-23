@@ -253,8 +253,6 @@ stateDiagram-v2
 
 A rejected intent keeps its file with the reason, so Claude does not propose the idea again. After an accept, `/devflow:intent` offers the next stage: `/opsx:propose <id>` when the project uses OpenSpec, else `superpowers:brainstorming`. That stage answers each open question or carries it forward. Process rules, such as TDD or one OpenSpec change per feature, go in the project's `CLAUDE.md`.
 
-If a project still has a `.devflow/charter.md` from an older devflow, `/devflow:intent` uses it as the first draft.
-
 ### Triage
 
 `/devflow:triage` runs when you bring a new idea, also when you say "we should also add...".

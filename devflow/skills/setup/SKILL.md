@@ -207,10 +207,9 @@ Tell the user devflow is installed. Tell them that each new session starts
 with a workflow map: when to use each skill, the intent digest, and the
 handoff pointer.
 
-If `.devflow/charter.md` exists, it is the older devflow format. Offer
-`/devflow:intent` to convert it to `intent/<id>/intent.md`. Otherwise, if no
-`intent/*/intent.md` exists, offer `/devflow:intent` as the next step. It sets
-the finish line that `/devflow:triage` and `/devflow:next` measure against.
+If no `intent/*/intent.md` exists, offer `/devflow:intent` for the work the
+user plans next. It sets the finish line that `/devflow:triage` and
+`/devflow:next` measure against.
 
 If a newly installed plugin is not available yet, tell the user to type
 `/reload-plugins`. Claude cannot run this command; the user must type it.

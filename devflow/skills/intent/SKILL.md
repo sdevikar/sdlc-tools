@@ -3,8 +3,8 @@ name: intent
 description: >
   Writes or changes an intent at intent/<id>/intent.md, in the format of
   Anthropic's AI-native SDLC playbook: the problem, checkable outcomes,
-  affected users and systems, constraints, and open questions. Use when a
-  project has no intent, when the user brings an idea that serves a new goal,
+  affected users and systems, constraints, and open questions, for one piece
+  of work. Use when the user starts new work, brings an idea that serves a new goal,
   when the user wants to accept, change, finish, or reject an intent, or when
   devflow:next reports that every outcome is checked.
 argument-hint: "[idea, or the intent to change]"
@@ -26,9 +26,8 @@ Read every `<project_root>/intent/*/intent.md`. If the request names one of
 them, this run changes that file. Skip to Step 4.
 
 Also read the project `README.md` and `CLAUDE.md`, and check if `openspec/`
-exists. If `.devflow/charter.md` exists, it is an older devflow format: use it
-as the draft for the new intent (Goal → Problem, Done means → Proposed
-outcome, Out of scope → Constraints).
+exists. An intent covers one piece of work, not the whole project. Scope
+every line to that work.
 
 ## Step 2 — Brainstorm
 
@@ -79,10 +78,6 @@ Author: <name>. Status: draft.
 
 - <question>
 ```
-
-If the draft came from `.devflow/charter.md`, offer to move its Process lines
-to the project's `CLAUDE.md`, and to delete the charter. Do each only after
-the user says yes.
 
 ## Step 4 — Review and status
 
