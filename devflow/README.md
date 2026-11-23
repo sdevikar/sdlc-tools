@@ -10,7 +10,7 @@ devflow changes that by composing three loops that run automatically:
 
 **Commit loop** — before any code is written, `/atomic-commits` proposes a commit plan and waits for approval. It enforces merge rules (config and the code that reads it belong together; a refactor and a bug fix do not), runs a volume check, and offers a combine pass before a push. Each commit is reviewed before the next one starts.
 
-**Session loop** — at the start of every session, a hook prints a one-line pointer to the latest handoff. `/handoff` saves the session state; `/pickup` restores it. No context is lost across compactions or restarts.
+**Session loop** — at the start of every session and after each compaction, a hook prints a short pointer to the latest handoff. `/handoff` saves the session state; `/pickup` restores it. At each milestone, a checkpoint hook asks Claude to keep the handoff current, so you do not need to remember.
 
 **Review loop** — `/self-review` runs the built-in code review, verifies each finding against the code, checks earlier decisions in handoffs and commit history, rates each proposed fix by blast radius and reversibility, and waits for your approval tier by tier before changing anything. `/address-pr-comments` does the same for GitHub review threads.
 
@@ -45,7 +45,7 @@ If you already have `superpowers`, `ponytail`, or `kanban` installed from a **di
 |---|---|---|
 | `setup` | — | Conflict check, marketplace registration, install, `.devflow/` folder, project rule |
 | `atomic-commits` | Commit | Plan → approve → commit → review, one unit at a time |
-| `handoff` | Session | Save session state to a dated file |
+| `handoff` | Session | Write or update this session's handoff |
 | `pickup` | Session | Restore from the latest handoff |
 | `self-review` | Review | Run, verify, rate, and gate-approve fixes from a code review |
 | `address-pr-comments` | Review | Fetch, verify, rate, and gate-approve fixes from PR review threads |
@@ -75,11 +75,27 @@ flowchart LR
 
 ## Handoff and pickup
 
-`/handoff` writes the session state to `.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` in the project root. On a feature branch, `<slug>` is the branch name with `/` changed to `-`. On `main`, it is a short topic. The file starts with frontmatter (`branch`, `head`, `base`, `pr`, `status`, `next`), so tools can find it without a pasted path.
+`/handoff` writes the session state to `.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` in the project root. On a feature branch, `<slug>` is the branch name with `/` changed to `-`. On `main`, it is a short topic. The file starts with frontmatter (`branch`, `head`, `base`, `pr`, `status`, `session`, `summary`, `next`), so tools can find it without a pasted path.
 
-When a session starts, clears, or resumes, a hook prints one line. The line names the newest handoff for the current branch whose `status` is not `done`, and its `next` step. Run `/devflow:pickup` to read that handoff, check it against git, and choose the next step. Pass a path to pick up a specific file: `/devflow:pickup .devflow/handoffs/<file>.md`.
+There is one handoff per session. Each later `/handoff` in the same session rewrites that file in place. The handoff is a snapshot: goal, at most 3 outcomes, decisions, dead ends, open questions, and next steps. It never lists commits or files, because pickup reads those from git.
 
-The hook needs `python3` on `PATH`.
+When a session starts, clears, resumes, or compacts, a hook prints at most 3 lines: the `summary`, the `next` step, and the path of the most recently updated handoff for the current branch whose `status` is not `done`. Run `/devflow:pickup` to read that handoff, check it against git, and choose the next step. Pass a path to pick up a specific file: `/devflow:pickup .devflow/handoffs/<file>.md`.
+
+### Checkpoint
+
+When Claude ends a turn, a `Stop` hook checks for a milestone since the last checkpoint:
+
+| Signal | Example |
+|---|---|
+| A new commit | Claude commits a fix |
+| A new or changed file in `.devflow/plans/`, `analysis/`, `research/`, or `reviews/` | A plan or review report is written |
+| An OpenSpec change archived, or with every task checked | The last task of a change is done |
+
+On a signal, the hook asks Claude once to decide if the handoff needs an update. Claude updates it in place and reports the path in one line, or replies "Handoff current." You do not need to answer. The hook never asks twice for the same signal, never asks while Claude is already continuing for it, and stays silent on any error. Uncommitted edits, context use, and elapsed time are not signals.
+
+The hook keeps its state in `.devflow/.checkpoint/`. To turn it off, set `DEVFLOW_CHECKPOINT=off` in the environment. It needs Claude Code 2.1.314 or later.
+
+The hooks need `python3` on `PATH`.
 
 ## Review
 

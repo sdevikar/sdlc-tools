@@ -3,10 +3,11 @@
 
 The current handoff is the file in <git root>/.devflow/handoffs/ whose
 frontmatter `branch` matches the current branch and whose `status` is not
-`done`, with the newest timestamp in its file name.
+`done`, with the newest modification time. The handoff skill rewrites a
+session's file in place, so the name timestamp is the creation time only.
 
 Plain mode prints the absolute path. `--hook` mode reads SessionStart JSON on
-stdin and prints hook JSON with a one-line pointer. On any error, or when no
+stdin and prints hook JSON with a pointer of at most 3 lines. On any error, or when no
 handoff matches, the script prints nothing and exits 0.
 """
 
@@ -56,7 +57,7 @@ def find(cwd):
         keys = frontmatter(path)
         if keys.get("branch") != branch or keys.get("status") == "done":
             continue
-        rank = (match.group(1), name)
+        rank = (os.path.getmtime(path), name)
         if best is None or rank > best[0]:
             best = (rank, path, keys)
     if best is None:
@@ -65,16 +66,20 @@ def find(cwd):
 
 
 def hook_output(root, path, keys):
-    line = f"Handoff for this branch: {os.path.relpath(path, root)}."
-    next_step = keys.get("next", "").rstrip(".")
-    if next_step:
-        line += f" Next: {next_step}."
-    line += " Run /devflow:pickup to continue."
+    lines = []
+    for label, key in (("Last session", "summary"), ("Next", "next")):
+        value = keys.get(key, "").rstrip(".")
+        if value:
+            lines.append(f"{label}: {value}.")
+    lines.append(
+        f"Handoff: {os.path.relpath(path, root)}. Run /devflow:pickup to continue."
+    )
+    text = "\n".join(lines)
     return {
-        "systemMessage": line,
+        "systemMessage": text,
         "hookSpecificOutput": {
             "hookEventName": "SessionStart",
-            "additionalContext": line,
+            "additionalContext": text,
         },
     }
 

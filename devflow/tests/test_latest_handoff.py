@@ -40,7 +40,10 @@ class LatestHandoffTest(unittest.TestCase):
         path = os.path.join(self.folder, f"handoff_feat-x_20261112-{hhmm}.md")
         with open(path, "w") as f:
             f.write(f"---\nbranch: {branch}\nhead: abc\nbase: main\npr:\n"
-                    f"status: {status}\nnext: {next_step}\n---\n\n# Handoff\n")
+                    f"status: {status}\nsummary: Hook works.\n"
+                    f"next: {next_step}\n---\n\n# Handoff\n")
+        stamp = 1_700_000_000 + int(hhmm)
+        os.utime(path, (stamp, stamp))
         return path
 
     def test_newest_open_handoff(self):
@@ -52,11 +55,19 @@ class LatestHandoffTest(unittest.TestCase):
         code, out = run(os.getcwd(), "--hook", stdin=json.dumps({"cwd": self.repo}))
         self.assertEqual(code, 0)
         data = json.loads(out)
-        line = data["systemMessage"]
-        self.assertIn(".devflow/handoffs/handoff_feat-x_20261112-1400.md", line)
-        self.assertIn("Next: Write the tests. Run", line)
-        self.assertIn("/devflow:pickup", line)
-        self.assertEqual(data["hookSpecificOutput"]["additionalContext"], line)
+        text = data["systemMessage"]
+        self.assertEqual(text.splitlines(), [
+            "Last session: Hook works.",
+            "Next: Write the tests.",
+            "Handoff: .devflow/handoffs/handoff_feat-x_20261112-1400.md. "
+            "Run /devflow:pickup to continue.",
+        ])
+        self.assertEqual(data["hookSpecificOutput"]["additionalContext"], text)
+
+    def test_newest_modification_wins(self):
+        older = os.path.join(self.folder, "handoff_feat-x_20261112-0900.md")
+        os.utime(older, (1_800_000_000, 1_800_000_000))
+        self.assertEqual(run(self.repo), (0, older))
 
     def test_other_branch_prints_nothing(self):
         subprocess.run(["git", "-C", self.repo, "switch", "-q", "-c", "feat/y"], check=True)
