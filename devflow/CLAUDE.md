@@ -6,7 +6,7 @@ A Claude Code plugin that ships the user's project, commit, handoff, and review 
 
 | Need | Path |
 |---|---|
-| Design record (source of truth) | `openspec/changes/<change>/` (proposal, design, specs, tasks) |
+| Design record (source of truth) | `openspec/specs/` (current), `openspec/changes/<change>/` (in progress) |
 | Working plan and plan review (gitignored) | `.devflow/plans/`, `.devflow/reviews/` |
 | Handoffs (gitignored) | `.devflow/handoffs/handoff_<slug>_<YYYYMMDD-HHMM>.md` |
 | Workflow map, printed at session start | `references/workflow-map.md` |
@@ -19,11 +19,9 @@ A Claude Code plugin that ships the user's project, commit, handoff, and review 
 
 ## How to work here
 
-- Implement one OpenSpec change at a time with `/opsx:apply`, in this order:
-  1. `add-plugin-scaffold-and-atomic-commits`
-  2. `add-handoff-and-pickup`
-  3. `add-review-workflows`
+- For each feature, write one OpenSpec change with `/opsx:propose`, build it with `/opsx:apply`, then run `/opsx:archive`.
 - Each change is one commit. The commit message is in the change's `tasks.md`.
+- `openspec/` is local only (gitignored). The current specs are in `openspec/specs/`.
 - If a spec and the code disagree, fix the spec first, then the code.
 - Read the latest Claude Code plugin docs before you change a manifest, hook, or skill frontmatter.
 

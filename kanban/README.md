@@ -14,6 +14,16 @@ The plugin also installs as a **Claude Code mod** — a live kanban pane that do
 
 The board gives you a quick overview of current project status based on OpenSpec proposal statuses.
 
+The board can also hold ideas that have no OpenSpec change yet. `/devflow:triage` writes them with `status: idea`, `specPath: ""`, and a bin tag (`mvp`, `nice-to-have`, or `out-of-scope`). Sync keeps these entries. When a change with the same `id` appears, sync links it and keeps the entry's `tags` and `notes`.
+
+```mermaid
+flowchart LR
+    T["/devflow:triage"] -- "status: idea<br/>tags: [mvp]" --> E["Entry in kanban.yaml"]
+    P["/opsx:propose &lt;id&gt;"] --> C["openspec/changes/&lt;id&gt;/"]
+    C -- "kanban sync" --> E
+    E --> NS["Not Started"] --> IP["In Progress"] --> AR["Archived"]
+```
+
 ## Features
 
 - **`kanban.yaml`** at project root — human-editable YAML with priority, status, lane, and metadata per entry.

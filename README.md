@@ -29,6 +29,44 @@ flowchart LR
     DF -- "OpenSpec changes and binned ideas" --> KB
 ```
 
+### From an idea to done
+
+```mermaid
+sequenceDiagram
+    participant U as You
+    participant DF as devflow
+    participant OS as OpenSpec
+    participant KB as kanban board
+    U->>DF: "We should also add X"
+    DF->>DF: triage: propose a bin from the charter
+    U->>DF: confirm the bin
+    DF->>KB: entry, status: idea, tag: mvp
+    U->>DF: /devflow:next
+    DF-->>U: Next: X. Why first: it checks a Done means line
+    U->>OS: /opsx:propose x
+    OS->>KB: sync links the change to the entry
+    U->>OS: /opsx:apply x
+    OS->>DF: atomic-commits, one commit at a time
+    DF->>DF: Stop hook: new commit, update the handoff
+    U->>DF: /devflow:self-review, then push
+    U->>OS: /opsx:archive x
+    OS->>KB: lane: Archived
+    U->>DF: check the Done means line in the charter
+```
+
+### Start a new project
+
+```mermaid
+flowchart TD
+    A["git init, or an existing repo"] --> B["claude plugin install devflow@sdlc-tools --scope local<br/>(also installs superpowers, ponytail, kanban)"]
+    B --> C["/reload-plugins, then /devflow:setup"]
+    C --> Q{"Use OpenSpec?"}
+    Q -- yes --> K["kanban-setup: openspec init,<br/>board at .devflow/kanban.yaml"]
+    Q -- no --> CH
+    K --> CH["/devflow:charter"]
+    CH --> W["Work: triage, next, commits, handoffs, reviews"]
+```
+
 ### Intent layer: devflow charter, triage, and next
 
 The intent layer recommends. It never blocks work.
