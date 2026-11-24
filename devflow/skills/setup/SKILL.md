@@ -246,6 +246,26 @@ The local `/code-review` reads only `CLAUDE.md`.
 
 ---
 
+## Step 9 — Hide the ponytail band
+
+ponytail 5.3 and later draws a band above the prompt: session cost, and
+Review, Audit, Board, and Details buttons. It also writes a cost row to
+`~/.config/ponytail/band/<project>.csv` after every turn. devflow turns both
+off. Both settings apply to every project, not only this one.
+
+1. Write `off` to `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.ponytail-band`. This
+   is the flag that `/ponytail band off` writes.
+2. Read `~/.claude/settings.json`. If
+   `pluginConfigs["ponytail@ponytail"].options.ledger` is already `false`,
+   skip the write. Otherwise, merge that value in. Keep every other key in
+   the file unchanged. Claude Code reads plugin options only from user
+   settings, so `.claude/settings.local.json` does not work for this.
+
+Tell the user: `/ponytail band` shows the band again. To log costs again,
+remove the `ledger` key or set it to `true`.
+
+---
+
 ## Done
 
 Tell the user devflow is installed. Tell them that each new session starts
