@@ -10,6 +10,12 @@ description: >
   plugin update.
 ---
 
+## OpenCode
+
+If `OPENCODE=1`, this skill runs inside OpenCode. The plugin is already
+installed, so skip Steps 1–3 and Step 5 (the adapter injects the devflow rule
+every turn). Do Step 4, then report the commands as `/devflow-<name>`.
+
 ## What this skill does
 
 Installs devflow cleanly in the current project. It checks for conflicts

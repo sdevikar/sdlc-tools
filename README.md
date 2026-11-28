@@ -76,6 +76,23 @@ claude plugin install mission-ctrl@sdlc-tools --scope local
 
 Inside a Claude Code session, you can use `/plugin marketplace add ...` and `/plugin install ...` instead.
 
+### OpenCode
+
+OpenCode has no plugin marketplace. Add the package to the `plugins` array in
+`opencode.json`, or let the CLI write it:
+
+```bash
+opencode plugin add git+https://github.com/sdevikar/sdlc-tools
+```
+
+For a local checkout, use `git+file:///absolute/path/to/sdlc-tools`.
+
+The adapter registers the devflow and kanban skills as `/devflow-<name>` and
+`/kanban-<name>` commands, injects the devflow working-files rule every turn,
+and shows the handoff pointer at the start of a session. The kanban live pane
+and HTML render are Claude Code only; OpenCode gets the board file and the
+commands. mission-ctrl is not part of the OpenCode adapter.
+
 ### Prerequisites
 
 | Plugin | Needs |
